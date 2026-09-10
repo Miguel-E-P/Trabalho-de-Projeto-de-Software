@@ -15,7 +15,7 @@ O sistema é composto pelos seguintes agregados e entidades:
 
 ### Agregado Pagamento
 **Pagamento:** cobrança realizada pelo uso do estacionamento
-**Tarifa:** regras utilizadas para calcular o valor cobrado
+**Tarifa:** regras utilizadas para calcular o valor cobrado com base no tempo decorrido
 
 ### Agregado Reserva
 **Reserva:** agendamento antecipado de uma vaga
