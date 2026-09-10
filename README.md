@@ -1,7 +1,7 @@
-# “Taverna” - Plataforma de Gestão de RPG
-**Plataforma de Gestão Multi-Sistema para RPG de Mesa**
+# Plataforma de Controle e Gestão de Estacionamentos
+Trabalho realizado pelos alunos do curso de Sistemas de Informação (IC/UFF) na disciplina de Projeto de Software (2026.2).
 
-### Integrantes do grupo
+### Tabela de Responsabilidades
 <table>
   <thead>
     <tr>
@@ -12,19 +12,29 @@
   </thead>
   <tbody>
     <tr>
-      <td>Pedro Chaboudt Quintaes</td>
-      <td>Módulo de Livro, Fichas e Traits (livro/traits/ficha)</td>
+      <td>Kennedy Soares</td>
+      <td></td>
+      <td><a href=”https://github.com/kndysoares”>@kndysoares</a></td>
+    </tr>
+    <tr>
+      <td>Pedro Chaboudt</td>
+      <td></td>
       <td><a href=”https://github.com/sigurd-the-red”>@sigurd-the-red</a></td>
     </tr>
     <tr>
-      <td>Gustavo Teixeira Freitas de Castro</td>
-      <td>Módulo de Inventário, Itens e Campanha (inventário/itens/campanha)</td>
+      <td>Gustavo Teixeira</td>
+      <td></td>
       <td><a href=”https://github.com/gustavo-homelab”>@gustavo-homelab</a></td>
     </tr>
     <tr>
-      <td>Miguel Enne Pessanha</td>
-      <td>Módulo de Usuário e Personagens (usuario/personagem)</td>
+      <td>Miguel Enne</td>
+      <td></td>
       <td><a href=”https://github.com/Miguel-E-P”>@Miguel-E-P</a></td>
+    </tr>
+    <tr>
+      <td>Matheus H. Reis</td>
+      <td></td>
+      <td><a href=”https://github.com/mh-reis”>@mh-reis</a></td>
     </tr>
   </tbody>
 </table>
