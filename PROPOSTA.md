@@ -23,4 +23,4 @@ O sistema é composto pelos seguintes agregados e entidades:
 
 ---
 
-TODO: descrever as regras de negócio de cada agregado
+TODO: descrever as regras de negócio de cada agregado.
