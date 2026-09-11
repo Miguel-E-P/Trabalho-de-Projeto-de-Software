@@ -13,27 +13,27 @@ Trabalho realizado pelos alunos do curso de Sistemas de Informação (IC/UFF) na
   <tbody>
     <tr>
       <td>Kennedy Soares</td>
-      <td></td>
+      <td>Agregado Cliente</td>
       <td><a href=”https://github.com/kndysoares”>@kndysoares</a></td>
     </tr>
     <tr>
       <td>Pedro Chaboudt</td>
-      <td></td>
+      <td>Agregado Pagamento</td>
       <td><a href=”https://github.com/sigurd-the-red”>@sigurd-the-red</a></td>
     </tr>
     <tr>
       <td>Gustavo Teixeira</td>
-      <td></td>
+      <td>Agregado Estacionamento</td>
       <td><a href=”https://github.com/gustavo-homelab”>@gustavo-homelab</a></td>
     </tr>
     <tr>
       <td>Miguel Enne</td>
-      <td></td>
+      <td>Agregado Reserva</td>
       <td><a href=”https://github.com/Miguel-E-P”>@Miguel-E-P</a></td>
     </tr>
     <tr>
       <td>Matheus H. Reis</td>
-      <td></td>
+      <td>Agregado Tarifa</td>
       <td><a href=”https://github.com/mh-reis”>@mh-reis</a></td>
     </tr>
   </tbody>
