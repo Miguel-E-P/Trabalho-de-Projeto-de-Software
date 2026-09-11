@@ -25,4 +25,27 @@ Executar e validar as transações financeiras. Responsável pela quitação da 
 
 ---
 
-TODO: descrever as regras de negócio de cada agregado.
+### Regras de negócio
+
+### Agregado Cliente:
+RN-01: Cadastro de Veículos
+Descrição: Um cliente pode cadastrar um ou mais veículos no sistema, porém cada veículo deve estar associado a apenas um cliente.
+
+### Agregado Tarifa:
+RN-02: Precificação por Tipo de Veículo e Tempo de Permanência
+Descrição: O valor cobrado pela estadia do veículo no estacionamento é calculado com base na categoria do veículo (carro, moto, caminhonete/SUV) e na sua duração de permanência, aplicando regras específicas de tolerância e fracionamento.
+
+### Agregado Estacionamento:
+RN-03: Ocupação de Vagas
+Descrição: Uma vaga somente pode ser ocupada se estiver com status Livre. Vagas com status Ocupada, Reservada ou Em Manutenção não podem receber novos veículos até que seu estado seja alterado.
+
+### Agregado Pagamento:
+RN-04: Liberação do Veículo mediante Pagamento
+Descrição: A saída do veículo do estacionamento somente poderá ser autorizada após a confirmação do pagamento da tarifa correspondente ao ticket de estacionamento. Enquanto houver débito pendente, o ticket permanecerá aberto e a vaga continuará ocupada.
+
+### Agregado Reserva:
+RN-05: Exclusividade de Reserva de Vaga
+Descrição: Uma vaga não pode possuir duas reservas ativas para períodos de tempo que se sobreponham. Ao realizar uma nova reserva, o sistema deve verificar a disponibilidade da vaga para o intervalo solicitado e impedir conflitos de agendamento.
+
+
+TODO: revisar e/ou acrescentar as regras de negócio de cada agregado.
