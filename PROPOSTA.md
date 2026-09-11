@@ -13,9 +13,11 @@ O sistema é composto pelos seguintes agregados e entidades:
 **Estacionamento:** unidade física que contém vagas
 **Vaga:** possui número, tipo e estado
 
+### Agregado Tarifa
+Calcular e precificar o valor da permanência. Regras utilizadas para calcular o valor cobrado com base no tempo decorrido
+
 ### Agregado Pagamento
-**Pagamento:** cobrança realizada pelo uso do estacionamento
-**Tarifa:** regras utilizadas para calcular o valor cobrado com base no tempo decorrido
+Executar e validar as transações financeiras. Responsável pela quitação da cobrança da tarifa
 
 ### Agregado Reserva
 **Reserva:** agendamento antecipado de uma vaga
