@@ -145,4 +145,19 @@ RN-05: Exclusividade de Reserva de Vaga
 Descrição: Uma vaga não pode possuir duas reservas ativas para períodos de tempo que se sobreponham. Ao realizar uma nova reserva, o sistema deve verificar a disponibilidade da vaga para o intervalo solicitado e impedir conflitos de agendamento.
 
 
-TODO: revisar as regras de negócio de cada agregado.
+# Casos de Uso
+
+### UC01 - Cadastrar Cliente
+
+### UC02 - Cadastrar Veículo
+
+### UC03 - Realizar Reserva de Vaga
+
+### UC04 - Registrar Entrada de Veículo
+
+### UC05 - Registrar Pagamento
+
+### UC06 - Autorizar Saída do Veículo
+
+
+TODO: revisar as regras de negócio de cada agregado e revisar os casos de uso.
