@@ -85,26 +85,26 @@ Regra principal: RN-04 Liberação mediante Pagamento
 
  ## Visão Geral
 
-### Cliente                → Entidade + Aggregate Root
-### Veículo                → Entidade
+Cliente                → Entidade + Aggregate Root
+Veículo                → Entidade
 
-### Estacionamento         → Entidade + Aggregate Root
-### Vaga                   → Entidade
+Estacionamento         → Entidade + Aggregate Root
+Vaga                   → Entidade
 
-### Reserva                → Entidade + Aggregate Root
-### Ticket                 → Entidade
+Reserva                → Entidade + Aggregate Root
+Ticket                 → Entidade
 
-### Pagamento              → Entidade + Aggregate Root
+Pagamento              → Entidade + Aggregate Root
 
-### Placa                  → Value Object
-### Endereço               → Value Object
-### PeríodoReserva         → Value Object
-### TempoPermanência       → Value Object
-### Dinheiro               → Value Object
+Placa                  → Value Object
+Endereço               → Value Object
+PeríodoReserva         → Value Object
+TempoPermanência       → Value Object
+Dinheiro               → Value Object
 
-### CalculadoraTarifa      → Domain Service
-### VerificadorDisponibilidadeVaga → Domain Service
-### AutorizadorSaidaVeiculo → Domain Service
+CalculadoraTarifa      → Domain Service
+VerificadorDisponibilidadeVaga → Domain Service
+AutorizadorSaidaVeiculo → Domain Service
 
 ---
 
