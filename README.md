@@ -33,7 +33,7 @@ Trabalho realizado pelos alunos do curso de Sistemas de Informação (IC/UFF) na
     </tr>
     <tr>
       <td>Matheus H. Reis</td>
-      <td>Agregado Tarifa</td>
+      <td>Domain Services</td>
       <td><a href=”https://github.com/mh-reis”>@mh-reis</a></td>
     </tr>
   </tbody>
