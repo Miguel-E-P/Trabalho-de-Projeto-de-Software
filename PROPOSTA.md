@@ -128,7 +128,7 @@ AutorizadorSaidaVeiculo → Domain Service
 RN-01: Cadastro de Veículos
 Descrição: Um cliente pode cadastrar um ou mais veículos no sistema, porém cada veículo deve estar associado a apenas um cliente.
 
-### Agregado Tarifa:
+### Domain Service:
 RN-02: Precificação por Tipo de Veículo e Tempo de Permanência
 Descrição: O valor cobrado pela estadia do veículo no estacionamento é calculado com base na categoria do veículo (carro, moto, caminhonete/SUV) e na sua duração de permanência, aplicando regras específicas de tolerância e fracionamento.
 
