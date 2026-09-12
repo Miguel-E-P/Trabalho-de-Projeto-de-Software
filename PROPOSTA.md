@@ -3,25 +3,108 @@ Decidimos modelar um software de gestão para um estacionamento comercial.
 
 O sistema tem como objetivo controlar o cadastro de clientes e veículos, a disponibilidade e utilização das vagas, as reservas, os tickets de estacionamento e os pagamentos, aplicando regras de negócio para garantir a consistência das operações.
 
-O sistema é composto pelos seguintes agregados e entidades:
+O sistema é composto pelos seguintes objetos e tipos de objetos (Cosmic Python):
+
+### Cliente: Entidade (Entity)
+ Representa a pessoa que utiliza os serviços do estacionamento. Possui identidade própria (id_cliente) e ciclo de vida.
+
+### Veículo: Entidade (Entity)
+ Representa um veículo pertencente a um cliente. Possui identidade própria (id_veiculo) e está associado a um único cliente.
+
+### Estacionamento: Entidade e Aggregate Root
+ Representa a unidade física do estacionamento. É a raiz do Agregado Estacionamento e gerencia suas vagas.
+
+### Vaga: Entidade (Entity)
+ Representa uma vaga física do estacionamento. Possui identidade própria (id_vaga) e estados que controlam sua utilização.
+
+### Reserva: Entidade e Aggregate Root
+ Representa um agendamento antecipado de vaga. É responsável por garantir as regras de exclusividade das reservas.
+
+### Ticket: Entidade (Entity)
+ Representa o registro da utilização efetiva de uma vaga durante um período de estacionamento.
+
+### Pagamento: Entidade e Aggregate Root
+ Representa a quitação financeira de um ticket. Controla o estado da cobrança e a autorização de saída do veículo.
+
+## Value Objects
+
+### Placa: Value Object
+ Representa a placa do veículo. É definida apenas pelo seu valor e não possui identidade própria.
+
+### Endereço: Value Object
+ Representa a localização do estacionamento. É definido pelos seus atributos de endereço.
+
+### PeríodoReserva: Value Object
+ Representa um intervalo de datas e horários para uma reserva.
+
+### TempoPermanência: Value Object
+ Representa a duração da estadia do veículo no estacionamento.
+
+### Dinheiro: Value Object
+ Representa um valor monetário utilizado nos cálculos e pagamentos.
+ 
+
+## Agregados (Aggregates)
 
 ### Agregado Cliente
-**Cliente:** a pessoa que utiliza os serviços do estacionamento
-**Veículo:** pertence a um cliente, tem placa e tipo
+
+Root: Cliente
+Entidades internas: Veículo
+Regra principal: RN-01 Cadastro de Veículos
 
 ### Agregado Estacionamento
-**Estacionamento:** unidade física que contém vagas
-**Vaga:** possui número, tipo e estado
 
-### Agregado Tarifa
-Calcular e precificar o valor da permanência. Regras utilizadas para calcular o valor cobrado com base no tempo decorrido
-
-### Agregado Pagamento
-Executar e validar as transações financeiras. Responsável pela quitação da cobrança da tarifa
+Root: Estacionamento
+Entidades internas: Vaga
+Regra principal: RN-03 Ocupação de Vagas
 
 ### Agregado Reserva
-**Reserva:** agendamento antecipado de uma vaga
-**Ticket:** registro de utilização de uma vaga
+
+Root: Reserva
+Entidades internas: Ticket
+Regra principal: RN-05 Exclusividade de Reserva
+
+### Agregado Pagamento
+
+Root: Pagamento
+Entidades internas: nenhuma (inicialmente)
+Regra principal: RN-04 Liberação mediante Pagamento
+
+
+## Domain Services
+
+### CalculadoraTarifa: Domain Service
+ Responsável por calcular o valor da permanência do veículo com base no tempo de uso e no tipo do veículo (RN-02).
+
+### VerificadorDisponibilidadeVaga: Domain Service
+ Responsável por verificar se uma vaga está disponível para ocupação ou reserva.
+
+### AutorizadorSaidaVeiculo: Domain Service
+ Responsável por validar se o veículo pode sair do estacionamento, considerando ticket, pagamento e situação da vaga.
+
+
+ ## Visão Geral
+
+### Cliente                → Entidade + Aggregate Root
+### Veículo                → Entidade
+
+### Estacionamento         → Entidade + Aggregate Root
+### Vaga                   → Entidade
+
+### Reserva                → Entidade + Aggregate Root
+### Ticket                 → Entidade
+
+### Pagamento              → Entidade + Aggregate Root
+
+### Placa                  → Value Object
+### Endereço               → Value Object
+### PeríodoReserva         → Value Object
+### TempoPermanência       → Value Object
+### Dinheiro               → Value Object
+
+### CalculadoraTarifa      → Domain Service
+### VerificadorDisponibilidadeVaga → Domain Service
+### AutorizadorSaidaVeiculo → Domain Service
 
 ---
 
@@ -48,4 +131,4 @@ RN-05: Exclusividade de Reserva de Vaga
 Descrição: Uma vaga não pode possuir duas reservas ativas para períodos de tempo que se sobreponham. Ao realizar uma nova reserva, o sistema deve verificar a disponibilidade da vaga para o intervalo solicitado e impedir conflitos de agendamento.
 
 
-TODO: revisar e/ou acrescentar as regras de negócio de cada agregado.
+TODO: revisar as regras de negócio de cada agregado.
