@@ -5,7 +5,7 @@ O sistema tem como objetivo controlar o cadastro de clientes e veículos, a disp
 
 O sistema é composto pelos seguintes objetos e tipos de objetos (Cosmic Python):
 
-### Cliente: Entidade (Entity)
+### Cliente: Entidade e Aggregate Root
  Representa a pessoa que utiliza os serviços do estacionamento. Possui identidade própria (id_cliente) e ciclo de vida.
 
 ### Veículo: Entidade (Entity)
