@@ -145,19 +145,23 @@ RN-05: Exclusividade de Reserva de Vaga
 Descrição: Uma vaga não pode possuir duas reservas ativas para períodos de tempo que se sobreponham. Ao realizar uma nova reserva, o sistema deve verificar a disponibilidade da vaga para o intervalo solicitado e impedir conflitos de agendamento.
 
 
-# Casos de Uso
+# Casos de Uso por Agregado/ Domain Service
 
-### UC01 - Cadastrar Cliente
+### UC01 - Cadastrar Cliente → Agregado Cliente
 
-### UC02 - Cadastrar Veículo
+### UC02 - Cadastrar Veículo → Agregado Cliente
 
-### UC03 - Realizar Reserva de Vaga
+### UC03 - Consultar Disponibilidade de Vagas → Agregado Estacionamento + Domain Service VerificadorDisponibilidadeVaga
 
-### UC04 - Registrar Entrada de Veículo
+### UC04 - Registrar Entrada de Veículo → Agregado Estacionamento + Agregado Reserva
 
-### UC05 - Registrar Pagamento
+### UC05 - Realizar Reserva de Vaga → Agregado Reserva + Domain Service VerificadorDisponibilidadeVaga
 
-### UC06 - Autorizar Saída do Veículo
+### UC06 - Registrar Saída de Veículo → Agregado Reserva + Agregado Pagamento + Domain Service CalculadoraTarifa
+
+### UC07 - Registrar Pagamento → Agregado Pagamento
+
+### UC08 - Autorizar Saída do Veículo → Agregado Pagamento + Agregado Estacionamento + Agregado Reserva + Domain Service AutorizadorSaidaVeiculo
 
 
 TODO: revisar as regras de negócio de cada agregado e revisar os casos de uso.
