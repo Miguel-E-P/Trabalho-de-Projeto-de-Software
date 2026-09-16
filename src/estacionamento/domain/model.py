@@ -29,4 +29,26 @@ class Cliente:
     def cadastrar_veiculo():
         placas = str
 #Fim do agregado cliente/ veiculo
-      
+
+#agregado pagamento
+@dataclass
+class Pagamento:
+    id_pagamento: int #int do python eh bizarro. Esse kra cresce em bytes qnd necessario?!?!?!??! Bruxaria
+    id_ticket: int
+    valor: float
+    pago: bool = False
+
+    def pagar(self):
+        self.pago = True
+#fim do agregado pagamento
+
+
+
+
+
+
+
+
+
+
+
