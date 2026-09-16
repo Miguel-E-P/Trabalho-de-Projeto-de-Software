@@ -51,7 +51,7 @@ class Dinheiro:
 class Pagamento:
     id_pagamento: int #int do python eh bizarro. Esse kra cresce em bytes qnd necessario?!?!?!??! Bruxaria
     id_ticket: int
-    valor: float
+    valor: Dinheiro
     pago: bool = False
 
     def pagar(self):
