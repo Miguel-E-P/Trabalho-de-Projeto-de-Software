@@ -31,6 +31,22 @@ class Cliente:
 #Fim do agregado cliente/ veiculo
 
 #agregado pagamento
+
+#talvez seja necessario add uma forma de guardar o tipo de pagamento
+#isso seria vantajoso para o sistema ou n?
+
+#ini-dinheiro
+@dataclass
+class Dinheiro:
+    valor: float
+    
+    #protege contra valor negativo. Seria isso um Invariante?
+    def __post_init__(self):
+        if self.valor < 0.0:
+            raise ValueError("Valor NAO pode ser negativo.")
+#fim-dinheiro
+
+#ini-pagamento
 @dataclass
 class Pagamento:
     id_pagamento: int #int do python eh bizarro. Esse kra cresce em bytes qnd necessario?!?!?!??! Bruxaria
@@ -40,7 +56,7 @@ class Pagamento:
 
     def pagar(self):
         self.pago = True
-#fim do agregado pagamento
+#fim-pagamento
 
 
 
