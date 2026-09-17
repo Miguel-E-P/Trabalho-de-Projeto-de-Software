@@ -94,7 +94,7 @@ class TipoPagamento(Enum):
     CREDITO = "credito"
     DEBITO = "debito"
     PIX = "pix"
-
+    DINHEIRO_VIVO = "dinheiro_vivo"
 
 #fim-tipo_pagamento
 
@@ -104,8 +104,11 @@ class Pagamento:
     id_pagamento: int 
     id_ticket: int
     valor: Dinheiro
+    tipo_pagamento: TipoPagamento | None = None
     pago: bool = False
-    def pagar(self):
+    
+    def pagar(self, tipo: TipoPagamento):
+        self.tipo_pagamento = tipo
         self.pago = True
 
 
