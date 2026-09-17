@@ -2,6 +2,7 @@
 na medida do possível"""
 
 from dataclasses import dataclass
+import datetime
 
 # Agregado Cliente / Veículo
 # Abordagem: da class mais simples até chegar na class raiz
@@ -34,6 +35,37 @@ class Cliente:
 
 
 # Fim do agregado cliente/ veiculo
+
+#agregado estacionamento
+class Estacionamento: 
+    qtdVagaTotal =int
+    qtdVagaMoto =int
+    qtdVagaCarro =int
+    qtdVagaCarroE =int
+    qtdVagaPortDef =int
+
+
+class Vaga:
+    idVaga=int
+    tipo_vaga=int
+    estadoVaga=int
+    flagIdoso=bool
+
+
+class Ticket:
+    horarioEntrada  =datetime
+    horarioSaida  =datetime
+    idTicket =int
+
+
+
+
+#agregado reserva
+class Reserva:
+    id_reserva=int
+    data_reservada=datetime
+    duracao_reserva=datetime.time
+
 
 # agregado pagamento
 
