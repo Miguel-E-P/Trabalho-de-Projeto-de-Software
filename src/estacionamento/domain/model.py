@@ -1,8 +1,9 @@
 """Peço aos colegas que concentrem as importações de lib aqui em cima,
 na medida do possível"""
 
-from dataclasses import dataclass
 import datetime
+from dataclasses import dataclass
+from enum import Enum
 
 # Agregado Cliente / Veículo
 # Abordagem: da class mais simples até chegar na class raiz
@@ -36,31 +37,37 @@ class Cliente:
 
 # Fim do agregado cliente/ veiculo
 
-#agregado estacionamento
-class Estacionamento: 
-    qtdVagaTotal =int
-    qtdVagaMoto =int
-    qtdVagaCarro =int
-    qtdVagaCarroE =int
-    qtdVagaPortDef =int
+# Agregado Estacionamento
+class TipoVaga(Enum):
+    CARRO = "carro"
+    MOTO = "moto"
+    CARRO_ELETRICO = "carro elétrico"
 
 
+class StatusVaga(Enum):
+    LIVRE = "livre"
+    OCUPADA = "ocupada"
+    RESERVADA = "reservada"
+
+
+@dataclass
 class Vaga:
-    idVaga=int
-    tipo_vaga=int
-    estadoVaga=int
-    flagIdoso=bool
+    id_vaga: int
+    tipo: TipoVaga
+    status: StatusVaga = StatusVaga.LIVRE
 
 
+@dataclass
+class Estacionamento:
+    vagas: list[Vaga]
+
+
+#agregado reserva
 class Ticket:
     horarioEntrada  =datetime
     horarioSaida  =datetime
     idTicket =int
 
-
-
-
-#agregado reserva
 class Reserva:
     id_reserva=int
     data_reservada=datetime
