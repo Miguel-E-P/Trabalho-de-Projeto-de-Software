@@ -74,18 +74,14 @@ class Reserva:
     duracao_reserva=datetime.time
 
 
-# agregado pagamento
-
-# talvez seja necessario add uma forma de guardar o tipo de pagamento
-# isso seria vantajoso para o sistema ou n?
-
+# AGREGADO PAGAMENTO
 
 # ini-dinheiro
 @dataclass
 class Dinheiro:
     valor: float
 
-    # protege contra valor negativo. Seria isso um Invariante?
+    # INVARIANTE: protege contra valor negativo.
     def __post_init__(self):
         if self.valor < 0.0:
             raise ValueError("Valor NAO pode ser negativo.")
@@ -93,17 +89,27 @@ class Dinheiro:
 
 # fim-dinheiro
 
+#ini-tipo_pagamento
+class TipoPagamento(Enum):
+    CREDITO = "credito"
+    DEBITO = "debito"
+    PIX = "pix"
+
+
+#fim-tipo_pagamento
 
 # ini-pagamento
 @dataclass
 class Pagamento:
-    id_pagamento: int  # int do python eh bizarro. Esse kra cresce em bytes qnd necessario?!?!?!??! Bruxaria
+    id_pagamento: int 
     id_ticket: int
     valor: Dinheiro
     pago: bool = False
-
     def pagar(self):
         self.pago = True
 
 
 # fim-pagamento
+
+#fim-AGREGADO PAGAMENTO
+
