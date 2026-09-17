@@ -7,7 +7,8 @@ Optei por realizar a estrutura inicial das classes do agregado cliente/ veiculo 
 sinalizando por comentários qual atributo específico depende da classe de cima para sua composição. Cada classe já está com sua classificação:
 value object, entidade simples e entidade raiz. A class Placa não possui atributo "id" própria por que foi classificada como value object, pois,
 é definida apenas pelo valor e é imutável.
-**16-09-26**:
+
+**17-09-26**:
 Para realizar o primeiro teste no agregado cliente, implementei o teste para saber se um cliente consegue cadastrar um veículo, para alinhar ao
 TDD (Test-Driven Development) proposto no cosmic python que não é implementar detalhadamente as classes/ objetos inicialmente, mas sim desenvolver 
 com abordagem orientada a testes e conforme as respostas dos testes informam o que estão faltando, depois ir completando as classes e objetos 
