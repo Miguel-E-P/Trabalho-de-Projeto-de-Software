@@ -77,7 +77,7 @@ class Reserva:
 # AGREGADO PAGAMENTO
 
 # ini-dinheiro
-@dataclass
+@dataclass(frozen=True)
 class Dinheiro:
     valor: float
 
