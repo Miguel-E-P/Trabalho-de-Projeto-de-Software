@@ -62,16 +62,22 @@ class Estacionamento:
     vagas: list[Vaga]
 
 
-#agregado reserva
-class Ticket:
-    horarioEntrada  =datetime
-    horarioSaida  =datetime
-    idTicket =int
+#Agregado Reserva
 
+class Ticket:
+    horarioEntrada:datetime
+    horarioSaida:datetime
+    idTicket:int
+
+@dataclass(frozen=True)
 class Reserva:
-    id_reserva=int
-    data_reservada=datetime
-    duracao_reserva=datetime.time
+    id_reserva: int
+    data_reserva: datetime
+    duracao_reserva: datetime.time
+    placa_veiculo_reserva: str
+
+
+# Fim do Agregado Reserva
 
 
 # AGREGADO PAGAMENTO
