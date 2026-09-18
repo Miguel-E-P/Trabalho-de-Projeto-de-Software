@@ -25,6 +25,9 @@ Para proteger contra golpes. Vamos precisar de algum sistema de verificacao de t
 **17-09-26**:
 Adicionei um enum TipoPagamento para guardar informacao de qual foi o metodo utilizado no pagamento. Modifiquei Pagamento para que ele funcione com ele. Ja testei o codigo na minha maquina, mas ainda nao tenho certeza se os testes estao de acordo com os metodos ensinados em aula. Irei verificar isso e, entao, adicionar-los ao projeto.
 
+**18-09-26**:
+Adicionei os testes de Dinheiro, para verificar se ele esta funcionando da forma esperada. Todos os testes tiveram sucesso. Adicionei data_hora_pagamento do tipo datetime para guardar informacao de quando exatamente o pagamento ocorreu. O intuito aqui eh que, se um certo tempo de 'saida' passar, quando ocorrer a checagem para validar a saida, a saida sera considerada invalida, protegendo contra fraude. Na minha concepcao, a funcao que checaria se o pagamento esta pago tambem checaria o tempo do pagamento e compararia com o tempo atual. Pensei tambem eh utilizar datatime.now(), mas isso fere a pureza do dominio.
+
 ### Gustavo
 **16-09-26**:
 Primeiro, estou organizando nosso repositório; devo fazer esse tipo de varredura mais vezes e, a não ser que eu esqueça, subir o commit com uma flag de "_refact_". A título de curiosidade, o linter/code formatter que uso chama-se [ruff](https://docs.astral.sh/ruff/).
