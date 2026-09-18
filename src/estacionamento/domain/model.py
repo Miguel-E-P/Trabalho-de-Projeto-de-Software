@@ -112,10 +112,12 @@ class Pagamento:
     valor: Dinheiro
     tipo_pagamento: TipoPagamento | None = None
     pago: bool = False
+    data_hora_pagamento: datetime | None = None
     
-    def pagar(self, tipo: TipoPagamento):
+    def pagar(self, tipo: TipoPagamento, momento: datetime):
         self.tipo_pagamento = tipo
         self.pago = True
+        self.data_hora_pagamento = momento
 
 
 # fim-pagamento
