@@ -28,6 +28,8 @@ minha branch de testes locais para a branch main do projeto.
 
 Implementei o segundo teste unitário no agregado Cliente para verificar se um cliente pode ter vários veículos referente a regra de negócio RN-01.
 
+Implementei o terceiro teste unitário no agregado Cliente para verificar e proteger uma regra "Não permitir duas placas iguais para o mesmo cliente."
+
 
 ### Pedro
 **16-09-26**:
