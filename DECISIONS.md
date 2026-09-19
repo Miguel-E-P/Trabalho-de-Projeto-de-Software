@@ -32,6 +32,7 @@ Implementei o terceiro teste unitário no agregado Cliente para verificar e prot
 
 Implementei o quarto teste unitário no agregado Cliente para verificar se um cliente recém-criado inicia sem veículos. Em resumo e recapitulando que já passaram 4 testes e este agregado está na fase Green de acordo com TDD.
 
+Ao refazer cada teste a cada função teste do agregado, o terceiro teste houve necessidade de correção na função cadastrar veiculo no dominio model, percebi um equívoco no comando do pytest que deveria ter editado a cada vez o nome da função de teste, mas já foi resolvido. Concluindo 4 testes e este agregado está na fase Green de acordo com TDD.
 
 
 
