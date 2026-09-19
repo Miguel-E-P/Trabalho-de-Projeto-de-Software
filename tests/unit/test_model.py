@@ -58,6 +58,41 @@ def test_cliente_pode_cadastrar_varios_veiculos():
 
     assert len(cliente.veiculos) == 2
 
+#Fim do segundo teste no agregado cliente
+
+#Terceiro teste
+#Não permitir duas placas iguais para o mesmo cliente.
+def test_nao_permite_cadastrar_duas_vezes_a_mesma_placa():
+    cliente = Cliente(
+        id_cliente=uuid4(),
+        nome="João",
+        cpf="11111111111",
+        telefone="21999999999",
+        email="joao@email.com",
+    )
+
+    veiculo1 = Veiculo(
+        id_veiculo=uuid4(),
+        placa=Placa("ABC1D23"),
+        tipo="Carro",
+    )
+
+    veiculo2 = Veiculo(
+        id_veiculo=uuid4(),
+        placa=Placa("ABC1D23"),
+        tipo="Carro",
+    )
+
+    cliente.cadastrar_veiculo(veiculo1)
+
+    with pytest.raises(Exception):
+        cliente.cadastrar_veiculo(veiculo2)
+
+
+#Fim do terceiro teste no agregado cliente
+
+
+
 
 #INI AGREGADO PAGAMENTO
 def test_dinheiro_invariante_negativa():
