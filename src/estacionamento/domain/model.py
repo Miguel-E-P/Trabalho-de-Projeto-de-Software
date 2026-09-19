@@ -36,8 +36,12 @@ class Cliente:
 
     # método que vai cadastrar veiculo para um cliente
     def cadastrar_veiculo(self, veiculo: Veiculo) -> None:
-        if veiculo not in self.veiculos:
-            self.veiculos.append(veiculo)
+        # Verifica se já existe um veículo cadastrado com a mesma placa
+        for v in self.veiculos:
+            if v.placa == veiculo.placa:
+                raise ValueError("Já existe um veículo cadastrado com esta placa.")
+
+        self.veiculos.append(veiculo)
 
 
 # Fim do agregado cliente/ veiculo
