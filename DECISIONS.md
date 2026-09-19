@@ -27,6 +27,8 @@ Implementei o segundo teste unitário no agregado Cliente para verificar se um c
 
 Implementei o terceiro teste unitário no agregado Cliente para verificar e proteger uma regra "Não permitir duas placas iguais para o mesmo cliente."
 
+Implementei o quarto teste unitário no agregado Cliente para verificar se um cliente recém-criado inicia sem veículos. Recapitulando que já passaram 4 testes e este agregado está na fase Green de acordo com TDD.
+
 
 
 
