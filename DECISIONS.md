@@ -18,6 +18,9 @@ no arquivo test_model.py. Ao estudar o TDD me dei conta de que o agregado client
 RED: Você escreve o teste para a nova regra de negócio ou contrato e o executa. Ele deve falhar (ficar vermelho no seu test runner). E em seguida vou
 desenvolver para chegar em GREEN: Você escreve o mínimo de código necessário no arquivo de produção apenas para fazer o teste passar.
 
+**19-09-26**:
+Testei commit pelo git desktop.
+
 ### Pedro
 **16-09-26**:
 Para proteger contra golpes. Vamos precisar de algum sistema de verificacao de tempo. Ou seja, quando o pagamento ocorrer, e o ticket for atualizado para valido, o sistema precisa verificar se o ticket foi usado ate certo periodo de tempo, se nao, atualizar ele para invalido novamente. Pois se nao, teremos um sistema em que um cliente pode entrar no estacionamento, pagar o ticket, e permanecer horas/dias a mais no estacionamento, e sair no fim de tudo tendo pago como se tivesse ficado apenas minutos dentro do estacionamento.
