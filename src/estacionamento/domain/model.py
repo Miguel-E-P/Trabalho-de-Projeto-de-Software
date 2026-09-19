@@ -10,7 +10,6 @@ from typing import List
 # Agregado Cliente / Veículo
 # Abordagem: da class mais simples até chegar na class raiz
 
-
 # class value object para Placa (imutável)
 @dataclass(frozen=True)
 class Placa:

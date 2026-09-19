@@ -58,6 +58,8 @@ def test_cliente_pode_cadastrar_varios_veiculos():
 
     assert len(cliente.veiculos) == 2
 
+#Fim do segundo teste no agregado cliente
+
 
 #INI AGREGADO PAGAMENTO
 def test_dinheiro_invariante_negativa():
