@@ -3,14 +3,18 @@ from dataclasses import FrozenInstanceError
 
 import pytest
 
-import src.estacionamento.domain.model
+#import src.estacionamento.domain.model
+
+#from estacionamento.domain.model import Cliente
+
+from estacionamento.domain.model import Cliente, Veiculo, Placa
 
 
 #Testes unitários para o agregado cliente
 #Primeiro teste: verificar se um cliente consegue cadastrar um veículo
 
 def test_cliente_pode_cadastrar_um_veiculo():
-    cliente = estacionamento.domain.model.Cliente(
+    cliente = Cliente(
         id_cliente=uuid4(),
         nome="João",
         cpf="11111111111",
@@ -18,9 +22,9 @@ def test_cliente_pode_cadastrar_um_veiculo():
         email="joao@email.com",
     )
 
-    veiculo = estacionamento.domain.model.Veiculo(
+    veiculo = Veiculo(
         id_veiculo=uuid4(),
-        placa=estacionamento.domain.model.Placa("ABC1D23"),
+        placa=Placa("ABC1D23"),
         tipo="Carro",
     )
 

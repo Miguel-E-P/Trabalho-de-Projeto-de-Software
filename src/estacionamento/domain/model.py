@@ -2,37 +2,43 @@
 na medida do possível"""
 
 import datetime
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from enum import Enum
+from uuid import UUID
+from typing import List
 
 # Agregado Cliente / Veículo
 # Abordagem: da class mais simples até chegar na class raiz
 
 
-# class value object
+# class value object para Placa (imutável)
 @dataclass(frozen=True)
 class Placa:
-    numero = str
-
+    numero: str
 
 # class entidade
+@dataclass
 class Veiculo:
-    id_veiculo = int
+    id_veiculo: UUID
     """atributo placa depende do uso de uma placa da class de cima (Placa)"""
-    placa = str
-    tipo = str
-
+    placa: Placa
+    tipo: str
 
 # class entidade raiz do agregado
+@dataclass
 class Cliente:
-    id_cliente = int
-    nome = str
-    """atributo veiculo depende de um veiculo da class de cima (Veiculo)"""
-    veiculo = str
+    id_cliente: UUID
+    nome: str
+    cpf: str
+    telefone: str
+    email: str
+    """atributo veiculos depende de um veiculo da class de cima (Veiculo)"""
+    veiculos: List[Veiculo] = field(default_factory=list)
 
     # método que vai cadastrar veiculo para um cliente
-    def cadastrar_veiculo():
-        placas = str
+    def cadastrar_veiculo(self, veiculo: Veiculo) -> None:
+        if veiculo not in self.veiculos:
+            self.veiculos.append(veiculo)
 
 
 # Fim do agregado cliente/ veiculo
