@@ -91,6 +91,20 @@ def test_nao_permite_cadastrar_duas_vezes_a_mesma_placa():
 
 #Fim do terceiro teste no agregado cliente
 
+#Quarto teste
+#Verificar se um cliente recém-criado inicia sem veículos.
+def test_cliente_novo_comeca_sem_veiculos():
+    cliente = Cliente(
+        id_cliente=uuid4(),
+        nome="João",
+        cpf="11111111111",
+        telefone="21999999999",
+        email="joao@email.com",
+    )
+
+    assert len(cliente.veiculos) == 0
+
+#Fim do quarto teste unitário no agregado cliente
 
 
 
