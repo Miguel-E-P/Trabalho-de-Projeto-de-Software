@@ -23,8 +23,7 @@ Testei commit pelo git desktop.
 
 Testei alteração pelo git desktop no user adicionei Kennedy Soares e no email alterei para o meu email uff kennedysoares@id.uff.br. Esta alteração de dados foi Global e serão usados automaticamente para todos os repositórios que Eu abrir, alterar ou criar na minha máquina através do GitHub Desktop.
 
-Fiz os ajustes no agregado Cliente para passar o primeiro teste unitário (verificar se um cliente consegue cadastrar um veículo)  de Red para Green de acordo com o TDD. Depois fiz merge da 
-minha branch de testes locais para a branch main do projeto.  
+Implementei o segundo teste unitário no agregado Cliente para verificar se um cliente pode ter vários veículos referente a regra de negócio RN-01.
 
 ### Pedro
 **16-09-26**:

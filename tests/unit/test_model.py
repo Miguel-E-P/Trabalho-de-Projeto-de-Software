@@ -3,10 +3,6 @@ from dataclasses import FrozenInstanceError
 
 import pytest
 
-#import src.estacionamento.domain.model
-
-#from estacionamento.domain.model import Cliente
-
 from estacionamento.domain.model import Cliente, Veiculo, Placa
 
 
@@ -33,6 +29,34 @@ def test_cliente_pode_cadastrar_um_veiculo():
     assert veiculo in cliente.veiculos
     
 #Fim do primeiro teste no agregado cliente
+
+#Segundo teste
+#A RN-01 diz que um cliente pode ter vários veículos.
+def test_cliente_pode_cadastrar_varios_veiculos():
+    cliente = Cliente(
+        id_cliente=uuid4(),
+        nome="João",
+        cpf="11111111111",
+        telefone="21999999999",
+        email="joao@email.com",
+    )
+
+    veiculo1 = Veiculo(
+        id_veiculo=uuid4(),
+        placa=Placa("ABC1D23"),
+        tipo="Carro",
+    )
+
+    veiculo2 = Veiculo(
+        id_veiculo=uuid4(),
+        placa=Placa("XYZ9A88"),
+        tipo="Moto",
+    )
+
+    cliente.cadastrar_veiculo(veiculo1)
+    cliente.cadastrar_veiculo(veiculo2)
+
+    assert len(cliente.veiculos) == 2
 
 
 #INI AGREGADO PAGAMENTO
