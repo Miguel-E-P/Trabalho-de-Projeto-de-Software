@@ -7,15 +7,27 @@ class CalculadoraTarifa:
 
     TARIFA_CARRO = 10.0
     TARIFA_MOTO = 5.0
+    TARIFA_CAMINHONETE = 15.0
+    TAXA_RECARGA = 8.0
 
     @staticmethod
-    def calcular(tipo_veiculo: TipoVaga, entrada: datetime, saida: datetime) -> Dinheiro:
+    def calcular(tipo_veiculo: TipoVaga, entrada: datetime, saida: datetime, recarga: bool = False) -> Dinheiro:
         horas = (saida - entrada).total_seconds() / 3600
         if horas <= 0:
             return Dinheiro(valor= 0.0)
         horas_cobranca = math.ceil(horas)
-        taxa = CalculadoraTarifa.TARIFA_MOTO if tipo_veiculo == TipoVaga.MOTO else CalculadoraTarifa.TARIFA_CARRO
-        return Dinheiro(valor=float(horas_cobranca * taxa))
+
+        if tipo_veiculo == TipoVaga.MOTO:
+            taxa = CalculadoraTarifa.TARIFA_MOTO 
+        elif tipo_veiculo.value == "caminhonete":
+            taxa = CalculadoraTarifa.TARIFA_CAMINHONETE
+        else:
+            taxa = CalculadoraTarifa.TARIFA_CARRO
+
+        total = float(horas_cobranca * taxa)
+        if tipo_veiculo == TipoVaga.CARRO_ELETRICO and recarga:
+            total+=CalculadoraTarifa.TAXA_RECARGA
+        return Dinheiro(valor=total)
 
 
 
