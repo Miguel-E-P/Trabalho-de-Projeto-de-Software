@@ -138,6 +138,9 @@ class TipoPagamento(Enum):
 #fim-tipo_pagamento
 
 # ini-pagamento
+class PagamentoJaRealizadoError(Exception):
+    pass
+
 @dataclass
 class Pagamento:
     id_pagamento: int 
@@ -148,6 +151,9 @@ class Pagamento:
     data_hora_pagamento: datetime | None = None
     
     def pagar(self, tipo: TipoPagamento, momento: datetime):
+        if self.pago:
+            raise PagamentoJaRealizadoError("ERROR: Ticket ja esta pago.")
+        
         self.tipo_pagamento = tipo
         self.pago = True
         self.data_hora_pagamento = momento
