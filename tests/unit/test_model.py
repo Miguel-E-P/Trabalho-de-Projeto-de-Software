@@ -213,3 +213,11 @@ def test_pagamento_execucao_sucesso():
     assert pagamento.pago is True
     assert pagamento.tipo_pagamento == model.TipoPagamento.PIX
     assert pagamento.data_hora_pagamento == momento_pagamento
+
+def test_prevenir_pagamento_duplicado():
+    pagamento = model.Pagamento(id_pagamento=1, id_ticket=100, valor=model.Dinheiro(35.0))
+    agora = datetime(2026, 9, 20, 10, 0, 0)
+
+    pagamento.pagar(model.TipoPagamento.PIX, agora)
+    with pytest.raises(model.PagamentoJaRealizadoError):
+        pagamento.pagar(model.TipoPagamento.CREDITO, agora)
