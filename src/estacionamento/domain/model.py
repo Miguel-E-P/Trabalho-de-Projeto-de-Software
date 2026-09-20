@@ -1,7 +1,7 @@
 """Peço aos colegas que concentrem as importações de lib aqui em cima,
 na medida do possível"""
 
-import datetime
+from datetime import datetime
 from dataclasses import dataclass, field
 from enum import Enum
 from uuid import UUID
