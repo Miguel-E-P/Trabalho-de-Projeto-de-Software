@@ -43,6 +43,9 @@ class Cliente:
 
         self.veiculos.append(veiculo)
 
+    #metodo p/remover veiculo de um cliente
+    def remover_veiculo(self, placa: Placa) -> None:
+        self.veiculos = [v for v in self.veiculos if v.placa != placa]
 
 # Fim do agregado cliente/ veiculo
 
