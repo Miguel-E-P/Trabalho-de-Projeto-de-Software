@@ -3,8 +3,8 @@ from dataclasses import FrozenInstanceError
 
 import pytest
 
-from src.estacionamento.domain import model
-from src.estacionamento.domain.model import Cliente, Veiculo, Placa
+from estacionamento.domain import model
+from estacionamento.domain.model import Cliente, Veiculo, Placa
 
 
 #Testes unitários para o agregado cliente
