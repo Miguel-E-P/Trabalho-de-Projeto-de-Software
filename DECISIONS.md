@@ -34,6 +34,10 @@ Implementei o quarto teste unitário no agregado Cliente para verificar se um cl
 
 Ao refazer cada teste a cada função teste do agregado, o terceiro teste houve necessidade de correção na função cadastrar veiculo no dominio model, percebi um equívoco no comando do pytest que deveria ter editado a cada vez o nome da função de teste, mas já foi resolvido. Concluindo 4 testes e este agregado está na fase Green de acordo com TDD.
 
+**20-09-26**:
+Implementei o refactor (refatoração de melhoria) no agregado Cliente.
+Também segui as fases Red e Green da abordagem TDD para os novos testes. A vivência desse processo (Refactor) mostrou que de fato utilizei menos códigos e menos alterações no Agregado Cliente para realizar a refatoração de melhoria, conforme o conceito do TDD descreve.
+
 
 
 
