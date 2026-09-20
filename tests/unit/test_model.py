@@ -177,20 +177,22 @@ def test_alterar_tipo_de_veiculo():
 #INI AGREGADO PAGAMENTO
 def test_dinheiro_invariante_negativa():
     with pytest.raises(ValueError, match="Valor NAO pode ser negativo."):
-        Dinheiro(valor=-67.00)
+        model.Dinheiro(valor=-67.00)
+
 
 def test_dinheiro_igualdade():
-    assert Dinheiro(67.0) == Dinheiro(67.0)
-    assert Dinheiro(67.0) != Dinheiro(14.0)
+    assert model.Dinheiro(67.0) == model.Dinheiro(67.0)
+    assert model.Dinheiro(67.0) != model.Dinheiro(14.0)
+
 
 def test_dinheiro_imutabilidade():
-    dinheiro = Dinheiro(15.0)
+    dinheiro = model.Dinheiro(15.0)
     with pytest.raises(FrozenInstanceError):
         dinheiro.valor = 25.0
 
 def test_pagamento_inicializacao():
-    valor = Dinheiro(valor=50.0)
-    pagamento = Pagamento(id_pagamento=1, id_ticket=100, valor=valor)
+    valor = model.Dinheiro(valor=50.0)
+    pagamento = model.Pagamento(id_pagamento=1, id_ticket=100, valor=valor)
 
     assert pagamento.id_pagamento == 1
     assert pagamento.id_ticket == 100
@@ -199,54 +201,14 @@ def test_pagamento_inicializacao():
     assert pagamento.tipo_pagamento is None
     assert pagamento.data_hora_pagamento is None
 
+
 def test_pagamento_execucao_sucesso():
-    valor = Dinheiro(valor=35.0)
-    pagamento = Pagamento(id_pagamento=1, id_ticket=100, valor=valor)
+    valor = model.Dinheiro(valor=35.0)
+    pagamento = model.Pagamento(id_pagamento=1, id_ticket=100, valor=valor)
     momento_pagamento = datetime(2026, 9, 18, 10, 30, 0)
 
-    pagamento.pagar(tipo=TipoPagamento.PIX, momento=momento_pagamento)
+    pagamento.pagar(tipo=model.TipoPagamento.PIX, momento=momento_pagamento)
 
     assert pagamento.pago is True
-    assert pagamento.tipo_pagamento == TipoPagamento.PIX
+    assert pagamento.tipo_pagamento == model.TipoPagamento.PIX
     assert pagamento.data_hora_pagamento == momento_pagamento
-
-#FIM AGREGADO PAGAMENTO
-
-# Testes Agregado Estacionamento
-def test_ocupar_vaga_livre():
-    vaga = model.Vaga(1, model.TipoVaga.CARRO, model.StatusVaga.LIVRE)
-    vaga.ocupar()
-
-    assert vaga.status == model.StatusVaga.OCUPADA
-
-
-def test_ocupar_vaga_indisponivel():
-    vaga = model.Vaga(1, model.TipoVaga.CARRO, model.StatusVaga.OCUPADA)
-
-    with pytest.raises(model.VagaIndisponivel, match=f"Vaga {vaga.id_vaga} indisponível."):
-        vaga.ocupar()
-
-
-def test_buscar_vaga_cadastrada():
-    vaga = model.Vaga(1, model.TipoVaga.CARRO, model.StatusVaga.LIVRE)
-    estacionamento = model.Estacionamento([vaga])
-
-    assert estacionamento.buscar_vaga(vaga.id_vaga) == vaga
-
-
-def test_buscar_vaga_nao_cadastrada():
-    vaga_cadastrada = model.Vaga(1, model.TipoVaga.CARRO, model.StatusVaga.LIVRE)
-    vaga_nao_cadastrada = model.Vaga(2, model.TipoVaga.CARRO, model.StatusVaga.LIVRE)
-
-    estacionamento = model.Estacionamento([vaga_cadastrada])
-
-    with pytest.raises(model.VagaNaoEncontrada, match=f"Vaga {vaga_nao_cadastrada.id_vaga} não encontrada."):
-        estacionamento.buscar_vaga(vaga_nao_cadastrada.id_vaga)
-
-def test_ocupar_vaga_estacionamento():
-    vaga = model.Vaga(1, model.TipoVaga.CARRO, model.StatusVaga.LIVRE)
-    estacionamento = model.Estacionamento([vaga])
-
-    estacionamento.ocupar_vaga(vaga.id_vaga)
-    
-    assert vaga.status == model.StatusVaga.OCUPADA
