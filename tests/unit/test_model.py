@@ -106,6 +106,71 @@ def test_cliente_novo_comeca_sem_veiculos():
 
 #Fim do quarto teste unitário no agregado cliente
 
+#Testes no Agregado Cliente para implementar o Refactor (melhorar o código) do TDD
+def test_cliente_possui_veiculo_cadastrado():
+    cliente = Cliente(
+        id_cliente=uuid4(),
+        nome="João",
+        cpf="11111111111",
+        telefone="21999999999",
+        email="joao@email.com",
+    )
+    veiculo = Veiculo(
+        id_veiculo=uuid4(),
+        placa=Placa("ABC1D23"),
+        tipo="Carro",
+    )
+    cliente.cadastrar_veiculo(veiculo)
+
+    assert veiculo in cliente.veiculos
+
+
+def test_cliente_nao_possui_veiculo_inexistente():
+    cliente = Cliente(
+        id_cliente=uuid4(),
+        nome="João",
+        cpf="11111111111",
+        telefone="21999999999",
+        email="joao@email.com",
+    )
+    veiculo_inexistente = Veiculo(
+        id_veiculo=uuid4(),
+        placa=Placa("XYZ9Y88"),
+        tipo="Moto",
+    )
+
+    assert veiculo_inexistente not in cliente.veiculos
+
+def test_remover_veiculo():
+    cliente = Cliente(
+        id_cliente=uuid4(),
+        nome="João",
+        cpf="11111111111",
+        telefone="21999999999",
+        email="joao@email.com",
+    )
+    veiculo = Veiculo(
+        id_veiculo=uuid4(),
+        placa=Placa("ABC1D23"),
+        tipo="Carro",
+    )
+    cliente.cadastrar_veiculo(veiculo)
+
+    #Implementar o método remover_veiculo na entidade Cliente
+    cliente.remover_veiculo(veiculo.placa)
+
+def test_alterar_tipo_de_veiculo():
+    veiculo = Veiculo(
+        id_veiculo=uuid4(),
+        placa=Placa("ABC1D23"),
+        tipo="Carro",
+    )
+
+    # Ação: Altera o atributo tipo do Veículo
+    veiculo.tipo = "SUV"
+
+    assert veiculo.tipo == "SUV"
+
 
 
 #INI AGREGADO PAGAMENTO
