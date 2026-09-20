@@ -262,3 +262,38 @@ def test_ocupar_vaga_estacionamento():
     estacionamento.ocupar_vaga(vaga.id_vaga)
 
     assert vaga.status == model.StatusVaga.OCUPADA
+
+
+#Testes unitários para o agregado Reserva
+
+def test_reserva_igualdade():
+    hoje = datetime(2026, 9, 2)
+    assert model.Reserva(12, datetime(2026, 12, 2), hoje, "ASD-3456") == model.Reserva(12, datetime(2026, 12, 2), hoje, "ASD-3456")
+    assert model.Reserva(12, datetime(2026, 12, 2), hoje, "ASD-3456") != model.Reserva(16, datetime(2026, 10, 4), hoje, "FHE-3782")
+
+   
+def test_reserva_imutabilidade():
+    reserva = model.Reserva(12, datetime(2026, 12, 2), datetime(2026, 9, 2), "ASD-3456")
+    with pytest.raises(FrozenInstanceError):
+        reserva.id_reserva = 13
+
+def test_reserva_inicializacao():
+    hoje = datetime(2026, 9, 2)
+    data_reserva = datetime(2026, 12, 2)
+    reserva = model.Reserva(12, data_reserva, hoje, "ASD-3456")
+
+    assert reserva.id_reserva == 12
+    assert reserva.data_reserva == data_reserva
+    assert reserva.hoje == hoje
+    assert reserva.placa_veiculo_reserva == "ASD-3456"
+
+def test_reserva_invariante_negativa():
+    with pytest.raises(ValueError, match="Valor não pode ser negativo."):
+        model.Reserva(-12, datetime(2026, 12, 2), datetime(2026, 9, 2), "ASD-3456")
+
+
+def test_reserva_data_passado():
+    with pytest.raises(ValueError, match="Essa data está indisponível para reserva."):
+        model.Reserva(12, datetime(2025, 12, 2), datetime(2026, 9, 2), "ASD-3456")
+
+#Fim do primeiro teste no agregado reserva
