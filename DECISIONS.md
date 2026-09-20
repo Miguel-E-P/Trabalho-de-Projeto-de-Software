@@ -58,6 +58,11 @@ Primeiro, estou organizando nosso repositório; devo fazer esse tipo de varredur
 
 Segundo, estou apagando o conteúdo das classes Vaga e Estacionamento, que são, hoje, minha responsabilidade. Resolvi criar classes Enum ao invés de tratar Tipo e Status da Vaga como int pra evitar problemas. A princípio, Status até poderia ser uma variável `ocupada: bool`, mas como vamos lidar com reservas no futuro, imaginei que seria melhor definir como `status: StatusVaga` mesmo. Ainda não me decidi quanto ao Estacionamento, mas devo melhorar a lógica dele em breve.
 
+**20-09-26**:
+Hoje, resolvi trabalhar no model de Estacionamento. A lógica de ocupar vagas é um pouco complexa, ela vai ser melhor desenvolvida no futuro, quando implementar o service. Por ora, basta saber que uma Vaga só pode mudar de status pra **OCUPADA** caso ela estiver **LIVRE** (o tratamento de vagas reservadas deve ser feito separadamente).
+
+Coloquei o método `ocupar()` dentro de Vaga e criei dois métodos em Estacionamento, um pra selecionar uma vaga dentro da lista, outro pra ocupar a vaga selecionada. Acredito que dê pra melhorar a busca, mas pretendo deixar a refatoração para depois dos testes, caso necessária. Por exemplo, acho interessante separar as exceções de domínio, não gosto dessas exceções genéricas `ValueError`. Mais tarde, escrevo os testes e dou uma olhada nisso.
+
 ### Matheus
 
 **18-09-27**: 

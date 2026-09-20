@@ -65,10 +65,27 @@ class Vaga:
     tipo: TipoVaga
     status: StatusVaga = StatusVaga.LIVRE
 
+    def ocupar(self) -> None:
+        if self.status != StatusVaga.LIVRE:
+            raise ValueError("Vaga indisponível.")
+
+        self.status = StatusVaga.OCUPADA
+
 
 @dataclass
 class Estacionamento:
     vagas: list[Vaga]
+
+    def buscar_vaga(self, id_vaga: int) -> Vaga:
+        for vaga in self.vagas:
+            if vaga.id_vaga == id_vaga:
+                return vaga
+
+        raise ValueError("Vaga não encontrada.")
+
+    def ocupar_vaga(self, id_vaga: int) -> None:
+        vaga = self.buscar_vaga(id_vaga)
+        vaga.ocupar()
 
 
 #Agregado Reserva
