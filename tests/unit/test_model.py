@@ -223,7 +223,7 @@ def test_ocupar_vaga_livre():
 def test_ocupar_vaga_indisponivel():
     vaga = model.Vaga(1, model.TipoVaga.CARRO, model.StatusVaga.OCUPADA)
 
-    with pytest.raises(ValueError, match="Vaga indisponível."):
+    with pytest.raises(model.VagaIndisponivel, match=f"Vaga {vaga.id_vaga} indisponível."):
         vaga.ocupar()
 
 
@@ -240,7 +240,7 @@ def test_buscar_vaga_nao_cadastrada():
 
     estacionamento = model.Estacionamento([vaga_cadastrada])
 
-    with pytest.raises(ValueError, match="Vaga não encontrada."):
+    with pytest.raises(model.VagaNaoEncontrada, match=f"Vaga {vaga_nao_cadastrada.id_vaga} não encontrada."):
         estacionamento.buscar_vaga(vaga_nao_cadastrada.id_vaga)
 
 def test_ocupar_vaga_estacionamento():

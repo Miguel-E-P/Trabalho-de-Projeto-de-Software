@@ -65,6 +65,8 @@ Coloquei o método `ocupar()` dentro de Vaga e criei dois métodos em Estacionam
 
 Escrevi cinco testes: dois pro método ocupar() do model Vaga (livre/indisponível), dois para a busca do Estacionamento (cadastrada/não cadastrada) e um último teste, que chama ocupar_vaga() de estacionamento; esse, só passaria se os últimos passassem, acredito, mas nada custa escrever outro teste, só temos a ganhar.
 
+Por fim, resolvi refatorar as _Exceções de Domínio_ em classes separadas: **VagaIndisponivel** e **VagaNaoEncontrada**. Tive que alterar suas chamadas nos testes, além de implementá-las dentro dos models de Vaga e Estacionamento.
+
 ### Matheus
 
 **18-09-27**: 

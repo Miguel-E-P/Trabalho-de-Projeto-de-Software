@@ -58,6 +58,13 @@ class StatusVaga(Enum):
     OCUPADA = "ocupada"
     RESERVADA = "reservada"
 
+class VagaIndisponivel(Exception):
+    pass
+
+
+class VagaNaoEncontrada(Exception):
+    pass
+
 
 @dataclass
 class Vaga:
@@ -67,7 +74,7 @@ class Vaga:
 
     def ocupar(self) -> None:
         if self.status != StatusVaga.LIVRE:
-            raise ValueError("Vaga indisponível.")
+            raise VagaIndisponivel(f"Vaga {self.id_vaga} indisponível.")
 
         self.status = StatusVaga.OCUPADA
 
@@ -81,7 +88,7 @@ class Estacionamento:
             if vaga.id_vaga == id_vaga:
                 return vaga
 
-        raise ValueError("Vaga não encontrada.")
+        raise VagaNaoEncontrada(f"Vaga {id_vaga} não encontrada.")
 
     def ocupar_vaga(self, id_vaga: int) -> None:
         vaga = self.buscar_vaga(id_vaga)
