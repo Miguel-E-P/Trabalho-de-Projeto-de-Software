@@ -43,15 +43,6 @@ class Cliente:
 
         self.veiculos.append(veiculo)
 
-    #Função para implementar o Refactor (melhorar o código) do TDD
-    def possui_veiculo(self, placa: Placa) -> bool:
-        """Verifica se o cliente possui algum veículo cadastrado com a placa informada."""
-        return any(v.placa == placa for v in self.veiculos)
-
-    #Criado Para o novo teste test_remover_veiculo()
-    def remover_veiculo(self, placa: Placa) -> None:
-        self.veiculos = [v for v in self.veiculos if v.placa != placa]
-
 
 # Fim do agregado cliente/ veiculo
 
