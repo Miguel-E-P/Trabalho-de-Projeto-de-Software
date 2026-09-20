@@ -3,6 +3,7 @@ from dataclasses import FrozenInstanceError
 
 import pytest
 
+from estacionamento.domain import model
 from estacionamento.domain.model import Cliente, Veiculo, Placa
 
 
@@ -210,3 +211,42 @@ def test_pagamento_execucao_sucesso():
     assert pagamento.data_hora_pagamento == momento_pagamento
 
 #FIM AGREGADO PAGAMENTO
+
+# Testes Agregado Estacionamento
+def test_ocupar_vaga_livre():
+    vaga = model.Vaga(1, model.TipoVaga.CARRO, model.StatusVaga.LIVRE)
+    vaga.ocupar()
+
+    assert vaga.status == model.StatusVaga.OCUPADA
+
+
+def test_ocupar_vaga_indisponivel():
+    vaga = model.Vaga(1, model.TipoVaga.CARRO, model.StatusVaga.OCUPADA)
+
+    with pytest.raises(ValueError, match="Vaga indisponível."):
+        vaga.ocupar()
+
+
+def test_buscar_vaga_cadastrada():
+    vaga = model.Vaga(1, model.TipoVaga.CARRO, model.StatusVaga.LIVRE)
+    estacionamento = model.Estacionamento([vaga])
+
+    assert estacionamento.buscar_vaga(vaga.id_vaga) == vaga
+
+
+def test_buscar_vaga_nao_cadastrada():
+    vaga_cadastrada = model.Vaga(1, model.TipoVaga.CARRO, model.StatusVaga.LIVRE)
+    vaga_nao_cadastrada = model.Vaga(2, model.TipoVaga.CARRO, model.StatusVaga.LIVRE)
+
+    estacionamento = model.Estacionamento([vaga_cadastrada])
+
+    with pytest.raises(ValueError, match="Vaga não encontrada."):
+        estacionamento.buscar_vaga(vaga_nao_cadastrada.id_vaga)
+
+def test_ocupar_vaga_estacionamento():
+    vaga = model.Vaga(1, model.TipoVaga.CARRO, model.StatusVaga.LIVRE)
+    estacionamento = model.Estacionamento([vaga])
+
+    estacionamento.ocupar_vaga(vaga.id_vaga)
+    
+    assert vaga.status == model.StatusVaga.OCUPADA

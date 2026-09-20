@@ -63,6 +63,8 @@ Hoje, resolvi trabalhar no model de Estacionamento. A lógica de ocupar vagas é
 
 Coloquei o método `ocupar()` dentro de Vaga e criei dois métodos em Estacionamento, um pra selecionar uma vaga dentro da lista, outro pra ocupar a vaga selecionada. Acredito que dê pra melhorar a busca, mas pretendo deixar a refatoração para depois dos testes, caso necessária. Por exemplo, acho interessante separar as exceções de domínio, não gosto dessas exceções genéricas `ValueError`. Mais tarde, escrevo os testes e dou uma olhada nisso.
 
+Escrevi cinco testes: dois pro método ocupar() do model Vaga (livre/indisponível), dois para a busca do Estacionamento (cadastrada/não cadastrada) e um último teste, que chama ocupar_vaga() de estacionamento; esse, só passaria se os últimos passassem, acredito, mas nada custa escrever outro teste, só temos a ganhar.
+
 ### Matheus
 
 **18-09-27**: 
