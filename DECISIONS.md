@@ -70,6 +70,11 @@ Escrevi cinco testes: dois pro método ocupar() do model Vaga (livre/indisponív
 
 Por fim, resolvi refatorar as _Exceções de Domínio_ em classes separadas: **VagaIndisponivel** e **VagaNaoEncontrada**. Tive que alterar suas chamadas nos testes, além de implementá-las dentro dos models de Vaga e Estacionamento.
 
+---
+
+Verifiquei que um colega acidentalmente apagou meu código, estou subindo mais uma vez.
+
+
 ### Matheus
 
 **18-09-27**: 
