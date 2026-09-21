@@ -266,6 +266,26 @@ def test_ocupar_vaga_estacionamento():
 
 #Testes unitários para o agregado Reserva
 
+def test_ticket_inicializacao():
+    ticket = model.Ticket(datetime(2026, 12, 2, 18, 13), None, 112)
+
+    assert ticket.idTicket == 112
+    assert ticket.horarioEntrada == datetime(2026, 12, 2, 18, 13)
+    assert ticket.horarioSaida == None
+
+
+def test_ticket_invariante_negativa():
+    with pytest.raises(ValueError, match="Valor não pode ser negativo."):
+        model.Ticket(datetime(2026, 12, 2, 18, 13), None, -112)
+
+def test_ticket_saida():
+    ticket = model.Ticket(datetime(2026, 12, 2, 18, 13), None, 112)
+    horarioSaida=datetime(2025, 12, 2, 18, 13)
+    with pytest.raises(model.DataInvalida, match="Essa data está indisponível para a saída."):
+        ticket.updateSaida(horarioSaida)
+       
+
+
 def test_reserva_igualdade():
     hoje = datetime(2026, 9, 2)
     assert model.Reserva(12, datetime(2026, 12, 2), hoje, "ASD-3456") == model.Reserva(12, datetime(2026, 12, 2), hoje, "ASD-3456")
@@ -293,7 +313,7 @@ def test_reserva_invariante_negativa():
 
 
 def test_reserva_data_passado():
-    with pytest.raises(ValueError, match="Essa data está indisponível para reserva."):
-        model.Reserva(12, datetime(2025, 12, 2), datetime(2026, 9, 2), "ASD-3456")
+    with pytest.raises(model.DataInvalida, match="Essa data está indisponível para reserva."):
+        model.Reserva(12, datetime(2025, 8, 12), datetime(2026, 9, 2), "ASD-3456")
 
 #Fim do primeiro teste no agregado reserva
