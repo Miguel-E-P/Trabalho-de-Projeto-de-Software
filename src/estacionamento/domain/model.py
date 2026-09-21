@@ -99,19 +99,34 @@ class Estacionamento:
 
 
 #Agregado Reserva
+class DataInvalida(ValueError):
+    pass
 
 class Ticket:
     horarioEntrada:datetime
     horarioSaida:datetime
     idTicket:int
+    
 
 @dataclass(frozen=True)
 class Reserva:
     id_reserva: int
     data_reserva: datetime
-    duracao_reserva: datetime.time
+    hoje: datetime
     placa_veiculo_reserva: str
 
+    # INVARIANTE: protege contra valor negativo.
+    # Data de reserva do veículo não pode ser anterior à data hoje
+    def __post_init__(self):
+        if self.id_reserva < 0:
+            raise ValueError("Valor não pode ser negativo.")
+
+        if self.data_reserva < self.hoje:
+            raise DataInvalida("Essa data está indisponível para reserva.")
+        
+
+    
+            
 
 # Fim do Agregado Reserva
 
