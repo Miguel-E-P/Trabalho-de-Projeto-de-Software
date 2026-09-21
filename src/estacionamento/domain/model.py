@@ -102,10 +102,28 @@ class Estacionamento:
 class DataInvalida(ValueError):
     pass
 
+@dataclass
 class Ticket:
     horarioEntrada:datetime
-    horarioSaida:datetime
+    horarioSaida:datetime | None
     idTicket:int
+
+    # INVARIANTE: protege contra valor negativo.
+    def __post_init__(self):
+        if self.idTicket < 0:
+            raise ValueError("Valor não pode ser negativo.")
+
+            
+
+    # Data de saída do veículo não pode ser anterior à data de entrada
+    def updateSaida(self, horarioSaida: datetime) -> None:
+        if horarioSaida < self.horarioEntrada:
+            raise DataInvalida("Essa data está indisponível para a saída.")
+        self.horarioSaida = horarioSaida
+
+
+
+
     
 
 @dataclass(frozen=True)
