@@ -29,6 +29,6 @@ jobs:
 
       - name: Run Unit Tests
         env:
-          PYTHONPATH: src
+          PYTHONPATH: src:.
         run: |
           pytest tests/unit/
