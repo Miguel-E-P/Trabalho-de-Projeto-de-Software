@@ -20,7 +20,6 @@ class CalculadoraTarifa:
         horas_cobranca = math.ceil(horas)
 
         categoria = (tipo_veiculo.value if hasattr(tipo_veiculo, "value") else str(tipo_veiculo))
-
         if categoria == TipoVaga.MOTO.value:
             taxa = CalculadoraTarifa.TARIFA_MOTO
         elif categoria in ["caminhonete", "SUV"]:
