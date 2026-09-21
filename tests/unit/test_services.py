@@ -20,7 +20,7 @@ def test_verificador_bloqueia_conflito_de_horario():
     reserva_existente = Reserva(
         id_reserva=101,
         data_reserva=datetime(2026, 9, 20, 14, 0, 0),
-        duracao_reserva=datetime(2026, 9, 20, 16, 0, 0),
+        data_fim=datetime(2026, 9, 20, 16, 0, 0),
         placa_veiculo_reserva="ABC1D23",
     )
 
