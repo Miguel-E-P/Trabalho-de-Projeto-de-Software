@@ -81,3 +81,10 @@ Verifiquei que um colega acidentalmente apagou meu código, estou subindo mais u
 Criei o arquivo services.py com a regra de calcular o preço do estacionamento.
 Como calcular o preço depende do tipo do veículo e de quanto tempo ele ficou guardado, ou seja, uma conta que envolve coisas diferentes do sistema, achei melhor colocar essa lógica em uma ferramenta separada, em vez de embolar tudo dentro de uma classe só.  
 Usei o @staticmethod, porque a calculadora só precisa receber as horas e o tipo do veículo para fazer a conta e devolver o preço. Assim evita guardar dados na memória toda vez que for cobrar alguém. 
+
+### Miguel
+**16/09/26**:
+Comecei fazendo o esqueleto básico das classes ticket e reserva, que serão atualizados e talvez sofram alguma correção no futuro
+
+**20/09/2026**
+Criei os testes da classe reserva e ticket uma proteção contra a reserva de uma vaga em um dia anterior ao dia de hoje e e a emissão de m horario de saida anterior ao de entrada no ticket uma proteção contra o cadastro de uma vaga e ticket com id de reserva negativo. Os testes em relação a essas proteções funcionaram perfeitamente. Os outros testes de relacionam à imutabilidade dos atributos, à igualdade da classe reserva, já que é umo objeto de valor, e em relação à inicialização de uma instânicia da classe. Todos esses testes demonstraram a que essas funcionalidades funcionam corretamente
