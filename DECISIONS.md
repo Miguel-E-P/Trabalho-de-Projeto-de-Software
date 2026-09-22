@@ -38,6 +38,10 @@ Ao refazer cada teste a cada função teste do agregado, o terceiro teste houve 
 Implementei o refactor (refatoração de melhoria) no agregado Cliente.
 Também segui as fases Red e Green da abordagem TDD para os novos testes. A vivência desse processo (Refactor) mostrou que de fato utilizei menos códigos e menos alterações no Agregado Cliente para realizar a refatoração de melhoria, conforme o conceito do TDD descreve.
 
+**22-09-26**:
+Iniciei o repository pattern para o agregado Cliente para aplicar os padrões Repository Pattern, DDD (Domain-Driven Design) e Clean Architecture de acordo com o cosmic python. Isso traz alguns benefícios como: A lógica de negócio trabalha apenas com AbstractRepository, sem depender de detalhes do SQLAlchemy ou de banco de dados; Facilidade para Testes (Testabilidade); Tornará simples a troca do ORM ou do banco de dados no futuro mantendo a mesma interface do sistema.
+Instalei local o pacote sqlAlchemy e fica flexível se o grupo optar por trabalhar com o sqlite depois.
+
 
 
 
