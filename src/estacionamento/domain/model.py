@@ -1,7 +1,7 @@
 """Peço aos colegas que concentrem as importações de lib aqui em cima,
 na medida do possível"""
 
-import datetime
+from datetime import datetime
 from dataclasses import dataclass, field
 from enum import Enum
 from uuid import UUID
@@ -43,6 +43,9 @@ class Cliente:
 
         self.veiculos.append(veiculo)
 
+    #metodo p/remover veiculo de um cliente
+    def remover_veiculo(self, placa: Placa) -> None:
+        self.veiculos = [v for v in self.veiculos if v.placa != placa]
 
 # Fim do agregado cliente/ veiculo
 
@@ -58,6 +61,13 @@ class StatusVaga(Enum):
     OCUPADA = "ocupada"
     RESERVADA = "reservada"
 
+class VagaIndisponivel(Exception):
+    pass
+
+
+class VagaNaoEncontrada(Exception):
+    pass
+
 
 @dataclass
 class Vaga:
@@ -65,26 +75,76 @@ class Vaga:
     tipo: TipoVaga
     status: StatusVaga = StatusVaga.LIVRE
 
+    def ocupar(self) -> None:
+        if self.status != StatusVaga.LIVRE:
+            raise VagaIndisponivel(f"Vaga {self.id_vaga} indisponível.")
+
+        self.status = StatusVaga.OCUPADA
+
 
 @dataclass
 class Estacionamento:
     vagas: list[Vaga]
 
+    def buscar_vaga(self, id_vaga: int) -> Vaga:
+        for vaga in self.vagas:
+            if vaga.id_vaga == id_vaga:
+                return vaga
+
+        raise VagaNaoEncontrada(f"Vaga {id_vaga} não encontrada.")
+
+    def ocupar_vaga(self, id_vaga: int) -> None:
+        vaga = self.buscar_vaga(id_vaga)
+        vaga.ocupar()
+
 
 #Agregado Reserva
+class DataInvalida(ValueError):
+    pass
 
+@dataclass
 class Ticket:
     horarioEntrada:datetime
-    horarioSaida:datetime
+    horarioSaida:datetime | None
     idTicket:int
+
+    # INVARIANTE: protege contra valor negativo.
+    def __post_init__(self):
+        if self.idTicket < 0:
+            raise ValueError("Valor não pode ser negativo.")
+
+            
+
+    # Data de saída do veículo não pode ser anterior à data de entrada
+    def updateSaida(self, horarioSaida: datetime) -> None:
+        if horarioSaida < self.horarioEntrada:
+            raise DataInvalida("Essa data está indisponível para a saída.")
+        self.horarioSaida = horarioSaida
+
+
+
+
+    
 
 @dataclass(frozen=True)
 class Reserva:
     id_reserva: int
     data_reserva: datetime
-    duracao_reserva: datetime.time
+    hoje: datetime
     placa_veiculo_reserva: str
 
+    # INVARIANTE: protege contra valor negativo.
+    # Data de reserva do veículo não pode ser anterior à data hoje
+    def __post_init__(self):
+        if self.id_reserva < 0:
+            raise ValueError("Valor não pode ser negativo.")
+
+        if self.data_reserva < self.hoje:
+            raise DataInvalida("Essa data está indisponível para reserva.")
+        
+
+    
+            
 
 # Fim do Agregado Reserva
 
@@ -114,6 +174,9 @@ class TipoPagamento(Enum):
 #fim-tipo_pagamento
 
 # ini-pagamento
+class PagamentoJaRealizadoError(Exception):
+    pass
+
 @dataclass
 class Pagamento:
     id_pagamento: int 
@@ -124,6 +187,9 @@ class Pagamento:
     data_hora_pagamento: datetime | None = None
     
     def pagar(self, tipo: TipoPagamento, momento: datetime):
+        if self.pago:
+            raise PagamentoJaRealizadoError("ERROR: Ticket ja esta pago.")
+        
         self.tipo_pagamento = tipo
         self.pago = True
         self.data_hora_pagamento = momento
