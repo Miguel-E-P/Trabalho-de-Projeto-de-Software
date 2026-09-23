@@ -40,8 +40,10 @@ Também segui as fases Red e Green da abordagem TDD para os novos testes. A viv�
 
 **22-09-26**:
 Iniciei o repository pattern para o agregado Cliente para aplicar os padrões Repository Pattern, DDD (Domain-Driven Design) e Clean Architecture de acordo com o cosmic python. Isso traz alguns benefícios como: A lógica de negócio trabalha apenas com AbstractRepository, sem depender de detalhes do SQLAlchemy ou de banco de dados; Facilidade para Testes (Testabilidade); Tornará simples a troca do ORM ou do banco de dados no futuro mantendo a mesma interface do sistema.
-Instalei local o pacote sqlAlchemy e fica flexível se o grupo optar por trabalhar com o sqlite depois.
+Instalei local o pacote sqlAlchemy, ele traduz Python para SQL (e vice-versa) e fica flexível se o grupo optar por trabalhar com o sqlite ou outro banco de dados depois.
 
+**23-09-26**:
+O código do ORM conecta as tabelas do banco de dados às classes puras do código, neste caso, nas classes (Cliente e Veiculo). Ou seja, realiza o mapeamento de dados sem misturar código do banco com o código de negócio.
 
 
 
