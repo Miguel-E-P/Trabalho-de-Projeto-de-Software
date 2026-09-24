@@ -6,15 +6,16 @@ from estacionamento.domain.model import Cliente, Placa, Veiculo
 #Implementa o FakeRepository e realiza os testes unitários no agregado Cliente
 
 class FakeRepository(AbstractRepository):
-    def __init__(self, clientes: Optional[Set[Cliente]] = None):
-        self._clientes = set(clientes or [])
+    class FakeRepository(AbstractRepository):
+        def __init__(self, clientes=None):
+        # Armazena os clientes em um dicionário usando id_cliente como chave
+            self._clientes = {c.id_cliente: c for c in (clientes or [])}
 
-    def add(self, cliente: Cliente) -> None:
-        self._clientes.add(cliente)
+        def add(self, cliente: Cliente) -> None:
+            self._clientes[cliente.id_cliente] = cliente
 
-    def get(self, id_cliente: UUID) -> Optional[Cliente]:
-        return next((c for c in self._clientes if c.id_cliente == id_cliente), None)
-
+        def get(self, id_cliente: UUID) -> Optional[Cliente]:
+            return self._clientes.get(id_cliente)
 
 def test_fake_repository_salva_e_recupera_cliente():
     repo = FakeRepository()
