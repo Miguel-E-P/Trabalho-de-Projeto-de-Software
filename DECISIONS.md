@@ -48,6 +48,8 @@ O código do ORM conecta as tabelas do banco de dados às classes puras do códi
 **24-09-26**:
 Com a criação do repositório falso para realizar estes testes unitários são considerados ultra rápidos, porque os 'set' são armazenados em memória RAM, sem manipular conexões de rede e disco. Permite testar as regras de negócio do domínio de forma isolada. No futuro permitirá testar as regras de negócio do domínio pelo repositório em memória (FakeRepository) sem precisar alterar uma única linha das regras de negócio (Clean Architecture / DDD).
 
+Ajuste na class fakeRepository sintaxe python para evitar a falha na função add cliente, de 'set' para 'dicionário' para armazenar em memória RAM.
+
 
 
 
