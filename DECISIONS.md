@@ -45,6 +45,9 @@ Instalei local o pacote sqlAlchemy, ele traduz Python para SQL (e vice-versa) e 
 **23-09-26**:
 O código do ORM conecta as tabelas do banco de dados às classes puras do código, neste caso, nas classes (Cliente e Veiculo). Ou seja, realiza o mapeamento de dados sem misturar código do banco com o código de negócio.
 
+**24-09-26**:
+Com a criação do repositório falso para realizar estes testes unitários são considerados ultra rápidos, porque os 'set' são armazenados em memória RAM, sem manipular conexões de rede e disco. Permite testar as regras de negócio do domínio de forma isolada. No futuro permitirá testar as regras de negócio do domínio pelo repositório em memória (FakeRepository) sem precisar alterar uma única linha das regras de negócio (Clean Architecture / DDD).
+
 
 
 
