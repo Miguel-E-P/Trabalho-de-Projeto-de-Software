@@ -48,7 +48,12 @@ O código do ORM conecta as tabelas do banco de dados às classes puras do códi
 **24-09-26**:
 Com a criação do repositório falso para realizar estes testes unitários são considerados ultra rápidos, porque os 'set' são armazenados em memória RAM, sem manipular conexões de rede e disco. Permite testar as regras de negócio do domínio de forma isolada. No futuro permitirá testar as regras de negócio do domínio pelo repositório em memória (FakeRepository) sem precisar alterar uma única linha das regras de negócio (Clean Architecture / DDD).
 
-Ajuste na class fakeRepository sintaxe python para evitar a falha na função add cliente, de 'set' para 'dicionário' para armazenar em memória RAM.
+Ajuste na class fakeRepository sintaxe python para evitar a falha na função add cliente, de 'set' para 'dicionário' para armazenar em memória RAM. Concluída a fase Green de testes para abstractRepository do agregado Cliente (add e get).
+
+**25-09-26**:
+Criado o file conftest.py para configurar os testes do pytest que serve para compartilhar configurações e recursos de teste (chamados de fixtures) entre vários arquivos sem precisar repetir código ou fazer import manual. Funciona como um preparador de ambiente automatizado para os testes.
+
+
 
 
 
