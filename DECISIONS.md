@@ -53,6 +53,9 @@ Ajuste na class fakeRepository sintaxe python para evitar a falha na função ad
 **25-09-26**:
 Criado o file conftest.py para configurar os testes do pytest que serve para compartilhar configurações e recursos de teste (chamados de fixtures) entre vários arquivos sem precisar repetir código ou fazer import manual. Funciona como um preparador de ambiente automatizado para os testes.
 
+Foram criados os arquivos __init__.py dentro das pastas de testes, para que o Python trate as pastas como packages distintos, mesmo havendo o mesmo nome de arquivo test na pasta 'unit' e 'integration'.
+Foram realizados os testes de integração para o agregado cliente passando 'verde'. Portanto validou a escrita e leitura em banco de dados real em memória RAM.
+
 
 
 
