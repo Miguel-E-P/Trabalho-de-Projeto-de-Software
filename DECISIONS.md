@@ -74,6 +74,9 @@ Adicionei os testes de Dinheiro, para verificar se ele esta funcionando da forma
 **20-09-26**:
 Refatorei o codigo para acessar as classes por meio do model. Utilizei um CI que encontrei online para automatizar o teste do projeto. Corrigi algumas coisas, e adicionei outras, para garantir o CI verde. Precisamos discutir sobre o Dominio e Proposta. Por que pagamento guarda controla saida do veiculo? Isso nao deveria ser parte de ticket? 
 
+**26-09-26**
+Percebi que havia um erro na estrutura do projeto. Pagamento estava cuidando de diversas coisas que eram do dominio de Ticket. Apos discutir com os membros Gustavo e Miguel, chegamos a conclusao que isso precisava mudar. Refatorei o codigo, portanto, transformando pagamento em um mero registro(recibo) do pagamento que ocorre para pagar um ticket. Para evitar que isso quebrasse o codigo, tive que alterar o resto do projeto tambem. Implementei o AbstractPagamentoRepository. 
+
 ### Gustavo
 **16-09-26**:
 Primeiro, estou organizando nosso repositório; devo fazer esse tipo de varredura mais vezes e, a não ser que eu esqueça, subir o commit com uma flag de "_refact_". A título de curiosidade, o linter/code formatter que uso chama-se [ruff](https://docs.astral.sh/ruff/).
