@@ -1,6 +1,6 @@
 import math
 from datetime import datetime
-from src.estacionamento.domain.model import Dinheiro, TipoVaga, StatusVaga, Vaga, Reserva, Pagamento
+from src.estacionamento.domain.model import Dinheiro, TipoVaga, StatusVaga, Vaga, Reserva, Pagamento, Ticket
 
 class CalculadoraTarifa:
     """Domain Service que calcula o valor da permanência para cada veículo (RN-02)"""
@@ -47,6 +47,28 @@ class VerificarDisponibilidadeVaga:
             reserva.data_reserva.date() == data_solicitada
             for reserva in reservas_existentes
         )
+
+class AutorizadorSaidaVeiculo:
+    """Domain Service responsável por validar se o veículo pode sair (RN-04)"""
+
+    MULTA_PERNOITE = 50.0
+
+    @staticmethod
+    def autorizar(vaga: Vaga, ticket: Ticket, pagamento: Pagamento) -> bool:
+        if vaga.status != StatusVaga.OCUPADA:
+            return False
+        if ticket.horarioSaida is None:
+            return False
+        
+        tarifa_base = CalculadoraTarifa.calcular(tipo_veiculo=vaga.tipo, entrada=ticket.horarioEntrada, saida=ticket.horarioSaida)
+        total_devido = tarifa_base.valor
+
+        if ticket.horarioSaida.date() != ticket.horarioEntrada.date():
+            total_devido += AutorizadorSaidaVeiculo.MULTA_PERNOITE
+        if not pagamento.pago or pagamento.id_ticket != ticket.idTicket:
+            return False
+
+        return True
 
 
 
