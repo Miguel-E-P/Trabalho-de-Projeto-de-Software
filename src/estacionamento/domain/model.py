@@ -84,6 +84,7 @@ class Vaga:
 
 @dataclass
 class Estacionamento:
+    id_estacionamento: int
     vagas: list[Vaga]
 
     def buscar_vaga(self, id_vaga: int) -> Vaga:
