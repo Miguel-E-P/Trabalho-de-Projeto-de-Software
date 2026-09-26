@@ -2,7 +2,7 @@ from datetime import datetime
 from uuid import uuid4
 import pytest
 
-from src.estacionamento.domain.model import Dinheiro, TipoVaga, StatusVaga, Vaga, Reserva, Ticket, Pagamento
+from src.estacionamento.domain.model import Dinheiro, TipoVaga, StatusVaga, Vaga, Reserva, Ticket, Pagamento, TipoPagamento
 from src.estacionamento.service_layer.services import CalculadoraTarifa, VerificarDisponibilidadeVaga, AutorizadorSaidaVeiculo
 
 
@@ -45,15 +45,17 @@ def test_validar_conflito_com_reserva_existente():
 # Testes do Domain Service AutorizadorSaidaVeiculo
 def test_autorizar_saida():
     vaga = Vaga(id_vaga=1, tipo=TipoVaga.CARRO, status=StatusVaga.OCUPADA)
-    ticket = Ticket(horarioEntrada=datetime(2026, 10, 15, 10, 0), horarioSaida=datetime(2026, 10, 15, 12, 0), idTicket=100)
-    pagamento = Pagamento(id_pagamento=1, id_ticket=100, valor=Dinheiro(20.0), pago=True)
+    ticket = Ticket(idTicket=100, horarioEntrada=datetime(2026, 10, 15, 10, 0), horarioSaida=datetime(2026, 10, 15, 12, 0))
+    ticket.registrar_pagamento()
+
+    pagamento = Pagamento(id_ticket=100, valor=Dinheiro(20.0), tipo_pagamento=TipoPagamento.PIX, data_hora_pagamento=ticket.horarioSaida)
 
     assert AutorizadorSaidaVeiculo.autorizar(vaga, ticket, pagamento) is True
 
 def test_negar_saida_pagamento_pendente():
     vaga = Vaga(id_vaga=1, tipo=TipoVaga.CARRO, status=StatusVaga.OCUPADA)
-    ticket = Ticket(horarioEntrada=datetime(2026, 10, 15, 10, 0), horarioSaida=datetime(2026, 10, 15, 12, 0), idTicket=100)
-    pagamento = Pagamento(id_pagamento=1, id_ticket=100, valor=Dinheiro(20.0), pago=False)
+    ticket = Ticket(idTicket=100, horarioEntrada=datetime(2026, 10, 15, 10, 0), horarioSaida=datetime(2026, 10, 15, 12, 0))
+    pagamento = Pagamento(id_ticket=100, valor=Dinheiro(20.0), tipo_pagamento=TipoPagamento.PIX, data_hora_pagamento=ticket.horarioSaida)
 
     assert AutorizadorSaidaVeiculo.autorizar(vaga, ticket, pagamento) is False
 
@@ -61,12 +63,14 @@ def test_negar_saida_pagamento_pendente():
 def test_autorizar_saida_com_multa_pernoite_paga():
     vaga = Vaga(id_vaga=1, tipo=TipoVaga.CARRO, status=StatusVaga.OCUPADA)
     ticket = Ticket(
+        idTicket=100,
         horarioEntrada=datetime(2026, 10, 15, 22, 0),
-        horarioSaida=datetime(2026, 10, 16, 2, 0),
-        idTicket=100
+        horarioSaida=datetime(2026, 10, 16, 2, 0)
     )
-    
-    pagamento = Pagamento(id_pagamento=1, id_ticket=100, valor=Dinheiro(90.0), pago=True)
+
+    ticket.registrar_pagamento()
+
+    pagamento = Pagamento(id_ticket=100, valor=Dinheiro(90.0), tipo_pagamento=TipoPagamento.DEBITO, data_hora_pagamento=ticket.horarioSaida)
 
     assert AutorizadorSaidaVeiculo.autorizar(vaga, ticket, pagamento) is True
 

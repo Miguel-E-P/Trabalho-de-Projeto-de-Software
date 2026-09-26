@@ -193,34 +193,21 @@ def test_dinheiro_imutabilidade():
 
 def test_pagamento_inicializacao():
     valor = model.Dinheiro(valor=50.0)
-    pagamento = model.Pagamento(id_pagamento=1, id_ticket=100, valor=valor)
+    momento = datetime(2026, 9, 18, 10, 30, 0)
+    pagamento = model.Pagamento(id_ticket=100, valor=valor, tipo_pagamento=model.TipoPagamento.PIX, data_hora_pagamento=momento)
 
-    assert pagamento.id_pagamento == 1
     assert pagamento.id_ticket == 100
     assert pagamento.valor == valor
-    assert pagamento.pago is False
-    assert pagamento.tipo_pagamento is None
-    assert pagamento.data_hora_pagamento is None
-
-
-def test_pagamento_execucao_sucesso():
-    valor = model.Dinheiro(valor=35.0)
-    pagamento = model.Pagamento(id_pagamento=1, id_ticket=100, valor=valor)
-    momento_pagamento = datetime(2026, 9, 18, 10, 30, 0)
-
-    pagamento.pagar(tipo=model.TipoPagamento.PIX, momento=momento_pagamento)
-
-    assert pagamento.pago is True
     assert pagamento.tipo_pagamento == model.TipoPagamento.PIX
-    assert pagamento.data_hora_pagamento == momento_pagamento
+    assert pagamento.data_hora_pagamento == momento
 
-def test_prevenir_pagamento_duplicado():
-    pagamento = model.Pagamento(id_pagamento=1, id_ticket=100, valor=model.Dinheiro(35.0))
-    agora = datetime(2026, 9, 20, 10, 0, 0)
+def test_pagamento_imutabilidade():
+    valor = model.Dinheiro(valor=50.0)
+    momento = datetime(2026, 9, 18, 10, 30, 0)
+    pagamento = model.Pagamento(id_ticket=100, valor=valor, tipo_pagamento=model.TipoPagamento.PIX, data_hora_pagamento=momento)
 
-    pagamento.pagar(model.TipoPagamento.PIX, agora)
-    with pytest.raises(model.PagamentoJaRealizadoError):
-        pagamento.pagar(model.TipoPagamento.CREDITO, agora)
+    with pytest.raises(FrozenInstanceError):
+        pagamento.id_ticket = 101
 
 #FIM AGREGADO PAGAMENTO
 
@@ -266,26 +253,40 @@ def test_ocupar_vaga_estacionamento():
 
 #Testes unitários para o agregado Reserva
 
+#testes de ticket
 def test_ticket_inicializacao():
-    ticket = model.Ticket(datetime(2026, 12, 2, 18, 13), None, 112)
+    ticket = model.Ticket(112, datetime(2026, 12, 2, 18, 13), None)
 
     assert ticket.idTicket == 112
     assert ticket.horarioEntrada == datetime(2026, 12, 2, 18, 13)
     assert ticket.horarioSaida == None
+    assert ticket.pago is False
 
 
 def test_ticket_invariante_negativa():
     with pytest.raises(ValueError, match="Valor não pode ser negativo."):
-        model.Ticket(datetime(2026, 12, 2, 18, 13), None, -112)
+        model.Ticket(-112, datetime(2026, 12, 2, 18, 13), None)
 
 def test_ticket_saida():
-    ticket = model.Ticket(datetime(2026, 12, 2, 18, 13), None, 112)
+    ticket = model.Ticket(112, datetime(2026, 12, 2, 18, 13), None)
     horarioSaida=datetime(2025, 12, 2, 18, 13)
     with pytest.raises(model.DataInvalida, match="Essa data está indisponível para a saída."):
         ticket.updateSaida(horarioSaida)
        
+def test_ticket_pagamento_sucesso():
+    ticket = model.Ticket(112, datetime(2026, 12, 2, 18, 13), None)
+    ticket.registrar_pagamento()
+    assert ticket.pago is True
+
+def test_ticket_prevenir_pagamento_duplicado():
+    ticket = model.Ticket(112, datetime(2026, 12, 2, 18, 13), None)
+    ticket.registrar_pagamento()
+
+    with pytest.raises(model.PagamentoJaRealizadoError, match ="ERROR: Ticket ja foi pago."):
+        ticket.registrar_pagamento()
 
 
+#tests reserva
 def test_reserva_igualdade():
     hoje = datetime(2026, 9, 2)
     assert model.Reserva(12, datetime(2026, 12, 2), hoje, "ASD-3456") == model.Reserva(12, datetime(2026, 12, 2), hoje, "ASD-3456")

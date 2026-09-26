@@ -65,7 +65,7 @@ class AutorizadorSaidaVeiculo:
 
         if ticket.horarioSaida.date() != ticket.horarioEntrada.date():
             total_devido += AutorizadorSaidaVeiculo.MULTA_PERNOITE
-        if not pagamento.pago or pagamento.id_ticket != ticket.idTicket:
+        if not ticket.pago or pagamento.id_ticket != ticket.idTicket:
             return False
 
         return True
