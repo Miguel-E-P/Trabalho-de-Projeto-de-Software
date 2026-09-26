@@ -32,21 +32,21 @@ class CalculadoraTarifa:
             total+=CalculadoraTarifa.TAXA_RECARGA
         return Dinheiro(valor=total)
 
-# Nao Implementado - Precisa ser modificado para se aproximar de ver. atual de reserva
-# class VerificarDisponibilidadeVaga:
-#     """Domain Service para checagem de vagas e evitar sobreposição de reservas (RN-03)"""
 
-#     @staticmethod
-#     def validar(vaga: Vaga, inicio: datetime, fim: datetime, reservas_existentes: list[Reserva]) -> bool:
-#         if vaga.status != StatusVaga.LIVRE:
-#             return False
-#         for reserva in reservas_existentes:
-#             inicio_reserva = reserva.data_reserva
-#             fim_reserva = reserva.duracao_reserva
-#             if inicio < fim_reserva and fim > inicio_reserva:
-#                 return False
+class VerificarDisponibilidadeVaga:
+    """Domain Service para checagem de vagas e evitar sobreposição de reservas (RN-03)"""
 
-#         return True
+    @staticmethod
+    def validar(vaga: Vaga, inicio: datetime, fim: datetime, reservas_existentes: list[Reserva]) -> bool:
+        if vaga.status != StatusVaga.LIVRE:
+            return False
+        if inicio.date() != fim.date():
+            return False
+        data_solicitada = inicio.date()
+        return not any(
+            reserva.data_reserva.date() == data_solicitada
+            for reserva in reservas_existentes
+        )
 
 
 
