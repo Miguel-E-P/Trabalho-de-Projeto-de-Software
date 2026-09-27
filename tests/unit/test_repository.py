@@ -1,8 +1,11 @@
 from typing import Optional
 from uuid import UUID, uuid4
+from datetime import datetime
 
-from estacionamento.adapters.repository import AbstractRepository
+from src.estacionamento.domain import model
+from estacionamento.adapters.repository import AbstractRepository, FakePagamentoRepository
 from estacionamento.domain.model import Cliente
+
 
 #Implementa o FakeRepository e realiza os testes unitários no agregado Cliente
 
@@ -36,3 +39,20 @@ def test_fake_repository_salva_e_recupera_cliente():
     assert cliente_salvo.nome == "Maria"
 
 #Fim dos testes unitários no agregado Cliente
+
+# PAGAMENTO INI
+def test_fake_repository_salva_e_recupera_pagamento():
+    repo = FakePagamentoRepository()
+    dinheiro = model.Dinheiro(50.50)
+    pagamento = model.Pagamento(
+        id_ticket=101,
+        valor=dinheiro,
+        tipo_pagamento=model.TipoPagamento.CREDITO,
+        data_hora_pagamento=datetime(2023, 10, 27, 14, 30)
+    )
+
+    repo.add(pagamento)
+
+    pagamento_salvo = repo.get(101)
+    assert pagamento_salvo == pagamento
+    assert pagamento_salvo.valor.quantia == 50.50

@@ -1,7 +1,9 @@
-from sqlalchemy import Column, ForeignKey, MetaData, String, Table, Uuid, TypeDecorator
-from sqlalchemy.orm import registry, relationship
+from sqlalchemy import Column, ForeignKey, MetaData, String, Table, TypeDecorator, Integer, Float, DateTime, Enum as SQLEnum
+from sqlalchemy.orm import registry, relationship, composite
+
 
 from estacionamento.domain.model import Cliente, Placa, Veiculo
+from src.estacionamento.domain import model
 
 #Mapeamento Imperativo (registry.map_imperatively)
 #Este arquivo faz a ligação entre o SQLite/SQLAlchemy e o modelo 
@@ -55,6 +57,18 @@ veiculos_table = Table(
     Column("tipo", String(50), nullable=False),
 )
 
+    #Parcial do mapeamento ORM para o agregado Cliente
+
+# PAGAMENTO INI
+
+pagamentos_table = Table(
+    "pagamentos",
+    metadata,
+    Column("id_ticket", Integer, primary_key=True),
+    Column("valor", Float, nullable=False),
+    Column("tipo_pagamento", SQLEnum(model.TipoPagamento), nullable=False),
+    Column("data_hora_pagamento", DateTime, nullable=False),
+)
 
 def start_mappers():
     mapper_registry.map_imperatively(Veiculo, veiculos_table)
@@ -66,4 +80,11 @@ def start_mappers():
         },
     )
 
-    #Parcial do mapeamento ORM para o agregado Cliente
+    #mapper do pagamento
+    mapper_registry.map_imperatively(
+        model.Pagamento,
+        pagamentos_table,
+        properties={
+            "valor": composite(model.Dinheiro, pagamentos_table.c.valor)
+        }
+    )

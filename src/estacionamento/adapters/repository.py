@@ -46,6 +46,29 @@ class AbstractPagamentoRepository(abc.ABC):
         """busca pagamento pelo id do ticket"""
         raise NotImplementedError
 
+class SqlAlchemyPagamentoRepository(AbstractPagamentoRepository):
+    def __init__(self, session: Session):
+        self.session = session
+
+    def add(self, pagamento: model.Pagamento) -> None:
+        self.session.add(pagamento)
+
+    def get(self, id_ticket: int) -> Optional[model.Pagamento]:
+        return self.session.query(model.Pagamento).filter_by(id_ticket=id_ticket).first()
+
+
+class FakePagamentoRepository(AbstractPagamentoRepository):
+    def __init__(self, pagamentos: list[model.Pagamento] = None):
+        self._pagamentos = list(pagamentos) if pagamentos else []
+
+    def add(self, pagamento: model.Pagamento) -> None:
+        self._pagamentos.append(pagamento)
+
+    def get(self, id_ticket: int) -> Optional[model.Pagamento]:
+        try:
+            return next(p for p in self._pagamentos if p.id_ticket == id_ticket)
+        except StopIteration:
+            return None
 
 #PAGAMENTO FIM
 
