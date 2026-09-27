@@ -176,20 +176,15 @@ def test_alterar_tipo_de_veiculo():
 
 
 #INI AGREGADO PAGAMENTO
-def test_dinheiro_invariante_negativa():
-    with pytest.raises(ValueError, match="Valor NAO pode ser negativo."):
-        model.Dinheiro(valor=-67.00)
-
-
-def test_dinheiro_igualdade():
-    assert model.Dinheiro(67.0) == model.Dinheiro(67.0)
-    assert model.Dinheiro(67.0) != model.Dinheiro(14.0)
-
-
-def test_dinheiro_imutabilidade():
-    dinheiro = model.Dinheiro(15.0)
-    with pytest.raises(FrozenInstanceError):
-        dinheiro.valor = 25.0
+def test_pagamento_dinheiro_invariante_negativa():
+    momento = datetime(2026, 9, 18, 10, 30, 0)
+    with pytest.raises(ValueError, match="ERROR: Valor do pagamento NAO pode ser negativo"):
+        model.Pagamento(
+            id_ticket=100,
+            valor=-67.00,
+            tipo_pagamento=model.TipoPagamento.PIX,
+            data_hora_pagamento=momento
+        )
 
 def test_pagamento_inicializacao():
     valor = model.Dinheiro(valor=50.0)

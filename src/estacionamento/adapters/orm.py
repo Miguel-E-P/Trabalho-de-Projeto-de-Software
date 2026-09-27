@@ -1,4 +1,4 @@
-from sqlalchemy import Column, ForeignKey, MetaData, String, Table, TypeDecorator, Integer, Float, DateTime, Enum as SQLEnum
+from sqlalchemy import Column, CheckConstraint, ForeignKey, MetaData, String, Table, TypeDecorator, Integer, Float, DateTime, Enum as SQLEnum
 from sqlalchemy.orm import registry, relationship, composite
 
 
@@ -65,7 +65,7 @@ pagamentos_table = Table(
     "pagamentos",
     metadata,
     Column("id_ticket", Integer, primary_key=True),
-    Column("valor", Float, nullable=False),
+    Column("valor", Float, CheckConstraint  ("valor >= 0", name="check_valor_positivo"), nullable=False),
     Column("tipo_pagamento", SQLEnum(model.TipoPagamento), nullable=False),
     Column("data_hora_pagamento", DateTime, nullable=False),
 )
@@ -105,10 +105,7 @@ def start_mappers():
     #mapper do pagamento
     mapper_registry.map_imperatively(
         model.Pagamento,
-        pagamentos_table,
-        properties={
-            "valor": composite(model.Dinheiro, pagamentos_table.c.valor)
-        }
+        pagamentos_table
     )
 
     # Agregado Estacionamento

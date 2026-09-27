@@ -42,7 +42,7 @@ def test_repository_pode_salvar_e_buscar_cliente_com_veiculos(session):
 
 def test_sqlalchemy_repository_salva_pagamento(session):
     repo = SqlAlchemyPagamentoRepository(session)
-    dinheiro = model.Dinheiro(80.00)
+    dinheiro = 80.00
     pagamento = model.Pagamento(
         id_ticket=105,
         valor=dinheiro,
@@ -74,6 +74,6 @@ def test_sqlalchemy_repository_recupera_pagamento(session):
 
     assert pagamento_recuperado is not None
     assert pagamento_recuperado.id_ticket == 202
-    assert isinstance(pagamento_recuperado.valor, model.Dinheiro)
-    assert pagamento_recuperado.valor.quantia == 25.0
+    assert isinstance(pagamento_recuperado.valor, float)
+    assert pagamento_recuperado.valor == 25.0
     assert pagamento_recuperado.tipo_pagamento == model.TipoPagamento.DEBITO

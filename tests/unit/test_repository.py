@@ -43,10 +43,9 @@ def test_fake_repository_salva_e_recupera_cliente():
 # PAGAMENTO INI
 def test_fake_repository_salva_e_recupera_pagamento():
     repo = FakePagamentoRepository()
-    dinheiro = model.Dinheiro(50.50)
     pagamento = model.Pagamento(
         id_ticket=101,
-        valor=dinheiro,
+        valor=50.50,
         tipo_pagamento=model.TipoPagamento.CREDITO,
         data_hora_pagamento=datetime(2023, 10, 27, 14, 30)
     )
@@ -55,4 +54,4 @@ def test_fake_repository_salva_e_recupera_pagamento():
 
     pagamento_salvo = repo.get(101)
     assert pagamento_salvo == pagamento
-    assert pagamento_salvo.valor == model.Dinheiro(50.50)
+    assert pagamento_salvo.valor == 50.50
