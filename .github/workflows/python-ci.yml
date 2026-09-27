@@ -37,4 +37,4 @@ jobs:
         env:
           PYTHONPATH: src:.
         run: |
-          pytests tests/integration/
+          pytest tests/integration/
