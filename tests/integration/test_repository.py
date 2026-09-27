@@ -1,6 +1,9 @@
 from uuid import uuid4
-from estacionamento.adapters.repository import SqlAlchemyRepository
+from datetime import datetime
+from sqlalchemy import text
+from estacionamento.adapters.repository import SqlAlchemyRepository, SqlAlchemyPagamentoRepository
 from estacionamento.domain.model import Cliente, Placa, Veiculo
+from estacionamento.domain import model
 
 #Teste de integração real com o SQLite/SQLAlchemy garante a 
 # persistência do Agregado Cliente completo 
@@ -34,3 +37,43 @@ def test_repository_pode_salvar_e_buscar_cliente_com_veiculos(session):
     assert cliente_recuperado.nome == "Carlos"
     assert len(cliente_recuperado.veiculos) == 1
     assert cliente_recuperado.veiculos[0].placa == Placa("ABC1D23")
+
+#PAGAMENTO INI
+
+def test_sqlalchemy_repository_salva_pagamento(session):
+    repo = SqlAlchemyPagamentoRepository(session)
+    dinheiro = model.Dinheiro(80.00)
+    pagamento = model.Pagamento(
+        id_ticket=105,
+        valor=dinheiro,
+        tipo_pagamento=model.TipoPagamento.PIX,
+        data_hora_pagamento=datetime(2023, 11, 10, 9, 15)
+    )
+
+    repo.add(pagamento)
+    session.commit()
+
+    rows = session.execute(
+        text("SELECT id_ticket, valor, tipo_pagamento FROM pagamentos WHERE id_ticket = 105")
+    ).fetchall()
+
+    assert [tuple(row) for row in rows] == [(105, 80.00, "PIX")]
+
+
+def test_sqlalchemy_repository_recupera_pagamento(session):
+    session.execute(
+        text(
+            "INSERT INTO pagamentos (id_ticket, valor, tipo_pagamento, data_hora_pagamento) "
+            "VALUES (202, 25.0, 'DEBITO', '2023-10-27 15:00:00.000000')"
+        )
+    )
+    session.commit()
+
+    repo = SqlAlchemyPagamentoRepository(session)
+    pagamento_recuperado = repo.get(id_ticket=202)
+
+    assert pagamento_recuperado is not None
+    assert pagamento_recuperado.id_ticket == 202
+    assert isinstance(pagamento_recuperado.valor, model.Dinheiro)
+    assert pagamento_recuperado.valor.quantia == 25.0
+    assert pagamento_recuperado.tipo_pagamento == model.TipoPagamento.DEBITO
