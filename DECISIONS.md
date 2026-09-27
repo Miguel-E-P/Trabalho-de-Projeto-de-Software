@@ -110,6 +110,7 @@ Comecei, hoje, consertando a identação do código do FakeEstacionamentoReposit
 
 Adicionei as tabelas de Estacionamento e Vagas no arquivo ORM, criando seus respectivos mappers. Declarei de forma que uma Vaga não pudesse existir sem um Estacionamento através do "delete-orphan".
 
+Ainda, resolvi configurar o `pytest.ini` e remover do projeto/adicionar ao `.gitignore` arquivos gerados pela IDE do PyCharm e pelo UV, ferramentas usadas por nós desenvolvedores.
 
 ### Matheus
 
