@@ -8,7 +8,7 @@ on:
     branches: [ "main", "master" ]
 
 jobs:
-  unit-tests:
+  tests:
     runs-on: ubuntu-latest
 
     steps:
@@ -32,3 +32,9 @@ jobs:
           PYTHONPATH: src:.
         run: |
           pytest tests/unit/
+
+      - name: Run Integration Tests
+        env:
+          PYTHONPATH: src:.
+        run: |
+          pytests tests/integration/
