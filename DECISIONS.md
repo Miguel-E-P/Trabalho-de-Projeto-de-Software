@@ -107,10 +107,14 @@ NOVAMENTE, um colega apagou por acidente algo que eu commitei (dessa vez, no arq
 
 ### Matheus
 
-**18-09-27**: 
+**18-09-26**: 
 Criei o arquivo services.py com a regra de calcular o preço do estacionamento.
 Como calcular o preço depende do tipo do veículo e de quanto tempo ele ficou guardado, ou seja, uma conta que envolve coisas diferentes do sistema, achei melhor colocar essa lógica em uma ferramenta separada, em vez de embolar tudo dentro de uma classe só.  
 Usei o @staticmethod, porque a calculadora só precisa receber as horas e o tipo do veículo para fazer a conta e devolver o preço. Assim evita guardar dados na memória toda vez que for cobrar alguém. 
+
+**20-09-26**: Implementei as taxas de caminhonetes/SUVs e as de uso das tomadas para carros elétricos e na CalculadoraTarifa dentro de services.py. Criei a estrutura inicial em tests/unit/test_services.py e adicionei os testes para validar a precificação de cada categoria de veículo.   
+
+**26-09-26**: Ajustei a regra do Domain Service VerificarDisponibilidadeVaga para se adequar a reserva com limite de ocupação de apenas 1 dia. Implementei também o AutorizadorSaidaVeiculo, aplicando uma regra de cobrança de multa para caso o veículo ocupe a vaga por mais de 24 horas. Criei e executei os testes dessa mesma classe.
 
 ### Miguel
 **16/09/26**:
