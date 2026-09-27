@@ -92,12 +92,14 @@ Escrevi cinco testes: dois pro método ocupar() do model Vaga (livre/indisponív
 
 Por fim, resolvi refatorar as _Exceções de Domínio_ em classes separadas: **VagaIndisponivel** e **VagaNaoEncontrada**. Tive que alterar suas chamadas nos testes, além de implementá-las dentro dos models de Vaga e Estacionamento.
 
-**26-09-26**:
-Considerando que o Estacionamento é uma Entidade, estou adicionando um atributo id_estacionamento. Talvez fosse interessante adicionar outras colunas (endereço, por exemplo), só para testar a questão do Repository. Por ora, vou optar por manter apenas os atributos estritamente necessários, seguindo o princípio KISS.
-
 ---
 
 Verifiquei que um colega acidentalmente apagou meu código, estou subindo mais uma vez.
+
+**26-09-26**:
+Considerando que o Estacionamento é uma Entidade, estou adicionando um atributo id_estacionamento. Talvez fosse interessante adicionar outras colunas (endereço, por exemplo), só para testar a questão do Repository. Por ora, vou optar por manter apenas os atributos estritamente necessários, seguindo o princípio KISS.
+
+Fiz os três repositórios (Abstract, SQLAlchemy e Fake), seguindo os modelos apresentados durante a aula. Gostaria de melhorar um pouco eles, mas prefiro deixar a etapa de refactoring pra depois dos testes. Diferente dos meus colegas, optei por não usar Optional nos repositories: sou contra o uso indiscriminado de bibliotecas, quando a linguagem oferece recursos similares. Ademais, pretendo verificar as vantagens de fazer o método `add()` retornar algo caso a operação seja bem sucedida.
 
 
 ### Matheus

@@ -48,3 +48,44 @@ class AbstractPagamentoRepository(abc.ABC):
 
 
 #PAGAMENTO FIM
+# Agregado de Estacionamento
+class AbstractEstacionamentoRepository(abc.ABC):
+    @abc.abstractmethod
+    def add(self, estacionamento: model.Estacionamento) -> None:
+        raise NotImplementedError
+
+    @abc.abstractmethod
+    def get(self, id_estacionamento: int) -> model.Estacionamento | None:
+        raise NotImplementedError
+
+
+class SqlAlchemyEstacionamentoRepository(AbstractEstacionamentoRepository):
+    def __init__(self, session: Session):
+        self.session = session
+
+    def add(self, estacionamento: model.Estacionamento) -> None:
+        self.session.add(estacionamento)
+
+    def get(self, id_estacionamento: int) -> model.Estacionamento | None:
+        return (
+            self.session.query(model.Estacionamento)
+            .filter_by(id_estacionamento=id_estacionamento)
+            .first()
+        )
+
+    def list(self):
+        return self.session.query(model.Estacionamento).all()
+
+
+    class FakeEstacionamentoRepository(AbstractEstacionamentoRepository):
+        def __init__(self, estacionamentos):
+            self._estacionamentos = set(estacionamentos)
+
+        def add(self, estacionamento):
+            self._estacionamentos.add(estacionamento)
+
+        def get(self, id_estacionamento):
+            return next(e for e in self._estacionamentos if e.id_estacionamento == id_estacionamento)
+
+        def list(self):
+         return list(self._estacionamentos)
