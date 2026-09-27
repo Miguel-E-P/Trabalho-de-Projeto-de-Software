@@ -70,6 +70,28 @@ pagamentos_table = Table(
     Column("data_hora_pagamento", DateTime, nullable=False),
 )
 
+# Agregado Estacionamento
+estacionamentos_table = Table(
+    "estacionamentos",
+    metadata,
+    Column("id_estacionamento", Integer, primary_key=True),
+)
+
+vagas_table = Table(
+    "vagas",
+    metadata,
+    Column("id_vaga", Integer, primary_key=True),
+    Column("tipo", SQLEnum(model.TipoVaga), nullable=False),
+    Column("status", SQLEnum(model.StatusVaga), nullable=False),
+    Column(
+        "id_estacionamento",
+        Integer,
+        ForeignKey("estacionamentos.id_estacionamento"),
+        nullable=False,
+    ),
+)
+
+
 def start_mappers():
     mapper_registry.map_imperatively(Veiculo, veiculos_table)
     mapper_registry.map_imperatively(
@@ -87,4 +109,13 @@ def start_mappers():
         properties={
             "valor": composite(model.Dinheiro, pagamentos_table.c.valor)
         }
+    )
+
+    # Agregado Estacionamento
+    mapper_registry.map_imperatively(model.Vaga, vagas_table)
+
+    mapper_registry.map_imperatively(
+        model.Estacionamento,
+        estacionamentos_table,
+        properties={"vagas": relationship(model.Vaga, cascade="all, delete-orphan")},
     )
