@@ -50,7 +50,9 @@ class AbstractPagamentoRepository(abc.ABC):
 #PAGAMENTO FIM
 
 
-#Reserva Início
+#Agregado Reserva Início
+
+#Reserva
 class AbstractReservaRepository(abc.ABC):
     @abc.abstractmethod
     def add(self, reserva: model.Reserva) -> None:
@@ -87,6 +89,45 @@ class SqlAlchemyReservaRepository(AbstractReservaRepository):
     
             def list(self):
              return list(self._reservas)
+
+#Ticket
+class AbstractTicketRepository(abc.ABC):
+    @abc.abstractmethod
+    def add(self, ticket: model.Ticket) -> None:
+        "adiciona um ticket no repositório"
+        raise NotImplementedError
+
+    @abc.abstractmethod
+    def get(self, idTicket:int) -> Optional[model.Ticket]:
+        "retorna um ticket por meio de seu id"
+        raise NotImplementedError
+
+
+class SqlAlchemyTicketRepository(AbstractTicketRepository):
+    def __init__(self, session: Session):
+            self.session = session
+
+    def add(self, ticket: model.Ticket) -> None:
+        self.session.add(ticket)
+
+    def get(self, idTicket: int) -> model.Ticket:
+        return(  self.session.query(model.Ticket).filter_by(idTicket=idTicket).first()  )
+
+    def list(self):
+        return self.session.query(model.Ticket).all()
+
+    class FakeTicketRepository(AbstractTicketRepository):
+            def __init__(self, tickets):
+                self.tickets = set(tickets)
+    
+            def add(self, ticket):
+                self.tickets.add(ticket)
+    
+            def get(self, idTicket):
+                return next(t for t in self._tickets if t.idTicket == idTicket)
+    
+            def list(self):
+             return list(self._tickets)
 #Reserva Fim
 
 # Agregado de Estacionamento
