@@ -55,4 +55,4 @@ def test_fake_repository_salva_e_recupera_pagamento():
 
     pagamento_salvo = repo.get(101)
     assert pagamento_salvo == pagamento
-    assert pagamento_salvo.valor.quantia == 50.50
+    assert pagamento_salvo.valor == model.Dinheiro(50.50)
