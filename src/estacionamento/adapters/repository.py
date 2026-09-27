@@ -77,18 +77,18 @@ class SqlAlchemyReservaRepository(AbstractReservaRepository):
     def list(self):
         return self.session.query(model.Reserva).all()
 
-    class FakeReservaRepository(AbstractReservaRepository):
-            def __init__(self, reservas):
-                self.reservas = set(reservas)
+class FakeReservaRepository(AbstractReservaRepository):
+    def __init__(self, reservas):
+        self.reservas = set(reservas)
     
-            def add(self, reserva):
-                self.reservas.add(reserva)
+    def add(self, reserva):
+        self.reservas.add(reserva)
     
-            def get(self, id_reserva):
-                return next(r for r in self._reservas if r.id_reserva == id_reserva)
+    def get(self, id_reserva):
+        return next(r for r in self._reservas if r.id_reserva == id_reserva)
     
-            def list(self):
-             return list(self._reservas)
+    def list(self):
+        return list(self._reservas)
 
 #Ticket
 class AbstractTicketRepository(abc.ABC):
@@ -116,18 +116,18 @@ class SqlAlchemyTicketRepository(AbstractTicketRepository):
     def list(self):
         return self.session.query(model.Ticket).all()
 
-    class FakeTicketRepository(AbstractTicketRepository):
-            def __init__(self, tickets):
-                self.tickets = set(tickets)
+class FakeTicketRepository(AbstractTicketRepository):
+    def __init__(self, tickets):
+        self.tickets = set(tickets)
     
-            def add(self, ticket):
-                self.tickets.add(ticket)
+    def add(self, ticket):
+        self.tickets.add(ticket)
     
-            def get(self, idTicket):
-                return next(t for t in self._tickets if t.idTicket == idTicket)
+    def get(self, idTicket):
+        return next(t for t in self._tickets if t.idTicket == idTicket)
     
-            def list(self):
-             return list(self._tickets)
+    def list(self):
+        return list(self._tickets)
 #Reserva Fim
 
 # Agregado de Estacionamento
