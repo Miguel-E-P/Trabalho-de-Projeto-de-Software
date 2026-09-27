@@ -48,3 +48,16 @@ class AbstractPagamentoRepository(abc.ABC):
 
 
 #PAGAMENTO FIM
+
+
+#Reserva Início
+class AbstractReservaRepository(abc.ABC):
+    @abc.abstractmethod
+    def add(self, reserva: model.Reserva) -> None:
+        "adiciona uma reserva no repositório"
+        raise NotImplementedError
+
+    @abc.abstractmethod
+    def get(self, id_reserva:int) -> Optional[model.Reserva]:
+        "retorna uma reserva por meio de seu id"
+#Reserva Fim

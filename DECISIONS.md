@@ -113,3 +113,6 @@ Comecei fazendo o esqueleto básico das classes ticket e reserva, que serão atu
 
 **20/09/2026**
 Criei os testes da classe reserva e ticket uma proteção contra a reserva de uma vaga em um dia anterior ao dia de hoje e e a emissão de m horario de saida anterior ao de entrada no ticket uma proteção contra o cadastro de uma vaga e ticket com id de reserva negativo. Os testes em relação a essas proteções funcionaram perfeitamente. Os outros testes de relacionam à imutabilidade dos atributos, à igualdade da classe reserva, já que é umo objeto de valor, e em relação à inicialização de uma instânicia da classe. Todos esses testes demonstraram a que essas funcionalidades funcionam corretamente
+
+**26/09/2026**
+Comecei a implementação do AbstractReservaRepository, com as funções "add", que adiciona uma reserva no repositório, e a função "get", que retorna uma reserva por meio de seu id
