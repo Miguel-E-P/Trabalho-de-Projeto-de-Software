@@ -3,3 +3,12 @@ __pycache__/
 *.pyo
 *.pyd
 .pytest_cache/
+
+# PyCharm setup
+.idea
+
+# UV setup
+.venv
+.python-version
+uv.lock
+pyproject.toml
