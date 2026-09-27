@@ -125,3 +125,6 @@ Criei os testes da classe reserva e ticket uma proteção contra a reserva de um
 
 **26/09/2026**
 Comecei a implementação do AbstractReservaRepository, com as funções "add", que adiciona uma reserva no repositório, e a função "get", que retorna uma reserva por meio de seu id
+
+**27/06/2026**
+Implementei a SqlAlchemyReservaRepository e a FakeReservaRepository, cada uma segundo o proposto pelo conteúdo disponibilizado na diciplina

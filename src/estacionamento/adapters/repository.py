@@ -60,6 +60,33 @@ class AbstractReservaRepository(abc.ABC):
     @abc.abstractmethod
     def get(self, id_reserva:int) -> Optional[model.Reserva]:
         "retorna uma reserva por meio de seu id"
+        raise NotImplementedError
+
+class SqlAlchemyReservaRepository(AbstractReservaRepository):
+    def __init__(self, session: Session):
+            self.session = session
+
+    def add(self, reserva: model.Reserva) -> None:
+        self.session.add(reserva)
+
+    def get(self, id_reserva: int) -> model.Reserva:
+        return(  self.session.query(model.Reserva).filter_by(id_reserva=id_reserva).first()  )
+
+    def list(self):
+        return self.session.query(model.Reserva).all()
+
+    class FakeReservaRepository(AbstractReservaRepository):
+            def __init__(self, reservas):
+                self.reservas = set(reservas)
+    
+            def add(self, reserva):
+                self.reservas.add(reserva)
+    
+            def get(self, id_reserva):
+                return next(r for r in self._reservas if r.id_reserva == id_reserva)
+    
+            def list(self):
+             return list(self._reservas)
 #Reserva Fim
 
 # Agregado de Estacionamento
