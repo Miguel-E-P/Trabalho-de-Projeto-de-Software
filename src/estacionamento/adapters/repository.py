@@ -159,15 +159,15 @@ class SqlAlchemyEstacionamentoRepository(AbstractEstacionamentoRepository):
         return self.session.query(model.Estacionamento).all()
 
 
-    class FakeEstacionamentoRepository(AbstractEstacionamentoRepository):
-        def __init__(self, estacionamentos):
-            self._estacionamentos = set(estacionamentos)
+class FakeEstacionamentoRepository(AbstractEstacionamentoRepository):
+    def __init__(self, estacionamentos):
+        self._estacionamentos = set(estacionamentos)
 
-        def add(self, estacionamento):
-            self._estacionamentos.add(estacionamento)
+    def add(self, estacionamento):
+        self._estacionamentos.add(estacionamento)
 
-        def get(self, id_estacionamento):
-            return next(e for e in self._estacionamentos if e.id_estacionamento == id_estacionamento)
+    def get(self, id_estacionamento):
+        return next(e for e in self._estacionamentos if e.id_estacionamento == id_estacionamento)
 
-        def list(self):
-         return list(self._estacionamentos)
+    def list(self):
+        return list(self._estacionamentos)

@@ -105,6 +105,10 @@ Fiz os três repositórios (Abstract, SQLAlchemy e Fake), seguindo os modelos ap
 
 NOVAMENTE, um colega apagou por acidente algo que eu commitei (dessa vez, no arquivo de DECISIONS). Espero que o mesmo não esteja acontecendo com os demais, pois não sei se estão conferindo o repositório, então peço mais atenção e deixo a seguir a documentação do [Git](https://git-scm.com/docs).
 
+**27-09-26**:
+Comecei, hoje, consertando a identação do código do FakeEstacionamentoRepository.
+
+
 ### Matheus
 
 **18-09-26**: 
