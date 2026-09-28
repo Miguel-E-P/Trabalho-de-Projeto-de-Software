@@ -3,7 +3,7 @@ from sqlalchemy.orm import registry, relationship, composite
 
 
 from estacionamento.domain.model import Cliente, Placa, Veiculo
-from src.estacionamento.domain import model
+from estacionamento.domain import model
 
 #Mapeamento Imperativo (registry.map_imperatively)
 #Este arquivo faz a ligação entre o SQLite/SQLAlchemy e o modelo 
