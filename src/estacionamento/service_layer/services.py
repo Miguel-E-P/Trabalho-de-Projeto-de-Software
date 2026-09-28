@@ -1,6 +1,12 @@
 import math
 from datetime import datetime
 from src.estacionamento.domain.model import TipoVaga, StatusVaga, Vaga, Reserva, Pagamento, Ticket
+#Imports para agregado Cliente
+from uuid import UUID, uuid4
+from typing import Optional, List, Dict, Any
+from estacionamento.adapters.repository import AbstractRepository
+from estacionamento.domain.model import Cliente, Veiculo, Placa
+#Fim dos imports para agregado Cliente
 
 class CalculadoraTarifa:
     """Domain Service que calcula o valor da permanência para cada veículo (RN-02)"""
@@ -69,5 +75,82 @@ class AutorizadorSaidaVeiculo:
 
         return True
 
+#Os casos de uso orquestram a busca no Repositório, executam as regras
+#  do Domínio e salvam a alteração na Sessão
+#AGREGADO CLIENTE - UC01 - Cadastrar Cliente
 
+class ClienteNaoEncontradoException(Exception):
+    pass
+
+
+class InvalidInputException(Exception):
+    pass
+
+#UC01
+def cadastrar_cliente(
+    nome: str,
+    cpf: str,
+    telefone: str,
+    email: str,
+    repo: AbstractRepository,
+    session,
+) -> str:
+    id_cliente = uuid4()
+    cliente = Cliente(
+        id_cliente=id_cliente,
+        nome=nome,
+        cpf=cpf,
+        telefone=telefone,
+        email=email,
+    )
+    repo.add(cliente)
+    session.commit()
+    return str(id_cliente)
+
+# UC02 - Cadastrar Veículo para Cliente
+def cadastrar_veiculo_cliente(
+    id_cliente_str: str,
+    placa_str: str,
+    tipo: str,
+    repo: AbstractRepository,
+    session,
+) -> str:
+    try:
+        id_cliente = UUID(id_cliente_str)
+    except ValueError:
+        raise InvalidInputException("ID do cliente inválido.")
+
+    cliente = repo.get(id_cliente)
+    if not cliente:
+        raise ClienteNaoEncontradoException(f"Cliente {id_cliente_str} não encontrado.")
+
+    id_veiculo = uuid4()
+    veiculo = Veiculo(
+        id_veiculo=id_veiculo,
+        placa=Placa(placa_str),
+        tipo=tipo,
+    )
+
+    # Invoca o método de negócio da raiz do Agregado
+    cliente.cadastrar_veiculo(veiculo)
+    session.commit()
+    return str(id_veiculo)
+
+# Consulta de Apoio para API/Testes
+def buscar_cliente(id_cliente_str: str, repo: AbstractRepository) -> Dict[str, Any]:
+    cliente = repo.get(UUID(id_cliente_str))
+    if not cliente:
+        raise ClienteNaoEncontradoException(f"Cliente {id_cliente_str} não encontrado.")
+    
+    return {
+        "id_cliente": str(cliente.id_cliente),
+        "nome": cliente.nome,
+        "cpf": cliente.cpf,
+        "telefone": cliente.telefone,
+        "email": cliente.email,
+        "veiculos": [
+            {"id_veiculo": str(v.id_veiculo), "placa": v.placa.valor, "tipo": v.tipo}
+            for v in cliente.veiculos
+        ],
+    }
 
