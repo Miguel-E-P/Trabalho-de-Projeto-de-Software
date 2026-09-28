@@ -1,17 +1,77 @@
 from datetime import datetime
+from uuid import uuid4
 import pytest
 
-from src.estacionamento.domain.model import Dinheiro, TipoVaga, StatusVaga, Vaga, Reserva
-from src.estacionamento.service_layer.services import CalculadoraTarifa#, VerificarDisponibilidadeVaga
+from src.estacionamento.domain.model import TipoVaga, StatusVaga, Vaga, Reserva, Ticket, Pagamento, TipoPagamento
+from src.estacionamento.service_layer.services import CalculadoraTarifa, VerificarDisponibilidadeVaga, AutorizadorSaidaVeiculo
 
 
-#Primeiro teste: verificar a gratuidade nos casos inclusos na tolerência de 15 minutos
+# Teste do Domain Service CalculadoraTarifa
 def test_calculadora_tolerancia():
     entrada = datetime(2026, 9, 20, 10, 0, 0)
     saida = datetime(2026, 9, 20, 10, 15, 0)
     valor = CalculadoraTarifa.calcular(TipoVaga.CARRO, entrada, saida)
-    assert valor == Dinheiro(valor=0.0)
+    assert valor == 0.0
 
-#Fim do primeiro teste no Domain Service CalculadoraTarifa
+#Fim do teste do Domain Service CalculadoraTarifa
+
+# Testes do Domain Service VerificarDisponibilidadeVaga
+def test_validar_disponibilidade_sucesso():
+    vaga_livre = Vaga(id_vaga=1, tipo=TipoVaga.CARRO, status=StatusVaga.LIVRE)
+    inicio = datetime(2026, 10, 15, 8, 0)
+    fim = datetime(2026, 10, 15, 18, 0)
+    reservas = []
+
+    assert VerificarDisponibilidadeVaga.validar(vaga_livre, inicio, fim, reservas) is True
+
+def test_validar_conflito_com_reserva_existente():
+    vaga_livre = Vaga(id_vaga=1, tipo=TipoVaga.CARRO, status=StatusVaga.LIVRE)
+    data_conflito = datetime(2026, 10, 15, 10, 0)
+
+    reserva_existente = Reserva(
+        id_reserva=1,
+        data_reserva=data_conflito,
+        hoje=datetime(2026, 10, 1),
+        placa_veiculo_reserva="ABC1D23"
+    )
+
+    inicio = datetime(2026, 10, 15, 8, 0)
+    fim = datetime(2026, 10, 15, 18, 0)
+
+    assert VerificarDisponibilidadeVaga.validar(vaga_livre, inicio, fim, [reserva_existente]) is False
+
+# Fim dos testes do Domain Service VerificarDisponibilidadeVaga
+
+# Testes do Domain Service AutorizadorSaidaVeiculo
+def test_autorizar_saida():
+    vaga = Vaga(id_vaga=1, tipo=TipoVaga.CARRO, status=StatusVaga.OCUPADA)
+    ticket = Ticket(idTicket=100, horarioEntrada=datetime(2026, 10, 15, 10, 0), horarioSaida=datetime(2026, 10, 15, 12, 0))
+    ticket.registrar_pagamento()
+
+    pagamento = Pagamento(id_ticket=100, valor=20.0, tipo_pagamento=TipoPagamento.PIX, data_hora_pagamento=ticket.horarioSaida)
+
+    assert AutorizadorSaidaVeiculo.autorizar(vaga, ticket, pagamento) is True
+
+def test_negar_saida_pagamento_pendente():
+    vaga = Vaga(id_vaga=1, tipo=TipoVaga.CARRO, status=StatusVaga.OCUPADA)
+    ticket = Ticket(idTicket=100, horarioEntrada=datetime(2026, 10, 15, 10, 0), horarioSaida=datetime(2026, 10, 15, 12, 0))
+    pagamento = Pagamento(id_ticket=100, valor=20.0, tipo_pagamento=TipoPagamento.PIX, data_hora_pagamento=ticket.horarioSaida)
+
+    assert AutorizadorSaidaVeiculo.autorizar(vaga, ticket, pagamento) is False
 
 
+def test_autorizar_saida_com_multa_pernoite_paga():
+    vaga = Vaga(id_vaga=1, tipo=TipoVaga.CARRO, status=StatusVaga.OCUPADA)
+    ticket = Ticket(
+        idTicket=100,
+        horarioEntrada=datetime(2026, 10, 15, 22, 0),
+        horarioSaida=datetime(2026, 10, 16, 2, 0)
+    )
+
+    ticket.registrar_pagamento()
+
+    pagamento = Pagamento(id_ticket=100, valor=90.0, tipo_pagamento=TipoPagamento.DEBITO, data_hora_pagamento=ticket.horarioSaida)
+
+    assert AutorizadorSaidaVeiculo.autorizar(vaga, ticket, pagamento) is True
+
+# Fim dos testes do Domain Service AutorizadorSaidaVeiculo

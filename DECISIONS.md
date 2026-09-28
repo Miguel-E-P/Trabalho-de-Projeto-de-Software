@@ -74,6 +74,9 @@ Adicionei os testes de Dinheiro, para verificar se ele esta funcionando da forma
 **20-09-26**:
 Refatorei o codigo para acessar as classes por meio do model. Utilizei um CI que encontrei online para automatizar o teste do projeto. Corrigi algumas coisas, e adicionei outras, para garantir o CI verde. Precisamos discutir sobre o Dominio e Proposta. Por que pagamento guarda controla saida do veiculo? Isso nao deveria ser parte de ticket? 
 
+**26-09-26**
+Percebi que havia um erro na estrutura do projeto. Pagamento estava cuidando de diversas coisas que eram do dominio de Ticket. Apos discutir com os membros Gustavo e Miguel, chegamos a conclusao que isso precisava mudar. Refatorei o codigo, portanto, transformando pagamento em um mero registro(recibo) do pagamento que ocorre para pagar um ticket. Para evitar que isso quebrasse o codigo, tive que alterar o resto do projeto tambem. Implementei o AbstractPagamentoRepository. 
+
 ### Gustavo
 **16-09-26**:
 Primeiro, estou organizando nosso repositório; devo fazer esse tipo de varredura mais vezes e, a não ser que eu esqueça, subir o commit com uma flag de "_refact_". A título de curiosidade, o linter/code formatter que uso chama-se [ruff](https://docs.astral.sh/ruff/).
@@ -93,13 +96,37 @@ Por fim, resolvi refatorar as _Exceções de Domínio_ em classes separadas: **V
 
 Verifiquei que um colega acidentalmente apagou meu código, estou subindo mais uma vez.
 
+**26-09-26**:
+Considerando que o Estacionamento é uma Entidade, estou adicionando um atributo id_estacionamento. Talvez fosse interessante adicionar outras colunas (endereço, por exemplo), só para testar a questão do Repository. Por ora, vou optar por manter apenas os atributos estritamente necessários, seguindo o princípio KISS.
+
+Fiz os três repositórios (Abstract, SQLAlchemy e Fake), seguindo os modelos apresentados durante a aula. Gostaria de melhorar um pouco eles, mas prefiro deixar a etapa de refactoring pra depois dos testes. Diferente dos meus colegas, optei por não usar Optional nos repositories: sou contra o uso indiscriminado de bibliotecas, quando a linguagem oferece recursos similares. Ademais, pretendo verificar as vantagens de fazer o método `add()` retornar algo caso a operação seja bem sucedida.
+
+---
+
+NOVAMENTE, um colega apagou por acidente algo que eu commitei (dessa vez, no arquivo de DECISIONS). Espero que o mesmo não esteja acontecendo com os demais, pois não sei se estão conferindo o repositório, então peço mais atenção e deixo a seguir a documentação do [Git](https://git-scm.com/docs).
+
+**27-09-26**:
+Comecei, hoje, consertando a identação do código do FakeEstacionamentoRepository e os testes de model que falharam ao adicionar o id_estacionamento.
+
+Adicionei as tabelas de Estacionamento e Vagas no arquivo ORM, criando seus respectivos mappers. Declarei de forma que uma Vaga não pudesse existir sem um Estacionamento através do "delete-orphan".
+
+Ainda, resolvi configurar o `pytest.ini` e remover do projeto/adicionar ao `.gitignore` arquivos gerados pela IDE do PyCharm e pelo UV, ferramentas usadas por nós desenvolvedores.
+
+Ao escrever testes para os repositories de Estacionamento, notei um erro no método get. Esse erro me fez perceber que não posso tratar estacionamentos como um set, o que ocasionou mudanças no FakeEstacionamentoRepository.
+
+Não encontrei dificuldades ao fazer os testes de integração com o SQLAlchemy.
+
 
 ### Matheus
 
-**18-09-27**: 
+**18-09-26**: 
 Criei o arquivo services.py com a regra de calcular o preço do estacionamento.
 Como calcular o preço depende do tipo do veículo e de quanto tempo ele ficou guardado, ou seja, uma conta que envolve coisas diferentes do sistema, achei melhor colocar essa lógica em uma ferramenta separada, em vez de embolar tudo dentro de uma classe só.  
 Usei o @staticmethod, porque a calculadora só precisa receber as horas e o tipo do veículo para fazer a conta e devolver o preço. Assim evita guardar dados na memória toda vez que for cobrar alguém. 
+
+**20-09-26**: Implementei as taxas de caminhonetes/SUVs e as de uso das tomadas para carros elétricos e na CalculadoraTarifa dentro de services.py. Criei a estrutura inicial em tests/unit/test_services.py e adicionei os testes para validar a precificação de cada categoria de veículo.   
+
+**26-09-26**: Ajustei a regra do Domain Service VerificarDisponibilidadeVaga para se adequar a reserva com limite de ocupação de apenas 1 dia. Implementei também o AutorizadorSaidaVeiculo, aplicando uma regra de cobrança de multa para caso o veículo ocupe a vaga por mais de 24 horas. Criei e executei os testes dessa mesma classe.
 
 ### Miguel
 **16/09/26**:
@@ -107,3 +134,12 @@ Comecei fazendo o esqueleto básico das classes ticket e reserva, que serão atu
 
 **20/09/2026**
 Criei os testes da classe reserva e ticket uma proteção contra a reserva de uma vaga em um dia anterior ao dia de hoje e e a emissão de m horario de saida anterior ao de entrada no ticket uma proteção contra o cadastro de uma vaga e ticket com id de reserva negativo. Os testes em relação a essas proteções funcionaram perfeitamente. Os outros testes de relacionam à imutabilidade dos atributos, à igualdade da classe reserva, já que é umo objeto de valor, e em relação à inicialização de uma instânicia da classe. Todos esses testes demonstraram a que essas funcionalidades funcionam corretamente
+
+**26/09/2026**
+Comecei a implementação do AbstractReservaRepository, com as funções "add", que adiciona uma reserva no repositório, e a função "get", que retorna uma reserva por meio de seu id
+
+**27/06/2026**
+Implementei a SqlAlchemyReservaRepository e a FakeReservaRepository da Reserva e do Ticket, cada uma segundo o proposto pelo conteúdo disponibilizado na diciplina
+
+Adicionado o mapper e as tabelas de ticket e reserva na orm. Corrigido erros de SqlAlchemyRepository e FakeRepository de Reserva e Ticket. Implementado os testes de FakeRepository de Reserva e Ticket
+

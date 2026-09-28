@@ -2,7 +2,7 @@
 na medida do possível"""
 
 from datetime import datetime
-from dataclasses import dataclass, field
+from dataclasses import dataclass, field, FrozenInstanceError
 from enum import Enum
 from uuid import UUID
 from typing import List
@@ -84,6 +84,7 @@ class Vaga:
 
 @dataclass
 class Estacionamento:
+    id_estacionamento: int
     vagas: list[Vaga]
 
     def buscar_vaga(self, id_vaga: int) -> Vaga:
@@ -102,18 +103,20 @@ class Estacionamento:
 class DataInvalida(ValueError):
     pass
 
+class PagamentoJaRealizadoError(Exception):
+    pass
+
 @dataclass
 class Ticket:
+    idTicket: int
     horarioEntrada:datetime
     horarioSaida:datetime | None
-    idTicket:int
+    pago: bool = False
 
     # INVARIANTE: protege contra valor negativo.
     def __post_init__(self):
         if self.idTicket < 0:
             raise ValueError("Valor não pode ser negativo.")
-
-            
 
     # Data de saída do veículo não pode ser anterior à data de entrada
     def updateSaida(self, horarioSaida: datetime) -> None:
@@ -121,7 +124,10 @@ class Ticket:
             raise DataInvalida("Essa data está indisponível para a saída.")
         self.horarioSaida = horarioSaida
 
-
+    def registrar_pagamento(self) -> None:
+        if self.pago:
+            raise PagamentoJaRealizadoError("ERROR: Ticket ja foi pago.")
+        self.pago = True
 
 
     
@@ -151,19 +157,6 @@ class Reserva:
 
 # AGREGADO PAGAMENTO
 
-# ini-dinheiro
-@dataclass(frozen=True)
-class Dinheiro:
-    valor: float
-
-    # INVARIANTE: protege contra valor negativo.
-    def __post_init__(self):
-        if self.valor < 0.0:
-            raise ValueError("Valor NAO pode ser negativo.")
-
-
-# fim-dinheiro
-
 #ini-tipo_pagamento
 class TipoPagamento(Enum):
     CREDITO = "credito"
@@ -174,27 +167,26 @@ class TipoPagamento(Enum):
 #fim-tipo_pagamento
 
 # ini-pagamento
-class PagamentoJaRealizadoError(Exception):
-    pass
 
 @dataclass
 class Pagamento:
-    id_pagamento: int 
     id_ticket: int
-    valor: Dinheiro
-    tipo_pagamento: TipoPagamento | None = None
-    pago: bool = False
-    data_hora_pagamento: datetime | None = None
-    
-    def pagar(self, tipo: TipoPagamento, momento: datetime):
-        if self.pago:
-            raise PagamentoJaRealizadoError("ERROR: Ticket ja esta pago.")
-        
-        self.tipo_pagamento = tipo
-        self.pago = True
-        self.data_hora_pagamento = momento
+    valor: float
+    tipo_pagamento: TipoPagamento
+    data_hora_pagamento: datetime
 
+    def __post_init__(self):
+        if self.valor < 0.0:
+            raise ValueError("ERROR: Valor do pagamento NAO pode ser negativo")
 
+    def __setattr__(self, name, value):
+        if name.startswith("_sa_"):
+            super().__setattr__(name, value)
+            return
+        if name not in self.__dict__:
+            super().__setattr__(name, value)
+        else:
+            raise FrozenInstanceError("ERROR: Nao pode alterar pagamento")
 # fim-pagamento
 
 #fim-AGREGADO PAGAMENTO
