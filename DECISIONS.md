@@ -114,6 +114,8 @@ Ainda, resolvi configurar o `pytest.ini` e remover do projeto/adicionar ao `.git
 
 Ao escrever testes para os repositories de Estacionamento, notei um erro no método get. Esse erro me fez perceber que não posso tratar estacionamentos como um set, o que ocasionou mudanças no FakeEstacionamentoRepository.
 
+Não encontrei dificuldades ao fazer os testes de integração com o SQLAlchemy.
+
 
 ### Matheus
 

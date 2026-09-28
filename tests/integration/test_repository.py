@@ -4,7 +4,7 @@ from sqlalchemy import text
 from estacionamento.adapters.repository import SqlAlchemyRepository, SqlAlchemyPagamentoRepository
 from estacionamento.domain.model import Cliente, Placa, Veiculo
 from estacionamento.domain import model
-
+from estacionamento.adapters import repository
 #Teste de integração real com o SQLite/SQLAlchemy garante a 
 # persistência do Agregado Cliente completo 
 # (incluindo a lista de Veiculo).
@@ -77,3 +77,55 @@ def test_sqlalchemy_repository_recupera_pagamento(session):
     assert isinstance(pagamento_recuperado.valor, float)
     assert pagamento_recuperado.valor == 25.0
     assert pagamento_recuperado.tipo_pagamento == model.TipoPagamento.DEBITO
+
+# Agregado Estacionamento
+def test_get_estacionamento_cadastrado(session):
+    repo = repository.SqlAlchemyEstacionamentoRepository(session)
+
+    estacionamento = model.Estacionamento(1, [])
+    repo.add(estacionamento)
+    session.commit()
+
+    resultado = repo.get(1)
+
+    assert resultado.id_estacionamento == 1
+
+
+def test_get_estacionamento_nao_cadastrado(session):
+    repo = repository.SqlAlchemyEstacionamentoRepository(session)
+
+    assert repo.get(1) is None
+
+
+def test_list_estacionamentos(session):
+    repo = repository.SqlAlchemyEstacionamentoRepository(session)
+
+    estacionamento_1 = model.Estacionamento(1, [])
+    estacionamento_2 = model.Estacionamento(2, [])
+
+    repo.add(estacionamento_1)
+    repo.add(estacionamento_2)
+    session.commit()
+
+    resultado = repo.list()
+
+    assert len(resultado) == 2
+    assert {e.id_estacionamento for e in resultado} == {1, 2}
+
+
+def test_get_estacionamento_com_vagas(session):
+    repo = repository.SqlAlchemyEstacionamentoRepository(session)
+
+    vaga_carro = model.Vaga(1, model.TipoVaga.CARRO)
+    vaga_moto = model.Vaga(2, model.TipoVaga.MOTO)
+
+    estacionamento = model.Estacionamento(1, [vaga_carro, vaga_moto])
+    repo.add(estacionamento)
+    session.commit()
+
+    resultado = repo.get(1)
+
+    assert resultado.id_estacionamento == 1
+    assert len(resultado.vagas) == 2
+    assert resultado.vagas[0].tipo == model.TipoVaga.CARRO
+    assert resultado.vagas[1].tipo == model.TipoVaga.MOTO
