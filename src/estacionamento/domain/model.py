@@ -2,7 +2,7 @@
 na medida do possível"""
 
 from datetime import datetime
-from dataclasses import dataclass, field
+from dataclasses import dataclass, field, FrozenInstanceError
 from enum import Enum
 from uuid import UUID
 from typing import List
@@ -168,7 +168,7 @@ class TipoPagamento(Enum):
 
 # ini-pagamento
 
-@dataclass(frozen=True)
+@dataclass
 class Pagamento:
     id_ticket: int
     valor: float
@@ -179,6 +179,14 @@ class Pagamento:
         if self.valor < 0.0:
             raise ValueError("ERROR: Valor do pagamento NAO pode ser negativo")
 
+    def __setattr__(self, name, value):
+        if name.startswith("_sa_"):
+            super().__setattr__(name, value)
+            return
+        if name not in self.__dict__:
+            super().__setattr__(name, value)
+        else:
+            raise FrozenInstanceError("ERROR: Nao pode alterar pagamento")
 # fim-pagamento
 
 #fim-AGREGADO PAGAMENTO
