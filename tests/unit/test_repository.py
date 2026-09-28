@@ -3,6 +3,7 @@ from uuid import UUID, uuid4
 from datetime import datetime
 
 from src.estacionamento.domain import model
+from estacionamento.adapters import repository
 from estacionamento.adapters.repository import AbstractRepository, FakePagamentoRepository, FakeReservaRepository, FakeTicketRepository
 from estacionamento.domain.model import Cliente
 
@@ -83,4 +84,28 @@ def test_fake_ticket_salva_e_recupera_ticket():
     assert ticket_salvo == ticket
     assert ticket_salvo.horarioEntrada == datetime(2026, 9, 27, 10, 30)
 
+# Agregado Estacionamento
+def test_get_estacionamento_cadastrado():
+    estacionamento = model.Estacionamento(1, [])
+    repo = repository.FakeEstacionamentoRepository([estacionamento])
 
+    assert repo.get(1) == estacionamento
+
+
+def test_get_estacionamento_nao_cadastrado():
+    repo = repository.FakeEstacionamentoRepository([])
+
+    assert repo.get(1) is None
+
+
+def test_list_estacionamentos():
+    estacionamento_1 = model.Estacionamento(1, [])
+    estacionamento_2 = model.Estacionamento(2, [])
+
+    repo = repository.FakeEstacionamentoRepository([estacionamento_1, estacionamento_2])
+
+    resultado = repo.list()
+
+    assert len(resultado) == 2
+    assert estacionamento_1 in resultado
+    assert estacionamento_2 in resultado

@@ -112,6 +112,9 @@ Adicionei as tabelas de Estacionamento e Vagas no arquivo ORM, criando seus resp
 
 Ainda, resolvi configurar o `pytest.ini` e remover do projeto/adicionar ao `.gitignore` arquivos gerados pela IDE do PyCharm e pelo UV, ferramentas usadas por nós desenvolvedores.
 
+Ao escrever testes para os repositories de Estacionamento, notei um erro no método get. Esse erro me fez perceber que não posso tratar estacionamentos como um set, o que ocasionou mudanças no FakeEstacionamentoRepository.
+
+
 ### Matheus
 
 **18-09-26**: 
