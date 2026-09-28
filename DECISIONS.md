@@ -132,3 +132,6 @@ Comecei a implementação do AbstractReservaRepository, com as funções "add", 
 
 **27/06/2026**
 Implementei a SqlAlchemyReservaRepository e a FakeReservaRepository da Reserva e do Ticket, cada uma segundo o proposto pelo conteúdo disponibilizado na diciplina
+
+Adicionado o mapper e as tabelas de ticket e reserva na orm. Corrigido erros de SqlAlchemyRepository e FakeRepository de Reserva e Ticket. Implementado os testes de FakeRepository de Reserva e Ticket
+

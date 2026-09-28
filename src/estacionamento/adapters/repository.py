@@ -89,27 +89,30 @@ class AbstractReservaRepository(abc.ABC):
 
 class SqlAlchemyReservaRepository(AbstractReservaRepository):
     def __init__(self, session: Session):
-            self.session = session
+        self.session = session
 
     def add(self, reserva: model.Reserva) -> None:
         self.session.add(reserva)
 
-    def get(self, id_reserva: int) -> model.Reserva:
-        return(  self.session.query(model.Reserva).filter_by(id_reserva=id_reserva).first()  )
+    def get(self, id_reserva: int) -> Optional[model.Reserva]:
+        return self.session.query(model.Reserva).filter_by(id_reserva=id_reserva).first()
 
     def list(self):
         return self.session.query(model.Reserva).all()
 
 class FakeReservaRepository(AbstractReservaRepository):
-    def __init__(self, reservas):
-        self.reservas = set(reservas)
-    
-    def add(self, reserva):
-        self.reservas.add(reserva)
-    
-    def get(self, id_reserva):
-        return next(r for r in self._reservas if r.id_reserva == id_reserva)
-    
+    def __init__(self, reservas: list[model.Reserva] = None):
+        self._reservas = list(reservas) if reservas else []
+
+    def add(self, reserva: model.Reserva) -> None:
+        self._reservas.append(reserva)
+
+    def get(self, id_reserva: int) -> Optional[model.Reserva]:
+        try:
+            return next(r for r in self._reservas if r.id_reserva == id_reserva)
+        except StopIteration:
+            return None
+        
     def list(self):
         return list(self._reservas)
 
@@ -133,22 +136,26 @@ class SqlAlchemyTicketRepository(AbstractTicketRepository):
     def add(self, ticket: model.Ticket) -> None:
         self.session.add(ticket)
 
-    def get(self, idTicket: int) -> model.Ticket:
-        return(  self.session.query(model.Ticket).filter_by(idTicket=idTicket).first()  )
+    def get(self, idTicket: int) -> Optional[model.Ticket]:
+        return( self.session.query(model.Ticket).filter_by(idTicket=idTicket).first()  )
 
     def list(self):
         return self.session.query(model.Ticket).all()
 
+
 class FakeTicketRepository(AbstractTicketRepository):
-    def __init__(self, tickets):
-        self.tickets = set(tickets)
+    def __init__(self, tickets: list[model.Ticket] = None):
+        self._tickets = list(tickets) if tickets else []
     
-    def add(self, ticket):
-        self.tickets.add(ticket)
+    def add(self, ticket: model.Ticket) -> None:
+        self._tickets.append(ticket)
     
-    def get(self, idTicket):
-        return next(t for t in self._tickets if t.idTicket == idTicket)
-    
+    def get(self, idTicket: int) -> Optional[model.Ticket]:
+        try:
+            return next(t for t in self._tickets if t.idTicket == idTicket)
+        except StopIteration:
+                    return None
+        
     def list(self):
         return list(self._tickets)
 #Reserva Fim

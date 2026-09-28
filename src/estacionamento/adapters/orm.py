@@ -1,6 +1,5 @@
-from sqlalchemy import Column, ForeignKey, MetaData, String, Table, TypeDecorator, Integer, Float, DateTime, Enum as SQLEnum
+from sqlalchemy import Column, ForeignKey, MetaData, String, Table, TypeDecorator, Integer, Boolean, Float, DateTime, Enum as SQLEnum
 from sqlalchemy.orm import registry, relationship, composite
-
 
 from estacionamento.domain.model import Cliente, Placa, Veiculo
 from src.estacionamento.domain import model
@@ -70,6 +69,25 @@ pagamentos_table = Table(
     Column("data_hora_pagamento", DateTime, nullable=False),
 )
 
+table_reserva = Table(
+    "reservas",
+    metadata,
+    Column("id_reserva", Integer, primary_key=True),
+    Column("data_reserva", DateTime, nullable=False),
+    Column("hoje", DateTime, nullable=False),
+    Column("placa_veiculo_reserva", PlacaType(), ForeignKey("veiculos.placa"), nullable=False,),
+)
+
+table_tickets = Table(
+    "tickets",
+    metadata,
+    Column("idTicket", Integer, primary_key = True),
+    Column("horarioEntrada", DateTime, nullable=False),
+    Column("horarioSaida", DateTime, nullable=False),
+    Column("pago", Boolean, nullable=False),
+
+)
+
 def start_mappers():
     mapper_registry.map_imperatively(Veiculo, veiculos_table)
     mapper_registry.map_imperatively(
@@ -87,4 +105,14 @@ def start_mappers():
         properties={
             "valor": composite(model.Dinheiro, pagamentos_table.c.valor)
         }
+    )
+
+    mapper_registry.map_imperatively(
+        model.Reserva,
+        table_reserva,
+    )
+
+    mapper_registry.map_imperatively(
+        model.Ticket,
+        table_tickets,
     )
