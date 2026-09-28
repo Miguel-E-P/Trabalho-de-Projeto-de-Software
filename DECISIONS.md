@@ -108,6 +108,9 @@ NOVAMENTE, um colega apagou por acidente algo que eu commitei (dessa vez, no arq
 **27-09-26**:
 Comecei, hoje, consertando a identação do código do FakeEstacionamentoRepository e os testes de model que falharam ao adicionar o id_estacionamento.
 
+Adicionei as tabelas de Estacionamento e Vagas no arquivo ORM, criando seus respectivos mappers. Declarei de forma que uma Vaga não pudesse existir sem um Estacionamento através do "delete-orphan".
+
+Ainda, resolvi configurar o `pytest.ini` e remover do projeto/adicionar ao `.gitignore` arquivos gerados pela IDE do PyCharm e pelo UV, ferramentas usadas por nós desenvolvedores.
 
 ### Matheus
 

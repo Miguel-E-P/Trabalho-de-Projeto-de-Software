@@ -1,6 +1,6 @@
 import math
 from datetime import datetime
-from src.estacionamento.domain.model import Dinheiro, TipoVaga, StatusVaga, Vaga, Reserva, Pagamento, Ticket
+from src.estacionamento.domain.model import TipoVaga, StatusVaga, Vaga, Reserva, Pagamento, Ticket
 
 class CalculadoraTarifa:
     """Domain Service que calcula o valor da permanência para cada veículo (RN-02)"""
@@ -11,11 +11,11 @@ class CalculadoraTarifa:
     TAXA_RECARGA = 8.0
 
     @staticmethod
-    def calcular(tipo_veiculo: TipoVaga, entrada: datetime, saida: datetime, recarga: bool = False) -> Dinheiro:
+    def calcular(tipo_veiculo: TipoVaga, entrada: datetime, saida: datetime, recarga: bool = False) -> float:
         segundos = (saida - entrada).total_seconds()
         # Tolerância de 15 minutos
         if segundos <= 900:
-            return Dinheiro(valor= 0.0)
+            return 0.0
         horas = segundos / 3600
         horas_cobranca = math.ceil(horas)
 
@@ -30,7 +30,7 @@ class CalculadoraTarifa:
         total = float(horas_cobranca * taxa)
         if tipo_veiculo == TipoVaga.CARRO_ELETRICO and recarga:
             total+=CalculadoraTarifa.TAXA_RECARGA
-        return Dinheiro(valor=total)
+        return total
 
 
 class VerificarDisponibilidadeVaga:
@@ -60,8 +60,7 @@ class AutorizadorSaidaVeiculo:
         if ticket.horarioSaida is None:
             return False
         
-        tarifa_base = CalculadoraTarifa.calcular(tipo_veiculo=vaga.tipo, entrada=ticket.horarioEntrada, saida=ticket.horarioSaida)
-        total_devido = tarifa_base.valor
+        total_devido = CalculadoraTarifa.calcular(tipo_veiculo=vaga.tipo, entrada=ticket.horarioEntrada, saida=ticket.horarioSaida)
 
         if ticket.horarioSaida.date() != ticket.horarioEntrada.date():
             total_devido += AutorizadorSaidaVeiculo.MULTA_PERNOITE

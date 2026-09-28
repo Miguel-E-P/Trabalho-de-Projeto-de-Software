@@ -157,19 +157,6 @@ class Reserva:
 
 # AGREGADO PAGAMENTO
 
-# ini-dinheiro
-@dataclass(frozen=True)
-class Dinheiro:
-    valor: float
-
-    # INVARIANTE: protege contra valor negativo.
-    def __post_init__(self):
-        if self.valor < 0.0:
-            raise ValueError("Valor NAO pode ser negativo.")
-
-
-# fim-dinheiro
-
 #ini-tipo_pagamento
 class TipoPagamento(Enum):
     CREDITO = "credito"
@@ -184,9 +171,13 @@ class TipoPagamento(Enum):
 @dataclass(frozen=True)
 class Pagamento:
     id_ticket: int
-    valor: Dinheiro
+    valor: float
     tipo_pagamento: TipoPagamento
     data_hora_pagamento: datetime
+
+    def __post_init__(self):
+        if self.valor < 0.0:
+            raise ValueError("ERROR: Valor do pagamento NAO pode ser negativo")
 
 # fim-pagamento
 
