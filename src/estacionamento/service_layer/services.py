@@ -60,8 +60,7 @@ class AutorizadorSaidaVeiculo:
         if ticket.horarioSaida is None:
             return False
         
-        tarifa_base = CalculadoraTarifa.calcular(tipo_veiculo=vaga.tipo, entrada=ticket.horarioEntrada, saida=ticket.horarioSaida)
-        total_devido = tarifa_base.valor
+        total_devido = CalculadoraTarifa.calcular(tipo_veiculo=vaga.tipo, entrada=ticket.horarioEntrada, saida=ticket.horarioSaida)
 
         if ticket.horarioSaida.date() != ticket.horarioEntrada.date():
             total_devido += AutorizadorSaidaVeiculo.MULTA_PERNOITE

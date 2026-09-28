@@ -187,19 +187,18 @@ def test_pagamento_dinheiro_invariante_negativa():
         )
 
 def test_pagamento_inicializacao():
-    valor = model.Dinheiro(valor=50.0)
     momento = datetime(2026, 9, 18, 10, 30, 0)
-    pagamento = model.Pagamento(id_ticket=100, valor=valor, tipo_pagamento=model.TipoPagamento.PIX, data_hora_pagamento=momento)
+    pagamento = model.Pagamento(id_ticket=100, valor=50.0, tipo_pagamento=model.TipoPagamento.PIX, data_hora_pagamento=momento)
 
     assert pagamento.id_ticket == 100
-    assert pagamento.valor == valor
+    assert pagamento.valor == 50.0
     assert pagamento.tipo_pagamento == model.TipoPagamento.PIX
     assert pagamento.data_hora_pagamento == momento
 
 def test_pagamento_imutabilidade():
-    valor = model.Dinheiro(valor=50.0)
+    valor = 50.0
     momento = datetime(2026, 9, 18, 10, 30, 0)
-    pagamento = model.Pagamento(id_ticket=100, valor=valor, tipo_pagamento=model.TipoPagamento.PIX, data_hora_pagamento=momento)
+    pagamento = model.Pagamento(id_ticket=100, valor=50.0, tipo_pagamento=model.TipoPagamento.PIX, data_hora_pagamento=momento)
 
     with pytest.raises(FrozenInstanceError):
         pagamento.id_ticket = 101
