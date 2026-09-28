@@ -56,6 +56,12 @@ Criado o file conftest.py para configurar os testes do pytest que serve para com
 Foram criados os arquivos __init__.py dentro das pastas de testes, para que o Python trate as pastas como packages distintos, mesmo havendo o mesmo nome de arquivo test na pasta 'unit' e 'integration'.
 Foram realizados os testes de integração para o agregado cliente passando 'verde'. Portanto validou a escrita e leitura em banco de dados real em memória RAM.
 
+**28-09-26**:
+Essa camada de serviços para o agegado Cliente serve como uma ponte entre a API (ou interface) e a regra de negócio:
+- Isola o banco de dados: Usa abstrações (repo, session) para não depender de frameworks como SQLAlchemy ou SQL puro;
+- Orquestra o fluxo: Controla transações (commit), busca dados, executa regras de negócio e trata erros de entrada.
+A posteriori será implementado a camada API (ou interface) do agregado Cliente, lá no flask_app.py.
+
 
 
 
