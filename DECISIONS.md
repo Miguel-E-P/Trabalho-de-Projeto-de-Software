@@ -62,6 +62,9 @@ Essa camada de serviços para o agegado Cliente serve como uma ponte entre a API
 - Orquestra o fluxo: Controla transações (commit), busca dados, executa regras de negócio e trata erros de entrada.
 A posteriori será implementado a camada API (ou interface) do agregado Cliente, lá no flask_app.py.
 
+**29-09-26**:
+O flask_app traduz entrada e saída da requisição para parâmetros Python e transforma retornos/exceções em respostas HTTP (JSON + Status Code). Gerencia o ciclo de vida da Sessão, ou seja, instancia o repositório (SqlAlchemyRepository) e garante o fechamento da sessão de banco.
+
 
 
 
