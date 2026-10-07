@@ -65,7 +65,36 @@ A posteriori será implementado a camada API (ou interface) do agregado Cliente,
 **29-09-26**:
 O flask_app traduz entrada e saída da requisição para parâmetros Python e transforma retornos/exceções em respostas HTTP (JSON + Status Code). Gerencia o ciclo de vida da Sessão, ou seja, instancia o repositório (SqlAlchemyRepository) e garante o fechamento da sessão de banco.
 
+**07-10-26**:
 
+# Registro de Decisões e Autorelato - Checkpoint Fase 1
+
+## Declarativo do Uso de IA
+Utilizei apoio de Inteligência Artificial para diagnosticar e resolver uma sequência de falhas nos testes de integração e E2E do **Agregado Cliente** (ajustes no mapeamento ORM das chaves estrangeiras com `GUID`, conversão de parâmetros no SQLite e alinhamento dos atributos do Value Object `Placa`).
+
+---
+
+## Validação E2E do Agregado Cliente
+
+Foi realizado com sucesso o teste de integração End-to-End para o Agregado Cliente (`Cliente`, `Veiculo` e `Placa`), cobrindo os seguintes cenários:
+- **UC01:** Cadastrar Cliente via API (`POST /clientes`)
+- **UC02:** Cadastrar Veículo para o Cliente (`POST /clientes/{id_cliente}/veiculos`)
+- **Validação E2E:** Consultar Cliente e verificar a persistência do veículo inserido (`GET /clientes/{id_cliente}`)
+
+### Arquivos Envolvidos
+- `domain/model.py`
+- `adapters/orm.py`
+- `service_layer/services.py`
+- `entrypoints/flask_app.py`
+- `tests/e2e/test_api.py`
+
+---
+
+## Conclusão e Justificativa do Checkpoint Final (Fase 1)
+
+Optei por concluir o checkpoint final da Fase 1 garantindo o pleno funcionamento e a estabilização do **Agregado Cliente**, pois esta validação trouxe maior confiabilidade no código com a suíte completa de testes unitários e, principalmente, de integração/E2E (48 testes aprovados).
+
+Esta base consolidada servirá como ponto de partida seguro para a Fase 2 do projeto, independente das novas demandas que eventualmente tragam mudanças de arquitetura, frameworks ou abordagens diferentes das definidas inicialmente com base no livro *Cosmic Python*.
 
 
 
