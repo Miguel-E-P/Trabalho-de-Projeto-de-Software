@@ -149,7 +149,7 @@ def buscar_cliente(id_cliente_str: str, repo: AbstractRepository) -> Dict[str, A
         "telefone": cliente.telefone,
         "email": cliente.email,
         "veiculos": [
-            {"id_veiculo": str(v.id_veiculo), "placa": v.placa.valor, "tipo": v.tipo}
+            {"id_veiculo": str(v.id_veiculo), "placa": v.placa.numero, "tipo": v.tipo}
             for v in cliente.veiculos
         ],
     }

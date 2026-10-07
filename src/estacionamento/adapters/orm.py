@@ -4,6 +4,10 @@ from sqlalchemy.orm import registry, relationship, composite
 from estacionamento.domain.model import Cliente, Placa, Veiculo
 from estacionamento.domain import model
 
+import uuid
+from uuid import UUID
+from sqlalchemy.types import TypeDecorator, String
+
 #Mapeamento Imperativo (registry.map_imperatively)
 #Este arquivo faz a ligação entre o SQLite/SQLAlchemy e o modelo 
 #puro (Cliente, Veiculo, Placa) sem poluir as dataclasses do domínio
@@ -15,6 +19,26 @@ mapper_registry = registry(metadata=metadata)
 
 metadata = MetaData()
 mapper_registry = registry(metadata=metadata)
+
+#TypeDecorator para o UUID
+class GUID(TypeDecorator):
+    """Converte UUID nativo do Python para String(36) no SQLite."""
+    impl = String(36)
+    cache_ok = True
+
+    def process_bind_param(self, value, dialect):
+        if value is None:
+            return None
+        if isinstance(value, UUID):
+            return str(value)
+        return str(value)
+
+    def process_result_value(self, value, dialect):
+        if value is None:
+            return None
+        if not isinstance(value, UUID):
+            return UUID(value)
+        return value
 
 
 # Mapeador para o Value Object Placa
@@ -40,7 +64,7 @@ class PlacaType(TypeDecorator):
 clientes_table = Table(
     "clientes",
     metadata,
-    Column("id_cliente", String(36), primary_key=True),
+    Column("id_cliente", GUID(), primary_key=True),
     Column("nome", String(255), nullable=False),
     Column("cpf", String(14), nullable=False),
     Column("telefone", String(20), nullable=False),
@@ -50,8 +74,8 @@ clientes_table = Table(
 veiculos_table = Table(
     "veiculos",
     metadata,
-    Column("id_veiculo", String(36), primary_key=True),
-    Column("id_cliente", String(36), ForeignKey("clientes.id_cliente"), nullable=False),
+    Column("id_veiculo", GUID(), primary_key=True),
+    Column("id_cliente", GUID(), ForeignKey("clientes.id_cliente"), nullable=False),
     Column("placa", PlacaType(), nullable=False),
     Column("tipo", String(50), nullable=False),
 )
