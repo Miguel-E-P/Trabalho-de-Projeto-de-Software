@@ -40,31 +40,31 @@
 
 ```mermaid
 graph TD
-    subgraph Driving_Adapters ["Adaptadores Primários (Driving)"]
-        FlaskAPI ["entrypoints/flask_app.py (Flask API)"]
-        TestRunner ["tests/e2e e tests/integration"]
+    subgraph Driving_Adapters [Adaptadores Primarios Driving]
+        FlaskAPI[entrypoints/flask_app.py - Flask API]
+        TestRunner[tests/e2e e tests/integration]
     end
 
-    subgraph Core ["Núcleo da Aplicação"]
-        subgraph Ports_Entry ["Portas de Entrada"]
-            ServiceLayer ["service_layer/services.py"]
+    subgraph Core [Nucleo da Aplicacao]
+        subgraph Ports_Entry [Portas de Entrada]
+            ServiceLayer[service_layer/services.py]
         end
 
-        subgraph Domain ["Modelo de Domínio (Pure Python)"]
-            ClienteAggregate ["Agregado Cliente / Veiculo / Placa"]
-            EstacionamentoAggregate ["Agregado Estacionamento / Vaga"]
-            TicketEntity ["Entidade Ticket / Pagamento"]
+        subgraph Domain [Modelo de Dominio - Pure Python]
+            ClienteAggregate[Agregado Cliente / Veiculo / Placa]
+            EstacionamentoAggregate[Agregado Estacionamento / Vaga]
+            TicketEntity[Entidade Ticket / Pagamento]
         end
 
-        subgraph Ports_Exit ["Portas de Saída"]
-            AbstractRepo ["adapters/repository.py (AbstractRepository)"]
+        subgraph Ports_Exit [Portas de Saida]
+            AbstractRepo[adapters/repository.py - AbstractRepository]
         end
     end
 
-    subgraph Driven_Adapters ["Adaptadores Secundários (Driven)"]
-        SqlRepo ["adapters/repository.py (SqlAlchemyRepository)"]
-        ORM ["adapters/orm.py (Imperative Mapping & GUID)"]
-        DB [(SQLite Database)]
+    subgraph Driven_Adapters [Adaptadores Secundarios Driven]
+        SqlRepo[adapters/repository.py - SqlAlchemyRepository]
+        ORM[adapters/orm.py - Imperative Mapping e GUID]
+        DB[(SQLite Database)]
     end
 
     FlaskAPI --> ServiceLayer
