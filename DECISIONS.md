@@ -96,6 +96,8 @@ Optei por concluir o checkpoint final da Fase 1 garantindo o pleno funcionamento
 
 Esta base consolidada servirá como ponto de partida seguro para a Fase 2 do projeto, independente das novas demandas que eventualmente tragam mudanças de arquitetura, frameworks ou abordagens diferentes das definidas inicialmente com base no livro *Cosmic Python*.
 
+**15-10-26**:
+Apenas foram criados os dir docs e adr limpos com seus respectivos files .md para responder fase2-checkpoint-1 . Conforme enunciado do trabalho fase 2 e Apêndice B do livro-texto.
 
 
 
