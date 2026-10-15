@@ -99,6 +99,8 @@ Esta base consolidada servirá como ponto de partida seguro para a Fase 2 do pro
 **15-10-26**:
 Apenas foram criados os dir docs e adr limpos com seus respectivos files .md para responder fase2-checkpoint-1 . Conforme enunciado do trabalho fase 2 e Apêndice B do livro-texto.
 
+Realizei uma versão preliminar sobre a descrição e análise da arquitetura do projeto. Conforme o checklist de apoio para a resposta das páginas 34 e 35 do slide/aula *"Arquitetura de Software - Aula 2".
+
 
 
 ### Pedro
