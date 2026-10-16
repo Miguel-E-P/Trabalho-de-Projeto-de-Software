@@ -13,9 +13,9 @@ Implementar um Serviço de Domínio (`CalculadoraTarifa` em `src/estacionamento/
 2. Fazer o cálculo na camada de Aplicação/API (Flask): Espalharia regras de negócio na camada de infraestrutura/entrada, o que deixaria os testes unitários isolados bem mais difíceis.
 
 ## Consequências
-+ Facilidade de testes: Permite rodar testes unitários rápidos em tests/unit/, sem a necessidade de subir um banco SQLite em memória.
-+ Desacoplamento: O domínio continua totalmente puro (o comando `grep -rn sqlalchemy src/estacionamento/domain/` continua sem retornar resultados).
-- Complexidade Adicional: Adiciona mais uma classe na arquitetura que precisa ser mantida.
+(+) Facilidade de testes: Permite rodar testes unitários rápidos em tests/unit/, sem a necessidade de subir um banco SQLite em memória.
+(+) Desacoplamento: O domínio continua totalmente puro (o comando `grep -rn sqlalchemy src/estacionamento/domain/` continua sem retornar resultados).
+(-) Complexidade Adicional: Adiciona mais uma classe na arquitetura que precisa ser mantida.
 
 
 
