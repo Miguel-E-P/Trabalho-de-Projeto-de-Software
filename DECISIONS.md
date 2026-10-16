@@ -97,9 +97,27 @@ Optei por concluir o checkpoint final da Fase 1 garantindo o pleno funcionamento
 Esta base consolidada servirá como ponto de partida seguro para a Fase 2 do projeto, independente das novas demandas que eventualmente tragam mudanças de arquitetura, frameworks ou abordagens diferentes das definidas inicialmente com base no livro *Cosmic Python*.
 
 **15-10-26**:
+
 Apenas foram criados os dir docs e adr limpos com seus respectivos files .md para responder fase2-checkpoint-1 . Conforme enunciado do trabalho fase 2 e Apêndice B do livro-texto.
 
-Realizei uma versão preliminar sobre a descrição e análise da arquitetura do projeto. Conforme o checklist de apoio para a resposta das páginas 34 e 35 do slide/aula *"Arquitetura de Software - Aula 2".
+**Uso declarativo de IA**:
+
+Utilizou-se a IA para organizar as informações dispersas do projeto (arquivos, medições, comandos Python e premissas do *Cosmic Python*), o que estruturou o texto de análise e permitiu corrigir falhas no SQLite (`GUID`), ajustar DTOs (Data Transfer Objects) e validar o Agregado Cliente em E2E preservando o domínio puro.
+
+**Autorrelato**:
+
+Realizei uma versão preliminar sobre a descrição e análise da arquitetura do projeto. Conforme o checklist de apoio para a resposta das páginas 34 e 35 do slide/aula *"Arquitetura de Software - Aula 2"*.
+
+
+**16-10-26**:
+
+**Uso declarativo de IA**:
+
+A assistência de Inteligência Artificial foi utilizada para diagnosticar e corrigir falhas de integração no banco SQLite e no Value Object `Placa`, auxiliando na implementação do `TypeDecorator` (`GUID`), no ajuste dos DTOs (Data Transfer Objects) na camada de serviço e na refatoração dos testes E2E sem violar o isolamento do domínio.
+
+**Autorrelato**:
+
+Atuei na estabilização do Agregado Cliente para o encerramento da Fase 1. Implementei o TypeDecorator (GUID), reajustei os DTOs (Data Transfer Objects) na camada de serviço e validei a suíte E2E com 100% de aprovação, mantendo o domínio puro e totalmente desacoplado do ORM.
 
 
 
