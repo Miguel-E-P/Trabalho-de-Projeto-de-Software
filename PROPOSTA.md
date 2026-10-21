@@ -162,6 +162,3 @@ Descrição: Uma vaga não pode possuir duas reservas ativas para períodos de t
 ### UC07 - Registrar Pagamento → Agregado Pagamento
 
 ### UC08 - Autorizar Saída do Veículo → Agregado Pagamento + Agregado Estacionamento + Agregado Reserva + Domain Service AutorizadorSaidaVeiculo
-
-
-TODO: revisar as regras de negócio de cada agregado e revisar os casos de uso.
