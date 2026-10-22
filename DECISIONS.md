@@ -137,6 +137,11 @@ Refatorei o codigo para acessar as classes por meio do model. Utilizei um CI que
 **26-09-26**
 Percebi que havia um erro na estrutura do projeto. Pagamento estava cuidando de diversas coisas que eram do dominio de Ticket. Apos discutir com os membros Gustavo e Miguel, chegamos a conclusao que isso precisava mudar. Refatorei o codigo, portanto, transformando pagamento em um mero registro(recibo) do pagamento que ocorre para pagar um ticket. Para evitar que isso quebrasse o codigo, tive que alterar o resto do projeto tambem. Implementei o AbstractPagamentoRepository. 
 
+**21-10-26**
+Detalhei o arquivo arquitetura.md de acordo com as diretrizes da Fase 2. Destaquei os atributos de qualidade de maior importância para o nosso escopo. Alguns desses atributos ainda não foram totalmente implementados no projeto, mas, como este checkpoint foca em mapear como aprimorar nossa arquitetura, e eles sao de grande importancia para o projeto, preferi descreve-los. Alterei tambem os atributos que ja estavam descritos para eles estarem no formato pedido.
+
+Uso de IA: O Gemini foi utilizado para formatar o texto e pesquisar termos(ex: "Explique Unit of Work em detalhe sem erros."). Tambem foi utilizado para debater escolhas da arquitetura. A primeira coisa debatida foi se era vantajoso ou nao manter a mesma arquitetura. Apos debate com a IA e com outros integrantes do grupo(Gustavo & Miguel) foi decidido que era melhor manter a estrutura atual. Tambem foi debatido a melhor maneira de descrever os atributos, e se era necessario ou nao detalhar a tecnica que seria utilizada para aumentar um atributo de qualidade em nosso projeto.
+
 ### Gustavo
 **16-09-26**:
 Primeiro, estou organizando nosso repositório; devo fazer esse tipo de varredura mais vezes e, a não ser que eu esqueça, subir o commit com uma flag de "_refact_". A título de curiosidade, o linter/code formatter que uso chama-se [ruff](https://docs.astral.sh/ruff/).

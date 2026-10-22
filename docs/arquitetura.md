@@ -2,32 +2,126 @@
 
 ## 1. Escopo
 
-* **O que o sistema faz?**
-  O sistema realiza a gestão operacional de um estacionamento, cobrindo o cadastro de clientes, vinculação e remoção de veículos, reserva de vagas, controle de entrada e saída de veículos via tickets e o processamento de pagamentos.
-
-* **Para quem o sistema é feito?**
-  - **Clientes:** Proprietários de veículos que utilizam o estacionamento, realizam reservas e efetuam pagamentos de permanência.
-  - **Operadores / Administradores:** Funcionários do estacionamento responsáveis pelo monitoramento da ocupação de vagas em tempo real, validação de tickets de entrada/saída e gestão dos registros do sistema.
+Nosso sistema gerencia o funcionamento de um estacionamento, cobrindo o cadastro de clientes, vinculação e remoção de veículos, reserva de vagas, controle de entrada e saída de veículos via tickets e o processamento de pagamentos. Nossos usuários são os clientes que utilizam o estacionamento e os operadores e administradores que determinam o funcionamento do mesmo.
 
 ---
 
 ## 2. Requisitos
 
-* **Três Atributos de Qualidade Mais Importantes (em ordem de prioridade):**
-  1. **Testabilidade:** As regras de negócio e casos de uso devem ser totalmente testáveis de forma isolada e rápida, sem necessidade de banco de dados ativo ou infraestrutura externa.
-     - *Como saber se foi atendido:* Testes unitários do domínio rodam em milissegundos sem depender do SQLAlchemy ou da API web (`pytest tests/unit`).
-  2. **Modificabilidade / Manutenibilidade:** Alterações nos adaptadores externos (ex.: trocar o framework Flask por FastAPI, ou trocar SQLite por PostgreSQL) não devem exigir alterações no núcleo de negócio.
-     - *Como saber se foi atendido:* Nenhuma classe ou função em `domain/` importa bibliotecas de infraestrutura, permitindo a substituição de adaptadores sem alterar o domínio.
-  3. **Integridade de Dados e Consistência:** As regras do domínio (ex.: não permitir cadastrar veículos com a mesma placa para o mesmo cliente) e transações do banco devem ser atômicas e garantidas.
-     - *Como saber se foi atendido:* Passagem de 100% dos testes de integração e E2E que validam a persistência e as exceções de negócio (`pytest tests/e2e`).
+* **Atributos de Qualidade (em ordem de prioridade):**
+Os três primeiros refletem o que o negócio mais precisa: o sistema lida com dinheiro e dados pessoais de clientes e controla a saída física dos veículos. Os dois últimos são os atributos que a arquitetura escolhida na Fase 1 (*Cosmic Python*) busca garantir e que sustentam as refatorações e os padrões da Fase 2. As medidas numéricas são metas de projeto e podem ser ajustadas ao porte real do estacionamento.
+
+### Segurança
+
+O sistema processa pagamentos e guarda dados pessoais de clientes (cadastro e placas dos veículos). Um vazamento ou uma adulteração de dados tem consequência financeira e legal (LGPD), e um ataque que derrube o sistema impede a operação do estacionamento.
+
+**Cenário S1: acesso não autorizado e dados inválidos**
+
+| Elemento | Descrição |
+|---|---|
+| **Fonte** | Usuário sem permissão (cliente tentando acessar dados de outro cliente) ou atacante externo |
+| **Estímulo** | Envia uma requisição HTTP às rotas de cadastro, pagamento ou administração sem credencial válida, sem o perfil adequado, ou com dados que violam as regras do domínio (por exemplo, placa duplicada para o mesmo cliente) |
+| **Ambiente** | Operação normal, sistema em produção |
+| **Artefato** | API (`entrypoints/flask_app.py`), camada de serviço (`service_layer/services.py`) e modelo de domínio (`domain/model.py`) |
+| **Resposta** | O sistema rejeita a requisição sem executar o caso de uso, devolve 401/403 (acesso) ou erro de negócio (dados inválidos) e registra a tentativa em log de auditoria. Os dados trafegam por HTTPS |
+| **Medida da resposta** | 100% das requisições sem permissão rejeitadas e registradas; nenhum dado de outro cliente retornado; 100% dos testes de integração e E2E que validam a persistência e as exceções de negócio passando (`pytest tests/e2e`); um teste automatizado por rota protegida |
+
+**Cenário S2: ataque de volume ou de força bruta**
+
+| Elemento | Descrição |
+|---|---|
+| **Fonte** | Atacante externo automatizado |
+| **Estímulo** | Envia volume anormal de requisições ou tentativas repetidas de login |
+| **Ambiente** | Operação normal, em horário de pico |
+| **Artefato** | Pontos de entrada da API (autenticação, reserva e pagamento) |
+| **Resposta** | O sistema limita a taxa de requisições por origem, bloqueia temporariamente a origem abusiva e continua atendendo os usuários legítimos |
+| **Medida da resposta** | Bloqueio de 15 minutos após 5 falhas consecutivas de login; degradação do tempo de resposta para usuários legítimos de no máximo 20% durante o ataque |
+
+### Disponibilidade
+
+O sistema controla a entrada e a saída de veículos, então uma falha não pode deixar um cliente preso no estacionamento, e uma transação paga não pode ser perdida porque um pacote de rede se perdeu no caminho.
+
+**Cenário D1: falha de uma instância da aplicação ou do banco**
+
+| Elemento | Descrição |
+|---|---|
+| **Fonte** | Falha de software ou de rede (processo da API ou conexão com o banco) |
+| **Estímulo** | Uma instância da API deixa de responder ou a conexão com o banco cai |
+| **Ambiente** | Operação normal, com veículos no estacionamento |
+| **Artefato** | API e adaptador de persistência (`adapters/repository.py`, `adapters/orm.py`) |
+| **Resposta** | Uma verificação de saúde detecta a falha, o tráfego é desviado para outra instância, a aplicação reconecta ao banco e as operações em andamento são concluídas ou revertidas por inteiro (transação atômica) |
+| **Medida da resposta** | Detecção em até 10 segundos; atendimento retomado em até 30 segundos; disponibilidade de 99,5% ao mês; nenhum registro em estado parcial |
+
+**Cenário D2: transação de pagamento perdida ou provedor indisponível**
+
+| Elemento | Descrição |
+|---|---|
+| **Fonte** | Falha de rede entre o cliente, a API e o provedor de pagamento, ou indisponibilidade do provedor |
+| **Estímulo** | O cliente conclui o pagamento, mas a confirmação não chega (*timeout* ou perda de resposta) e a requisição é repetida; ou o provedor de pagamento fica fora do ar |
+| **Ambiente** | Operação normal, cliente aguardando na saída |
+| **Artefato** | Caso de uso de pagamento (`service_layer/services.py`) e repositório de tickets e pagamentos |
+| **Resposta** | A operação é idempotente: a transação é registrada antes da confirmação e a repetição não gera nova cobrança. O estado é reconciliado com o provedor. Se o provedor estiver indisponível, o operador registra a saída com pagamento pendente (degradação controlada) e a cobrança é feita depois |
+| **Medida da resposta** | Nenhum pagamento pago perdido; nenhuma cobrança duplicada nos testes de repetição; estado reconciliado em até 2 minutos; nenhum cliente impedido de sair por mais de 5 minutos por falha do provedor |
+
+### Desempenho
+
+O fluxo de entrada, saída e pagamento é onde o cliente percebe o sistema, e os clientes esperam respostas rápidas, principalmente nos horários de pico.
+
+**Cenário P1: saída e pagamento no pico**
+
+| Elemento | Descrição |
+|---|---|
+| **Fonte** | Cliente na saída do estacionamento |
+| **Estímulo** | Apresenta o ticket e paga |
+| **Ambiente** | Horário de pico, com 50 operações de entrada e saída por minuto |
+| **Artefato** | API, camada de serviço e repositório |
+| **Resposta** | O sistema valida o ticket, calcula o valor, registra o pagamento e libera a saída |
+| **Medida da resposta** | Validação e cálculo em até 2 segundos e confirmação do pagamento em até 5 segundos, para 95% das operações |
+
+### Testabilidade
+
+Este é o atributo que mais motivou a arquitetura da Fase 1. Regras de negócio testáveis de forma rápida e isolada permitem refatorar com segurança e sustentam os demais atributos.
+
+**Cenário T1: teste isolado de uma regra de negócio**
+
+| Elemento | Descrição |
+|---|---|
+| **Fonte** | Desenvolvedor |
+| **Estímulo** | Altera uma regra de negócio ou um caso de uso e executa os testes |
+| **Ambiente** | Desenvolvimento, sem banco de dados ativo nem servidor web |
+| **Artefato** | Modelo de domínio (`domain/`) e camada de serviço (`service_layer/`) com `FakeRepository` |
+| **Resposta** | Os testes unitários executam de forma isolada, sem depender do SQLAlchemy nem da API web |
+| **Medida da resposta** | Suíte unitária (`pytest tests/unit`) em menos de 1 segundo; nenhuma importação de bibliotecas de infraestrutura em `domain/` |
+
+### Modificabilidade
+
+A arquitetura precisa permitir trocar tecnologias de infraestrutura sem mexer nas regras de negócio, e acomodar mudanças de requisito (como novas regras de tarifa).
+
+**Cenário M1: troca de tecnologia de infraestrutura**
+
+| Elemento | Descrição |
+|---|---|
+| **Fonte** | Desenvolvedor, a partir de uma mudança de requisito ou de decisão técnica |
+| **Estímulo** | Pedido para trocar o Flask pelo FastAPI ou o SQLite pelo PostgreSQL |
+| **Ambiente** | Desenvolvimento |
+| **Artefato** | Adaptadores (`adapters/`) e pontos de entrada (`entrypoints/`) |
+| **Resposta** | A troca é feita alterando apenas os adaptadores (e a *string* de conexão do *engine*), e a suíte unitária continua passando sem modificação |
+| **Medida da resposta** | Nenhum arquivo alterado em `domain/` e `service_layer/` (verificável com `git diff --stat`) |
 
 * **Objetivos:**
-  - Construir um software com arquitetura limpa e desacoplada baseada nos padrões do livro *Cosmic Python*.
-  - Garantir cobertura automatizada de testes (unitários, integração e E2E) para todos os casos de uso do Agregado Cliente/Veículo.
+  - Proteger os dados dos clientes e as transações de pagamento contra vazamento, adulteração e ataques.
+  - Manter a operação contínua: nenhum cliente impedido de sair e nenhuma transação paga perdida, mesmo com falhas.
+  - Responder com rapidez no fluxo crítico (entrada, saída e pagamento), inclusive nos picos.
+  - Construir um soft	ware com arquitetura limpa e desacoplada, baseada nos padrões do livro *Cosmic Python*, com cobertura automatizada de testes (unitários, integração e E2E) para os casos de uso do Agregado Cliente/Veículo.
+  - Quando atributos entrarem em conflito, prevalece a ordem de prioridade: segurança, disponibilidade, desempenho, testabilidade e modificabilidade.
 
 * **Restrições:**
-  - **Prazos e Equipe:** Projeto desenvolvido por equipe reduzida no escopo acadêmico do semestre.
-  - **Linguagem e Tecnologias:** Uso obrigatório de Python 3.14+, Pytest, SQLAlchemy (mapeamento imperativo) e Flask.
+  - **Linguagem e Tecnologias:** uso obrigatório de Python 3.14+, Pytest, SQLAlchemy (mapeamento imperativo) e Flask (ou FastAPI), impostos pela disciplina.
+  - **Qualidade do processo:** a suíte de testes da Fase 1 deve continuar passando depois de qualquer refatoração, e a CI deve estar verde em cada checkpoint.
+  - **Prazos e Equipe:** projeto desenvolvido por equipe de 4 pessoas no escopo acadêmico do semestre.
+  - **Documentação:** arquivos em Markdown na pasta `docs/`, com diagramas em Mermaid ou PlantUML.
+  - **Legais:** os dados pessoais dos clientes (cadastro e placas) devem seguir a LGPD.
+  - **De negócio:** o pagamento deve ser delegado a um provedor externo, para reduzir a exposição de dados sensíveis **[confirmar]**.
 
 ---
 
