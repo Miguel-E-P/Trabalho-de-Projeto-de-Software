@@ -215,6 +215,17 @@ Depois de analisar a aplicação como um todo e o agregado o qual fiquei respons
 
 A primeira trataria da decisão de implementar exceções de domínio como uma espécie de validação da consistência de cada modelo, ao invés de fazer essas verificações posteriormente na camada de serviço. A escolhida, trata do acesso aos dados no SQLAlchemy, realizada, segundo as orientações do professor, através de uma classe que implementasse o Repository Pattern.
 
+```md
+7dce39e - **docs: ADR sobre uso do repository pattern no estacionamento**
++ Decisions.md
++ 0002-estacionamento.md
+```
+
+
+Preferi não usar IA nesse checkpoint pra correção ou análise do código; ainda, relato usar como ferramenta de busca, perguntando "que tipo de decisão se documenta num adr" (prompt), pois senti falta de exemplos nos slides visto em aula.
+
+Assim que todos os integrantes do grupo finalizarem sua atuação nesse checkpoint, pretendo submeter o tag-commit. 
+
 
 ### Matheus
 
