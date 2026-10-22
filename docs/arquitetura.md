@@ -141,13 +141,15 @@ graph TD
 
     subgraph Core [Nucleo da Aplicacao]
         subgraph Ports_Entry [Portas de Entrada]
-            ServiceLayer[service_layer/services.py]
+            ServiceLayer[service_layer/services.py - Application Services]
         end
 
         subgraph Domain [Modelo de Dominio - Pure Python]
             ClienteAggregate[Agregado Cliente / Veiculo / Placa]
             EstacionamentoAggregate[Agregado Estacionamento / Vaga]
-            TicketEntity[Entidade Ticket / Pagamento]
+            ReservaAggregate[Agregado Reserva / Ticket]
+            PagamentoAggregate[Agregado Pagamento]
+            DomainServices[Domain Services - Regras Cruzadas]
         end
 
         subgraph Ports_Exit [Portas de Saida]
@@ -163,8 +165,19 @@ graph TD
 
     FlaskAPI --> ServiceLayer
     TestRunner --> ServiceLayer
+    
+    ServiceLayer --> DomainServices
     ServiceLayer --> ClienteAggregate
+    ServiceLayer --> EstacionamentoAggregate
+    ServiceLayer --> ReservaAggregate
+    ServiceLayer --> PagamentoAggregate
     ServiceLayer --> AbstractRepo
+
+    DomainServices --> ClienteAggregate
+    DomainServices --> EstacionamentoAggregate
+    DomainServices --> ReservaAggregate
+    DomainServices --> PagamentoAggregate
+
     SqlRepo -.->|Implementa| AbstractRepo
     SqlRepo --> ORM
     ORM --> DB
