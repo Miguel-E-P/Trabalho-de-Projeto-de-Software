@@ -193,6 +193,13 @@ Usei o @staticmethod, porque a calculadora só precisa receber as horas e o tipo
 
 **26-09-26**: Ajustei a regra do Domain Service VerificarDisponibilidadeVaga para se adequar a reserva com limite de ocupação de apenas 1 dia. Implementei também o AutorizadorSaidaVeiculo, aplicando uma regra de cobrança de multa para caso o veículo ocupe a vaga por mais de 24 horas. Criei e executei os testes dessa mesma classe.
 
+**22-10-26**: Criei o documento docs/adr/0005-domain-service.md para registrar a decisão de isolar o cálculo da tarifa do estacionamento em um Domain Service (CalculadoraTarifa).
+Também atualizei a Seção 4 (Trade-offs) do docs/arquitetura.md comparando essa abordagem com o uso de entidades ricas. 
+
+#### Decisão de Projeto
+O serviço CalculadoraTarifa ficou puro e sem estado, totalmente separado de ORMs e do banco de dados.
+Fiz isso para seguir o Princípio de Responsabilidade Única e conseguir rodar os testes unitários de forma isolada, sem depender do SQLite.
+
 ### Miguel
 **16/09/26**:
 Comecei fazendo o esqueleto básico das classes ticket e reserva, que serão atualizados e talvez sofram alguma correção no futuro
