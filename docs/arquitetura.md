@@ -204,6 +204,18 @@ graph TD
 * **Risco de Concorrência e Persistência no SQLite:** O uso de banco SQLite em memória nos testes e desenvolvimento pode esconder problemas de travamento de arquivo (*database locked*) em ambiente de produção com múltiplas requisições simultâneas.
   * **Mitigação:** Como os adaptadores estão isolados via `AbstractRepository`, a troca para PostgreSQL exige alteração apenas na string do *engine* de conexão.
 
+#### Detalhamento de Trade-offs: Serviço de Domínio vs. Entidade Ricas (CalculadoraTarifa)
+
+Quando estávamos estruturando o sistema de estacionamento, precisamos decidir onde ficaria a regra do cálculo de permanência e cobrança (RN-02).
+
+* **Abordagem Adotada (Domain Service):**
+  * **Arquivo:** `src/estacionamento/service_layer/services.py` (`CalculadoraTarifa`)
+  * **Trade-off:** Escolhemos isolar essa lógica em um Domain Service puro e sem guardar estado.
+  * **Vantagens Evidenciadas:** 
+    1. Permite testar unitariamente 100% dos cenários de preço (tolerâncias, fracionamento, tipo de veículo) em `tests/unit/test_services.py` sem instanciar ORMs, SQLite ou dependências externas.
+    2. Mantém o princípio da responsabilidade única (SRP), evitando sobrecarregar o agregado `Ticket`/`Reserva` com regras de cobrança que mudam com frequência.
+  * **Desvantagens:** Cria um pequeno caminho indireto no uso de saída do veículo (UC06), já que a camada de aplicação precisa buscar o ticket e chamar a calculadora separadamente.
+
 ---
 
 ## 5. Alternativa
