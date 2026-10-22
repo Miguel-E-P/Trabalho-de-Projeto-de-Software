@@ -200,6 +200,8 @@ Também atualizei a Seção 4 (Trade-offs) do docs/arquitetura.md comparando ess
 O serviço CalculadoraTarifa ficou puro e sem estado, totalmente separado de ORMs e do banco de dados.
 Fiz isso para seguir o Princípio de Responsabilidade Única e conseguir rodar os testes unitários de forma isolada, sem depender do SQLite.
 
+Uso de IA: Utilizada para ajudar na estruturação, formatar as seções e validar os critérios.
+
 ### Miguel
 **16/09/26**:
 Comecei fazendo o esqueleto básico das classes ticket e reserva, que serão atualizados e talvez sofram alguma correção no futuro
