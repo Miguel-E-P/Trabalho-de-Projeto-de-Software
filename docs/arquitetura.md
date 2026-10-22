@@ -185,38 +185,41 @@ graph TD
 
 ## 4. Trade-offs
 
-### O que a arquitetura ganha e perde em cada atributo:
-* **Testabilidade:**
-  * **Ganha:** Extrema facilidade para testar regras de negócio com objetos simples ou repositórios em memória (`FakeRepository`).
-  * **Perde:** Exige a manutenção de código adicional de tradução de objetos DTO na camada de serviço.
-* **Modificabilidade:**
-  * **Ganha:** Independência total do banco de dados e do framework web.
-  * **Perde:** Maior complexidade inicial e proliferação de arquivos/camadas (`Domain`, `Adapters`, `Service Layer`, `Entrypoints`).
-* **Simplicidade:**
-  * **Ganha:** Separação clara de responsabilidades no código.
-  * **Perde:** O código fica mais prolixo em comparação com padrões tradicionais (como o Active Record do Django/FastAPI básico), exigindo mapeadores manuais (`TypeDecorator` para UUID e Placa).
+## 4.1 Contribuição da arquitetura atual para cada atributo
 
-### Pontos de Trade-off:
-1. **Mapeamento Imperativo vs. Mapeamento Declarativo:** A decisão de isolar totalmente o domínio do ORM melhora a testabilidade e o desacoplamento, mas aumenta o custo de escrita e manutenção das tabelas e tradutores em `adapters/orm.py`.
-2. **Monolito Modular vs. Microsserviços:** A escolha pelo monolito modular favorece a simplicidade de implantação e a consistência ACID, em troca de não permitir o escalamento independente de módulos (ex.: escalar apenas a emissão de tickets).
+| Atributo | Contribui | Prejudica ou não ajuda |
+| --- | --- | --- |
+| **Segurança** | As invariantes (unicidade de placa, valores válidos) ficam no domínio e valem em qualquer entrada. A autorização pode ser aplicada em um único ponto, antes do caso de uso, sem espalhar checagens pelas rotas. | A arquitetura não cria segurança sozinha. Autenticação, *rate limit* e auditoria precisam ser implementados nos *entrypoints*, e o isolamento do domínio não os garante. Há mais camadas e, portanto, mais lugares onde uma checagem pode ser esquecida. |
+| **Disponibilidade** | A cancela e o provedor de pagamento ficam atrás de portas. Um *adapter* local com cache de *tickets* pode substituir o remoto sem alterar o domínio, e a falha de rede pode ser simulada nos testes com *fakes*. | O isolamento só encaixa as peças. A resiliência de fato (idempotência, registro prévio da transação, sincronização) precisa ser construída e não vem da estrutura. A arquitetura também não prevê réplica nem *failover*. |
+| **Desempenho** | O fluxo crítico (validar *ticket*, calcular valor) tem poucas regras e cabe nas metas, e o cache de tarifas é simples de encaixar em um *adapter*. | Cada operação atravessa serviço, repositório, ORM e banco. O mapeamento imperativo e a hidratação de agregados custam tempo, e carregar um agregado inteiro para uma consulta simples é desperdício. |
+| **Modificabilidade** | Regras novas entram no domínio, e trocar banco ou *framework* afeta só os *adapters*. | Um caso de uso novo toca várias camadas (modelo, repositório, ORM, serviço, rota, *fake*). |
+| **Testabilidade** | O domínio e a camada de serviço são testados sem banco, com `FakeRepository`. | Os testes com *fakes* podem passar enquanto o ORM real falha, por isso os testes de integração e e2e continuam necessários. |
+
+## 4.2 Pontos de trade-off
+
+1. **Testabilidade e modificabilidade vs. Simplicidade:** Separar domínio, serviço e adapters permite testar regras sem banco e trocar infraestrutura, mas multiplica arquivos e indireções. Para uma operação simples de cadastro, o código passa por modelo, repositório, mapeamento ORM, serviço e rota. A decisão compensa se as regras de negócio forem complexas ou mudarem com frequência. Em um domínio majoritariamente de cadastro, o custo é pago sem retorno. 
+2. **Isolamento do domínio (pureza) vs. Desempenho:** Manter o modelo livre de herança do ORM e mapeá-lo depois com `map_imperatively` preserva a independência do *framework*, mas exige reconstruir objetos a cada leitura e tem custo de manutenção. O truque de `__setattr__` em Pagamento mostra que a pureza trouxe atrito técnico real. Um modelo *Active Record* seria mais direto e mais rápido, ao preço de acoplar o domínio ao banco. A decisão favorece modificabilidade e testabilidade em detrimento de desempenho.
+3. **Consistência do agregado vs. Desempenho e concorrência:** Tratar Estacionamento como agregado raiz garante que as regras de vagas sejam aplicadas em um único lugar. Porém, se toda reserva ou saída carrega e grava o agregado inteiro, operações concorrentes disputam o mesmo registro. No pico, com 50 operações por minuto, isso pode virar gargalo ou gerar conflitos de versão.
 
 ### Riscos Identificados:
-* **Risco de Concorrência e Persistência no SQLite:** O uso de banco SQLite em memória nos testes e desenvolvimento pode esconder problemas de travamento de arquivo (*database locked*) em ambiente de produção com múltiplas requisições simultâneas.
-  * **Mitigação:** Como os adaptadores estão isolados via `AbstractRepository`, a troca para PostgreSQL exige alteração apenas na string do *engine* de conexão.
 
-#### Detalhamento de Trade-offs: Serviço de Domínio vs. Entidade Ricas (CalculadoraTarifa)
+* **Risco de Condição de corrida na reserva de vagas:** Duas reservas simultâneas podem ler a mesma disponibilidade e ambas serem aceitas (*lost update*). *(Probabilidade: Média / Impacto: Alto)*
+* **Mitigação:** Controle de concorrência otimista (campo de versão no agregado) ou *lock* no banco; teste de concorrência.
 
-Quando estávamos estruturando o sistema de estacionamento, precisamos decidir onde ficaria a regra do cálculo de permanência e cobrança (RN-02).
+* **Risco de Cobrança duplicada ou transação perdida:** *Timeout* entre o provedor e o sistema, sem idempotência, pode cobrar duas vezes ou perder o pagamento. *(Probabilidade: Média / Impacto: Alto - prioridade 1 e 2)*
+* **Mitigação:** Registrar a transação antes de confirmar, chave de idempotência, reconciliação.
 
-* **Abordagem Adotada (Domain Service):**
-  * **Arquivo:** `src/estacionamento/service_layer/services.py` (`CalculadoraTarifa`)
-  * **Trade-off:** Escolhemos isolar essa lógica em um Domain Service puro e sem guardar estado.
-  * **Vantagens Evidenciadas:** 
-    1. Permite testar unitariamente 100% dos cenários de preço (tolerâncias, fracionamento, tipo de veículo) em `tests/unit/test_services.py` sem instanciar ORMs, SQLite ou dependências externas.
-    2. Mantém o princípio da responsabilidade única (SRP), evitando sobrecarregar o agregado `Ticket`/`Reserva` com regras de cobrança que mudam com frequência.
-  * **Desvantagens:** Cria um pequeno caminho indireto no uso de saída do veículo (UC06), já que a camada de aplicação precisa buscar o ticket e chamar a calculadora separadamente.
+* **Risco de Divergência entre os fakes e o comportamento real:** Os testes unitários passam com `FakeRepository`, mas o ORM real tem outro comportamento (ex.: transação, cascata). *(Probabilidade: Média / Impacto: Médio)*
+* **Mitigação:** Manter testes de integração contra o SQLAlchemy real.
+
+* **Risco de Segurança presumida e não implementada:** A arquitetura "comporta" autenticação, *rate limit* e auditoria, mas se não forem implementados o cenário S1 e o S2 não são cumpridos. *(Probabilidade: Alta se nada for implementado / Impacto: Alto)*
+* **Mitigação:** Implementar ao menos autorização por perfil e log de auditoria com teste e2e.
+
+* **Risco de Sobrearquitetura:** Se o domínio se resumir a cadastro e fluxo simples, o custo das camadas supera o benefício. *(Probabilidade: Baixa a média / Impacto: Médio)*
+* **Mitigação:** Revisar na retrospectiva com base nas evidências.
 
 ---
+
 
 ## 5. Alternativa
 
