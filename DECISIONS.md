@@ -210,6 +210,11 @@ Passei os últimos dias analisando o projeto e discutindo com os pares quanto as
 
 Resolvi, por enquanto, não subir nenhuma alteração.
 
+**22-10-26**
+Depois de analisar a aplicação como um todo e o agregado o qual fiquei responsável, separei duas decisões tomadas na Fase 01 como candidatas para meu ADR: o encapsulamento das regras de negócio dentro das classes de domínio (Estacionamento e Vaga) e o uso do repository pattern pra esconder a lógica de sessão do SQLAlchemy nas operações realizadas em Estacionamento.
+
+A primeira trataria da decisão de implementar exceções de domínio como uma espécie de validação da consistência de cada modelo, ao invés de fazer essas verificações posteriormente na camada de serviço. A escolhida, trata do acesso aos dados no SQLAlchemy, realizada, segundo as orientações do professor, através de uma classe que implementasse o Repository Pattern.
+
 
 ### Matheus
 
