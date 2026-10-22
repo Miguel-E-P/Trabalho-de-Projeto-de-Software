@@ -205,6 +205,11 @@ Ao escrever testes para os repositories de Estacionamento, notei um erro no mét
 
 Não encontrei dificuldades ao fazer os testes de integração com o SQLAlchemy.
 
+**21-10-26**
+Passei os últimos dias analisando o projeto e discutindo com os pares quanto as decisões que tomaríamos daqui pra frente.
+
+Resolvi, por enquanto, não subir nenhuma alteração.
+
 
 ### Matheus
 
