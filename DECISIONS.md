@@ -212,8 +212,12 @@ Criei os testes da classe reserva e ticket uma proteção contra a reserva de um
 **26/09/2026**
 Comecei a implementação do AbstractReservaRepository, com as funções "add", que adiciona uma reserva no repositório, e a função "get", que retorna uma reserva por meio de seu id
 
-**27/06/2026**
+**27/09/2026**
 Implementei a SqlAlchemyReservaRepository e a FakeReservaRepository da Reserva e do Ticket, cada uma segundo o proposto pelo conteúdo disponibilizado na diciplina
 
 Adicionado o mapper e as tabelas de ticket e reserva na orm. Corrigido erros de SqlAlchemyRepository e FakeRepository de Reserva e Ticket. Implementado os testes de FakeRepository de Reserva e Ticket
 
+**22/10/2026**
+Modifiquei o arquitetura.md para se adequar melhor ao que é requerido pela Fase 2. Dei ênfase nas vantagens da arquitetura para os atributos, mas também documentei certas desvantagens e riscos que podem decorrer do seu uso, que será importante na hora de considerar como a arquitetura pode ser melhorada
+
+Uso de IA: De forma semelhante ao que foi relatado pelo integrante Pedro no dia 21/10/2016, o Gemini foi utilizado para formatar o texto e para debater escolhas da arquitetura, que resultou na decisão de manter a estrutura atual. 
