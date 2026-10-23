@@ -166,6 +166,16 @@ Detalhei o arquivo arquitetura.md de acordo com as diretrizes da Fase 2. Destaqu
 
 Uso de IA: O Gemini foi utilizado para formatar o texto e pesquisar termos(ex: "Explique Unit of Work em detalhe sem erros."). Tambem foi utilizado para debater escolhas da arquitetura. A primeira coisa debatida foi se era vantajoso ou nao manter a mesma arquitetura. Apos debate com a IA e com outros integrantes do grupo(Gustavo & Miguel) foi decidido que era melhor manter a estrutura atual. Tambem foi debatido a melhor maneira de descrever os atributos, e se era necessario ou nao detalhar a tecnica que seria utilizada para aumentar um atributo de qualidade em nosso projeto.
 
+**22-10-26**
+Escrevi o ADR da imutabilidade do `Pagamento`, agregado pelo qual sou responsável, em `docs/adr/[número]-[título].md` (commit `[hash]`). O ADR registra uma decisão já implementada em `domain/model.py`: o `Pagamento` deixou de usar `@dataclass(frozen=True)`, porque o `frozen=True` bloqueava o atributo `_sa_instance_state`, que o SQLAlchemy grava em cada instância no mapeamento imperativo. Passou a usar um `__setattr__` customizado, que libera esse atributo e a atribuição inicial e bloqueia qualquer reatribuição. O ADR descreve o contexto, a decisão, as alternativas consideradas (o `frozen=True` original, propriedades somente leitura e um modelo de persistência separado) e as consequências.
+
+Decisão de projeto: manter a imutabilidade do `Pagamento` com `__setattr__` customizado, em vez de separar o modelo de persistência do modelo de domínio, para continuar usando o mapeamento imperativo sem duplicar classes nem escrever código de tradução no Repository.
+
+Uso de IA: Claude foi usado para gerar o rascunho inicial do ADR, a partir do código do `Pagamento` e da descrição do problema. Depois usei o Claude para: (1) entender o que o enunciado pede de um ADR e qual o formato (contexto, decisão, alternativas e consequências); (2) revisar o rascunho, o que apontou a falta da seção de alternativas, o conflito de numeração com o ADR-0001, a diferença entre o código do rascunho e o `model.py`, o acoplamento ao prefixo `_sa_` e a possível brecha na imutabilidade após o `commit`; (3) sugerir um teste para verificar essa brecha; e (4) revisar o texto da alternativa "modelo de persistência separado", corrigindo a justificativa e acrescentando a vantagem real dessa alternativa. Reescrevi o ADR com base nessas revisões e conferi o código e o texto final.
+
+Hash do Commits:
+
+
 ### Gustavo
 **16-09-26**:
 Primeiro, estou organizando nosso repositório; devo fazer esse tipo de varredura mais vezes e, a não ser que eu esqueça, subir o commit com uma flag de "_refact_". A título de curiosidade, o linter/code formatter que uso chama-se [ruff](https://docs.astral.sh/ruff/).
