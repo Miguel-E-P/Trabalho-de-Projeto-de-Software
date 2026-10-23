@@ -263,6 +263,6 @@ Implementei a SqlAlchemyReservaRepository e a FakeReservaRepository da Reserva e
 Adicionado o mapper e as tabelas de ticket e reserva na orm. Corrigido erros de SqlAlchemyRepository e FakeRepository de Reserva e Ticket. Implementado os testes de FakeRepository de Reserva e Ticket
 
 **22/10/2026**
-Modifiquei o arquitetura.md para se adequar melhor ao que é requerido pela Fase 2. Dei ênfase nas vantagens da arquitetura para os atributos, mas também documentei certas desvantagens e riscos que podem decorrer do seu uso, que será importante na hora de considerar como a arquitetura pode ser melhorada
+Modifiquei o arquitetura.md para se adequar melhor ao que é requerido pela Fase 2. Dei ênfase nas vantagens da arquitetura para os atributos, mas também documentei certas desvantagens e riscos que podem decorrer do seu uso, que será importante na hora de considerar como a arquitetura pode ser melhorada. Documentei o adrs do agregado Reverva 
 
-Uso de IA: De forma semelhante ao que foi relatado pelo integrante Pedro no dia 21/10/2016, o Gemini foi utilizado para formatar o texto e para debater escolhas da arquitetura, que resultou na decisão de manter a estrutura atual. 
+Uso de IA: De forma semelhante ao que foi relatado pelo integrante Pedro no dia 21/10/2016, o Gemini foi utilizado para formatar o texto e para debater escolhas da arquitetura, que resultou na decisão de manter a estrutura atual. Também documento usar o Gemini para saber como se reporta um adr, pois senti que não havia conhecimento suficiente naquele instante para fazer isso.
