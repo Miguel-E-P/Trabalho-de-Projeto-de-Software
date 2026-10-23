@@ -1,18 +1,15 @@
 # Documentação da Arquitetura do Sistema de Estacionamento
 
 ## 1. Escopo
-
-Nosso sistema gerencia o funcionamento de um estacionamento, cobrindo o cadastro de clientes, vinculação e remoção de veículos, reserva de vagas, controle de entrada e saída de veículos via tickets e o processamento de pagamentos. Nossos usuários são os clientes que utilizam o estacionamento e os operadores e administradores que determinam o funcionamento do mesmo.
+Nosso sistema gerencia o funcionamento de um estacionamento, cobrindo o cadastro de clientes, vinculação e remoção de veículos, reserva de vagas, controle de entrada e saída de veículos via tickets e o processamento de pagamentos. Nossos usuários são os clientes que utilizam o estacionamento e os operadores/administradores que determinam o funcionamento do mesmo.
 
 ---
 
 ## 2. Requisitos
-
 * **Atributos de Qualidade (em ordem de prioridade):**
 Os três primeiros refletem o que o negócio mais precisa: o sistema lida com dinheiro e dados pessoais de clientes e controla a saída física dos veículos. Os dois últimos são os atributos que a arquitetura escolhida na Fase 1 (*Cosmic Python*) busca garantir e que sustentam as refatorações e os padrões da Fase 2. As medidas numéricas são metas de projeto e podem ser ajustadas ao porte real do estacionamento.
 
 ### Segurança
-
 O sistema processa pagamentos e guarda dados pessoais de clientes (cadastro e placas dos veículos). Um vazamento ou uma adulteração de dados tem consequência financeira e legal (LGPD), e um ataque que derrube o sistema impede a operação do estacionamento.
 
 **Cenário S1: acesso não autorizado e dados inválidos**
@@ -38,7 +35,6 @@ O sistema processa pagamentos e guarda dados pessoais de clientes (cadastro e pl
 | **Medida da resposta** | Bloqueio de 15 minutos após 5 falhas consecutivas de login; degradação do tempo de resposta para usuários legítimos de no máximo 20% durante o ataque |
 
 ### Disponibilidade
-
 O sistema controla a entrada e a saída de veículos, então uma falha não pode deixar um cliente preso no estacionamento, e uma transação paga não pode ser perdida porque um pacote de rede se perdeu no caminho.
 
 **Cenário D1: falha de uma instância da aplicação ou do banco**
@@ -64,7 +60,6 @@ O sistema controla a entrada e a saída de veículos, então uma falha não pode
 | **Medida da resposta** | Nenhum pagamento pago perdido; nenhuma cobrança duplicada nos testes de repetição; estado reconciliado em até 2 minutos; nenhum cliente impedido de sair por mais de 5 minutos por falha do provedor |
 
 ### Desempenho
-
 O fluxo de entrada, saída e pagamento é onde o cliente percebe o sistema, e os clientes esperam respostas rápidas, principalmente nos horários de pico.
 
 **Cenário P1: saída e pagamento no pico**
@@ -79,7 +74,6 @@ O fluxo de entrada, saída e pagamento é onde o cliente percebe o sistema, e os
 | **Medida da resposta** | Validação e cálculo em até 2 segundos e confirmação do pagamento em até 5 segundos, para 95% das operações |
 
 ### Testabilidade
-
 Este é o atributo que mais motivou a arquitetura da Fase 1. Regras de negócio testáveis de forma rápida e isolada permitem refatorar com segurança e sustentam os demais atributos.
 
 **Cenário T1: teste isolado de uma regra de negócio**
@@ -94,7 +88,6 @@ Este é o atributo que mais motivou a arquitetura da Fase 1. Regras de negócio 
 | **Medida da resposta** | Suíte unitária (`pytest tests/unit`) em menos de 1 segundo; nenhuma importação de bibliotecas de infraestrutura em `domain/` |
 
 ### Modificabilidade
-
 A arquitetura precisa permitir trocar tecnologias de infraestrutura sem mexer nas regras de negócio, e acomodar mudanças de requisito (como novas regras de tarifa).
 
 **Cenário M1: troca de tecnologia de infraestrutura**
@@ -126,7 +119,6 @@ A arquitetura precisa permitir trocar tecnologias de infraestrutura sem mexer na
 ---
 
 ## 3. Arquitetura Atual
-
 * **Estilos e Padrões Utilizados:**
   O projeto adota o estilo de **Arquitetura Hexagonal (Ports & Adapters)** em conjunto com o padrão **DDD (Domain-Driven Design)** e a **Service Layer** recomendada pelo *Cosmic Python*.
 
@@ -184,7 +176,7 @@ graph TD
 ```
 
 
-======================================================================
+---
 
 ### Onde estão no código:
 * **Núcleo de Domínio (`src/estacionamento/domain/model.py`):** Contém entidades (`Cliente`, `Veiculo`), Value Objects (`Placa`) e agregados isolados de qualquer biblioteca externa.
@@ -197,8 +189,7 @@ graph TD
 ---
 
 ## 4. Trade-offs
-
-## 4.1 Contribuição da arquitetura atual para cada atributo
+### 4.1 Contribuição da arquitetura atual para cada atributo
 
 | Atributo | Contribui | Prejudica ou não ajuda |
 | --- | --- | --- |
@@ -208,14 +199,12 @@ graph TD
 | **Modificabilidade** | Regras novas entram no domínio, e trocar banco ou *framework* afeta só os *adapters*. | Um caso de uso novo toca várias camadas (modelo, repositório, ORM, serviço, rota, *fake*). |
 | **Testabilidade** | O domínio e a camada de serviço são testados sem banco, com `FakeRepository`. | Os testes com *fakes* podem passar enquanto o ORM real falha, por isso os testes de integração e e2e continuam necessários. |
 
-## 4.2 Pontos de trade-off
-
+### 4.2 Pontos de trade-off
 1. **Testabilidade e modificabilidade vs. Simplicidade:** Separar domínio, serviço e adapters permite testar regras sem banco e trocar infraestrutura, mas multiplica arquivos e indireções. Para uma operação simples de cadastro, o código passa por modelo, repositório, mapeamento ORM, serviço e rota. A decisão compensa se as regras de negócio forem complexas ou mudarem com frequência. Em um domínio majoritariamente de cadastro, o custo é pago sem retorno. 
 2. **Isolamento do domínio (pureza) vs. Desempenho:** Manter o modelo livre de herança do ORM e mapeá-lo depois com `map_imperatively` preserva a independência do *framework*, mas exige reconstruir objetos a cada leitura e tem custo de manutenção. O truque de `__setattr__` em Pagamento mostra que a pureza trouxe atrito técnico real. Um modelo *Active Record* seria mais direto e mais rápido, ao preço de acoplar o domínio ao banco. A decisão favorece modificabilidade e testabilidade em detrimento de desempenho.
 3. **Consistência do agregado vs. Desempenho e concorrência:** Tratar Estacionamento como agregado raiz garante que as regras de vagas sejam aplicadas em um único lugar. Porém, se toda reserva ou saída carrega e grava o agregado inteiro, operações concorrentes disputam o mesmo registro. No pico, com 50 operações por minuto, isso pode virar gargalo ou gerar conflitos de versão.
 
 ### Riscos Identificados:
-
 * **Risco de Condição de corrida na reserva de vagas:** Duas reservas simultâneas podem ler a mesma disponibilidade e ambas serem aceitas (*lost update*). *(Probabilidade: Média / Impacto: Alto)*
 * **Mitigação:** Controle de concorrência otimista (campo de versão no agregado) ou *lock* no banco; teste de concorrência.
 
@@ -258,20 +247,3 @@ As afirmações arquiteturais sobre o projeto são sustentadas por medições di
 | **Quem mudou um arquivo, e quando** | `git log --oneline -- src/estacionamento/adapters/orm.py` | Histórico de alterações do mapeamento do ORM com os hashes e mensagens de commit correspondentes às correções do `TypeDecorator`. |
 
 > **Nota:** A suíte completa de testes foi validada com sucesso, resultando no total de **48 passed em 1.05s** (`python -m pytest -o pythonpath=src`).
-
----
-
-## ADRs (Architecture Decision Records)
-
-Decisões de arquitetura tomadas ao longo do projeto e registradas individualmente no diretório `docs/adr/`:
-
-1. **`ADR-0001: Manter o Domínio Independente do ORM`**
-   * **Por quê:** Permitir a execução de testes unitários rápidos e garantir que as regras de negócio do estacionamento não fiquem acopladas às limitações ou sintaxes do SQLAlchemy.
-2. **`ADR-0002: Consolidação do Agregado Cliente e Testes E2E com Apoio de IA`**
-   * **Por quê:** Utilizou-se assistência de IA para diagnosticar e corrigir os erros de binding do SQLite para UUIDs e atributos do Value Object `Placa`, garantindo a validação E2E completa do Agregado Cliente antes da transição para a Fase 2.
-
-
-============================================================================================================================================
-
-
-> **Considerações preliminares:** O checklist de apoio para a resposta são as páginas 34 e 35 do slide/aula *"Arquitetura de Software - Aula 2"* (Profa. Vânia de Oliveira Neves). Eventualmente, o conteúdo deste arquivo (`arquitetura.md`) será revisado/editado novamente pelos integrantes do grupo, por se tratar de uma resposta coletiva e global do projeto/repositório até a data antes do checkpoint 1 da fase 2.
