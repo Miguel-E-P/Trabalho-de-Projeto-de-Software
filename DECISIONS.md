@@ -266,3 +266,14 @@ Adicionado o mapper e as tabelas de ticket e reserva na orm. Corrigido erros de 
 Modifiquei o arquitetura.md para se adequar melhor ao que é requerido pela Fase 2. Dei ênfase nas vantagens da arquitetura para os atributos, mas também documentei certas desvantagens e riscos que podem decorrer do seu uso, que será importante na hora de considerar como a arquitetura pode ser melhorada. Documentei o adrs do agregado Reverva 
 
 Uso de IA: De forma semelhante ao que foi relatado pelo integrante Pedro no dia 21/10/2016, o Gemini foi utilizado para formatar o texto e para debater escolhas da arquitetura, que resultou na decisão de manter a estrutura atual. Também documento usar o Gemini para saber como se reporta um adr, pois senti que não havia conhecimento suficiente naquele instante para fazer isso.
+
+Hashs dos commits: 
+f6334e5449c020e6a586a8407ee915bb5c829be4f6334e5449c020e6a586a8407ee915bb5c829be4
+Arquivos modificados: arquitetura.md
+
+7c0ac29095376c9e972e2d27209939abbaa6a2a5
+Arquivos modificados: decisions.md
+
+2f117545ce0ba164a64ba3b2969ccea128c84d6c
+Arquivos modificados: decisions.md, 0003-titulo.md, 0003-reserva.md
+
