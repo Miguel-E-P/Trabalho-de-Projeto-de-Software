@@ -174,7 +174,11 @@ Decisão de projeto: manter a imutabilidade do `Pagamento` com `__setattr__` cus
 Uso de IA: Claude foi usado para gerar o rascunho inicial do ADR, a partir do código do `Pagamento` e da descrição do problema. Depois usei o Claude para: (1) entender o que o enunciado pede de um ADR e qual o formato (contexto, decisão, alternativas e consequências); (2) revisar o rascunho, o que apontou a falta da seção de alternativas, o conflito de numeração com o ADR-0001, a diferença entre o código do rascunho e o `model.py`, o acoplamento ao prefixo `_sa_` e a possível brecha na imutabilidade após o `commit`; (3) sugerir um teste para verificar essa brecha; e (4) revisar o texto da alternativa "modelo de persistência separado", corrigindo a justificativa e acrescentando a vantagem real dessa alternativa. Reescrevi o ADR com base nessas revisões e conferi o código e o texto final.
 
 Hash do Commits:
+de33ff2b45a3ac7a7e45a7834112191549889fdd
+Arquivos modificados: arquitetura.md, DECISIONS.md
 
+1f67a257124c626832a2d492bdd390d31f815124
+Arquivos modificados: 0004-titulo.md, 0004-pagamento.md DECISIONS.md
 
 ### Gustavo
 **16-09-26**:
