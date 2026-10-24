@@ -139,6 +139,17 @@ bc9b0bf - descrição e análise preliminar da arquitetura do projeto
 
 15767b9 - adr001-cliente.md e decision.md.
 
+**24-10-26**:
+
+Versão zero:
+
+IA: apoio no código de validação das placas para padrão nacional/ mercosul;
+
+Hash do commit atual após refatoração: 841bc73
+Foram aplicados em domain/model/class placa (value object) os seguintes princípios SOLID: SRP e OCP no Value Object Placa com validacao de formato de placa nacional e mercosul.
+
+To Do: amanhã realizar uma redação mais técnica, análitica e reflexiva. Falta o hash do commit "antes" que será o hash anterior ao final fase1. Pois, já estava estável com testes unitários e de integração e2e estáveis e anterior a 06/10.
+
 
 
 
