@@ -4,6 +4,7 @@ na medida do possível"""
 from datetime import datetime
 from dataclasses import dataclass, field, FrozenInstanceError
 from enum import Enum
+import re
 from uuid import UUID
 from typing import List
 
@@ -11,9 +12,22 @@ from typing import List
 # Abordagem: da class mais simples até chegar na class raiz
 
 # class value object para Placa (imutável)
+# Value Object Placa com validação própria (SRP)
 @dataclass(frozen=True)
 class Placa:
     numero: str
+
+    def __post_init__(self):
+        # Garante a invariante de domínio do próprio Value Object
+        if not self.numero or not self._validar_formato(self.numero):
+            raise ValueError(f"Placa inválida: '{self.numero}' não atende ao formato esperado.")
+
+    @staticmethod
+    def _validar_formato(placa_str: str) -> bool:
+        # Aceita padrão antigo (ABC1234) ou Mercosul (ABC1D23)
+        padrao = r'^[A-Z]{3}[0-9][A-Z0-9][0-9]{2}$'
+        return bool(re.match(padrao, placa_str.upper().replace("-", "")))
+
 
 # class entidade
 @dataclass
