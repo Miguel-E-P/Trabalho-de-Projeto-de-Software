@@ -141,14 +141,18 @@ bc9b0bf - descrição e análise preliminar da arquitetura do projeto
 
 **24-10-26**:
 
-Versão zero:
+Versão zero para aplicar os princípios SOLID:
 
-IA: apoio no código de validação das placas para padrão nacional/ mercosul;
+Foram aplicados os princípios S (SRP) e O (OCP) no object value class placa.
+
+IA: apoio no código de validação das placas para padrão nacional/ mercosul no value object class placa;
+
+**Hash do Commit "Antes":** `1564c18` em 29-09-26 (anterior a 06/10). 
 
 Hash do commit atual após refatoração: 841bc73
 Foram aplicados em domain/model/class placa (value object) os seguintes princípios SOLID: SRP e OCP no Value Object Placa com validacao de formato de placa nacional e mercosul.
 
-To Do: amanhã realizar uma redação mais técnica, análitica e reflexiva. Falta o hash do commit "antes" que será o hash anterior ao final fase1. Pois, já estava estável com testes unitários e de integração e2e estáveis e anterior a 06/10.
+
 
 
 
