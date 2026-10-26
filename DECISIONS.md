@@ -153,6 +153,18 @@ Hash do commit atual após refatoração: 841bc73
 Foram aplicados em domain/model/class placa (value object) os seguintes princípios SOLID: SRP e OCP no Value Object Placa com validacao de formato de placa nacional e mercosul.
 
 
+**26-10-26**:
+
+**Declaração do Uso de IA**
+
+Declara-se a utilização de Inteligência Artificial como ferramenta de suporte e co-piloto no diagnóstico de violações arquiteturais, na elaboração das regras de validação por expressão regular, na estruturação do arquivo docs/solid.md e no alinhamento da documentação do Checkpoint 2.
+
+**Autorrelato**
+
+Fui o responsável pela identificação e correção das violações de princípios SOLID no Agregado Cliente (src/estacionamento/domain/model.py), focando na evolução do Value Object Placa. Isolei a responsabilidade da validação sintática dentro do próprio Value Object, criei e formalizei a regra de negócio para suporte a múltiplos formatos de placas (padrão antigo e Mercosul), executei e mantive a suíte de testes automatizados verde e registrei formalmente os hashes de commit (1564c18 e 841bc73) e a análise de trade-offs na documentação do projeto.
+
+Como consequência direta da refatoração, foi formalizada a criação da RN-"xx" — Validação Sintática Unificada de Placas: padrão antigo e padrão Mercosul.
+
 
 
 
