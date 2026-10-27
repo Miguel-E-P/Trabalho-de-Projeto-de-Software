@@ -1,6 +1,6 @@
 # ADR-0004: Imutabilidade de `Pagamento` com `__setattr__` customizado
 
-- Status: Aceito(fase 1)
+- Status: Substituído pelo [ADR-0006](0006-pagamento-sem-violacao-dip.md) (aceito na fase 1)
 
 ## Contexto
 O domínio (`domain/model.py`) é Python puro e não importa o SQLAlchemy. `Pagamento` precisa ser imutável depois de criado: um pagamento registrado não pode ter valor, tipo ou data alterados. A primeira versão usava `@dataclass(frozen=True)`. Porém, ao mapear a classe com `map_imperatively`, o SQLAlchemy grava o atributo interno `_sa_instance_state` em cada instância. O `frozen=True` bloqueia qualquer atribuição, e o `FrozenInstanceError` impedia o ORM de funcionar (commit [hash]).
