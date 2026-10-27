@@ -212,6 +212,10 @@ Removi a exceção _sa_ de Pagamento.__setattr__; bloquear apenas a reatribuiç�
 
 Uso de IA: Claude foi utilizado para escrever o ADR e a decisao. Fora isso, tambem foi utilizada para verificar se a nova implementacao era realmente a melhor possivel.
 
+Hash do Commits:
+35bf78340a62e12fdeea281c816562c2b39627d3
+Arquivos modificados: 0004-pagamento.md, 0006-pagamento-sem-violacao-dip.md, solid.md, model.py, test_model.py
+
 ### Gustavo
 **16-09-26**:
 Primeiro, estou organizando nosso repositório; devo fazer esse tipo de varredura mais vezes e, a não ser que eu esqueça, subir o commit com uma flag de "_refact_". A título de curiosidade, o linter/code formatter que uso chama-se [ruff](https://docs.astral.sh/ruff/).

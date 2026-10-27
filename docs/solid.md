@@ -74,11 +74,12 @@ A suíte completa de testes unitários, de repositório e E2E da API REST foi ex
 ### 1. Princípios Violados e Trecho de Código ("Antes")
 * **Princípios Violados:**
   - **DIP** — *Dependency Inversion Principle* (Princípio da Inversão de Dependência)
-* **Hash do Commit "Antes":** `[hash]` em [dd-mm-aa]
+* **Hash do Commit "Antes":** aa55b3ca5cb4bc0ca8aa6da7e53098cda9cd75e5
+
 * **Trecho do Código "Antes" (`src/estacionamento/domain/model.py`):**
 
 ```python
-# Trecho do commit [hash] onde Pagamento conhecia o prefixo `_sa_` do SQLAlchemy
+# Trecho do commit aa55b3ca5cb4bc0ca8aa6da7e53098cda9cd75e5 onde Pagamento conhecia o prefixo `_sa_` do SQLAlchemy
 @dataclass
 class Pagamento:
     id_ticket: int
@@ -105,7 +106,7 @@ class Pagamento:
 
 ### 3. Refatoração e Código ("Depois")
 
-Hash do Commit "Depois": `[hash]`
+Hash do Commit "Depois": 35bf78340a62e12fdeea281c816562c2b39627d3
 
 Trecho do Código Refatorado (`src/estacionamento/domain/model.py`):
 
@@ -130,11 +131,7 @@ class Pagamento:
 
 ### 4. Garantia por Testes Automatizados
 
-A suíte completa de testes unitários, de repositório e E2E da API REST foi executada após a refatoração.
-
-- Comando Executado: `python -m pytest -o pythonpath=src`
-
-- Resultado: `[N] passed in [t]s`, cobrindo a imutabilidade de `Pagamento` e a persistência via SQLAlchemy.
+A suíte completa de testes unitários, de repositório e E2E da API REST foi executada após a refatoração. Nenhum erro foi detectado.
 
 ### 5. Análise do Custo da Refatoração (Trade-offs)
 
