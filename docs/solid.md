@@ -275,3 +275,43 @@ Duas funções privadas a mais em model.py (uma indireção a mais para ler uma 
 Coesão (SRP): cada regra de validação do agregado tem um único lugar para mudar, e Ticket e Reserva não podem divergir sem querer.
 
 Substituibilidade (DIP/LSP): código escrito contra a abstração pode listar, e Sql e Fake passam a ser trocáveis por contrato, o que sustenta a testabilidade com FakeRepository descrita em arquitetura.md.
+
+## Integrante: Gustavo Teixeira
+**Módulo/Agregado:** Agregado Estacionamento
+
+### 1. Princípios Violados
+**Princípio**: OCP — Open/Closed Principle (Princípio Aberto/Fechado)
+
+```python
+class TipoVaga(Enum):
+    CARRO = "carro"
+    MOTO = "moto"
+    CARRO_ELETRICO = "carro elétrico"
+
+```
+
+```python
+@dataclass
+class Vaga:
+    id_vaga: int
+    tipo: TipoVaga
+    status: StatusVaga = StatusVaga.LIVRE
+
+    def ocupar(self) -> None:
+        if self.status != StatusVaga.LIVRE:
+            raise VagaIndisponivel(f"Vaga {self.id_vaga} indisponível.")
+
+        self.status = StatusVaga.OCUPADA
+```
+
+(faa6fd6) **feat: Trabalhando nas classes de domínio Vaga e Estacionamento**
+(1537c2f) **feat: Implementando mecanismos de ocupar Vaga em Estacionamento**
+(2f8bc1e) **refact: Explicitando exceções de domínio (VagaIndisponivel e VagaNaoEncontrada)**
+
+### 2. Problema Concreto
+
+### 3. Refatoração do Código
+
+### 4. Garantia por Testes Automatizados
+
+### 5. Análise do Custo da Refatoração
