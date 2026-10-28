@@ -207,13 +207,9 @@ class Pagamento:
             raise ValueError("ERROR: Valor do pagamento NAO pode ser negativo")
 
     def __setattr__(self, name, value):
-        if name.startswith("_sa_"):
-            super().__setattr__(name, value)
-            return
-        if name not in self.__dict__:
-            super().__setattr__(name, value)
-        else:
+        if name in self.__dataclass_fields__ and name in self.__dict__:
             raise FrozenInstanceError("ERROR: Nao pode alterar pagamento")
+        super().__setattr__(name, value)
 # fim-pagamento
 
 #fim-AGREGADO PAGAMENTO

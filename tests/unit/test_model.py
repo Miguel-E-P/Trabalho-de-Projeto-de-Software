@@ -203,6 +203,36 @@ def test_pagamento_imutabilidade():
     with pytest.raises(FrozenInstanceError):
         pagamento.id_ticket = 101
 
+
+@pytest.mark.parametrize(
+    "campo, novo_valor",
+    [
+        ("valor", 99.0),
+        ("tipo_pagamento", model.TipoPagamento.DEBITO),
+        ("data_hora_pagamento", datetime(2030, 1, 1)),
+    ],
+)
+def test_pagamento_todos_os_campos_sao_imutaveis(campo, novo_valor):
+    pagamento = model.Pagamento(100, 50.0, model.TipoPagamento.PIX, datetime(2026, 9, 18, 10, 30))
+
+    with pytest.raises(FrozenInstanceError):
+        setattr(pagamento, campo, novo_valor)
+
+
+def test_pagamento_nao_bloqueia_atributos_que_nao_sao_campos_de_dominio():
+    pagamento = model.Pagamento(100, 50.0, model.TipoPagamento.PIX, datetime(2026, 9, 18, 10, 30))
+
+    pagamento._estado_externo = "a"
+    pagamento._estado_externo = "b"
+
+    assert pagamento._estado_externo == "b"
+
+
+def test_pagamento_valor_zero_e_valido():
+    pagamento = model.Pagamento(100, 0.0, model.TipoPagamento.DINHEIRO_VIVO, datetime(2026, 9, 18, 10, 30))
+
+    assert pagamento.valor == 0.0
+
 #FIM AGREGADO PAGAMENTO
 
 # Testes Agregado Estacionamento

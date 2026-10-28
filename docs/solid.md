@@ -66,6 +66,82 @@ A suíte completa de testes unitários, de repositório e E2E da API REST foi ex
 
  Extensibilidade (OCP): Permite aceitar novos formatos de placa (Mercosul e Tradicional) de forma transparente sem que nenhuma linha de código da camada de serviço ou da entidade Cliente precise ser editada ou retestada.
 
+## Integrante: Pedro Quintaes
+**Módulo / Agregado:** Agregado Pagamento (`Pagamento`)
+
+---
+
+### 1. Princípios Violados e Trecho de Código ("Antes")
+* **Princípios Violados:**
+  - **DIP** — *Dependency Inversion Principle* (Princípio da Inversão de Dependência)
+* **Hash do Commit "Antes":** aa55b3ca5cb4bc0ca8aa6da7e53098cda9cd75e5
+
+* **Trecho do Código "Antes" (`src/estacionamento/domain/model.py`):**
+
+```python
+# Trecho do commit aa55b3ca5cb4bc0ca8aa6da7e53098cda9cd75e5 onde Pagamento conhecia o prefixo `_sa_` do SQLAlchemy
+@dataclass
+class Pagamento:
+    id_ticket: int
+    valor: float
+    tipo_pagamento: TipoPagamento
+    data_hora_pagamento: datetime
+
+    def __post_init__(self):
+        if self.valor < 0.0:
+            raise ValueError("ERROR: Valor do pagamento NAO pode ser negativo")
+
+    def __setattr__(self, name, value):
+        if name.startswith("_sa_"):
+            super().__setattr__(name, value)
+            return
+        if name not in self.__dict__:
+            super().__setattr__(name, value)
+        else:
+            raise FrozenInstanceError("ERROR: Nao pode alterar pagamento")
+```
+
+### 2. Problema Concreto
+2.1 Violação do DIP: `Pagamento`, uma entidade de domínio (módulo de alto nível), dependia de um detalhe de baixo nível: o prefixo `_sa_`, usado internamente pelo SQLAlchemy. A exceção `name.startswith("_sa_")` em `__setattr__` fazia o domínio conhecer o funcionamento interno do ORM, mesmo sem importá-lo, o que contraria a independência do domínio. Se o SQLAlchemy mudasse esse detalhe, seria necessário alterar uma entidade de domínio.
+
+### 3. Refatoração e Código ("Depois")
+
+Hash do Commit "Depois": 35bf78340a62e12fdeea281c816562c2b39627d3
+
+Trecho do Código Refatorado (`src/estacionamento/domain/model.py`):
+
+```python
+@dataclass
+class Pagamento:
+    id_ticket: int
+    valor: float
+    tipo_pagamento: TipoPagamento
+    data_hora_pagamento: datetime
+
+    def __post_init__(self):
+        if self.valor < 0.0:
+            raise ValueError("ERROR: Valor do pagamento NAO pode ser negativo")
+
+    def __setattr__(self, name, value):
+        # Regra definida só pelos campos da própria entidade, sem conhecer o ORM (DIP)
+        if name in self.__dataclass_fields__ and name in self.__dict__:
+            raise FrozenInstanceError("ERROR: Nao pode alterar pagamento")
+        super().__setattr__(name, value)
+```
+
+### 4. Garantia por Testes Automatizados
+
+A suíte completa de testes unitários, de repositório e E2E da API REST foi executada após a refatoração. Nenhum erro foi detectado.
+
+### 5. Análise do Custo da Refatoração (Trade-offs)
+
+**Custo:** A imutabilidade passa a valer apenas para os campos declarados do dataclass (atributos que não são campos podem ser reatribuídos), e a regra depende de `__dataclass_fields__`, o que exige que `Pagamento` continue sendo um `@dataclass`.
+
+**Por que compensa:**
+
+- **Desacoplamento (DIP):** o domínio deixa de conhecer o prefixo `_sa_` e qualquer outro detalhe do SQLAlchemy; a regra de imutabilidade depende só dos campos da própria entidade, e a dependência passa a apontar apenas do ORM para o domínio.
+
+- **Retrocompatibilidade:** o comportamento dos campos não muda (a primeira atribuição funciona e a reatribuição lança `FrozenInstanceError`).
 
 # Integrante: Miguel Enne
 
