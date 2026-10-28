@@ -116,56 +116,69 @@ class Estacionamento:
 #Agregado Reserva
 class DataInvalida(ValueError):
     pass
-
+ 
 class PagamentoJaRealizadoError(Exception):
     pass
-
+ 
+ 
+# Regras de validação do agregado (SRP): cada função tem uma única razão para
+# mudar e é reutilizada por Ticket e Reserva, em vez de cada entidade carregar
+# uma cópia própria da mesma regra.
+def _validar_id_nao_negativo(valor: int) -> None:
+    if valor < 0:
+        raise ValueError("Valor não pode ser negativo.")
+ 
+ 
+def _validar_nao_anterior(data: datetime, referencia: datetime, mensagem: str) -> None:
+    if data < referencia:
+        raise DataInvalida(mensagem)
+ 
+ 
 @dataclass
 class Ticket:
     idTicket: int
     horarioEntrada:datetime
     horarioSaida:datetime | None
     pago: bool = False
-
+ 
     # INVARIANTE: protege contra valor negativo.
     def __post_init__(self):
-        if self.idTicket < 0:
-            raise ValueError("Valor não pode ser negativo.")
-
+        _validar_id_nao_negativo(self.idTicket)
+ 
     # Data de saída do veículo não pode ser anterior à data de entrada
     def updateSaida(self, horarioSaida: datetime) -> None:
-        if horarioSaida < self.horarioEntrada:
-            raise DataInvalida("Essa data está indisponível para a saída.")
+        _validar_nao_anterior(
+            horarioSaida, self.horarioEntrada, "Essa data está indisponível para a saída."
+        )
         self.horarioSaida = horarioSaida
-
+ 
     def registrar_pagamento(self) -> None:
         if self.pago:
             raise PagamentoJaRealizadoError("ERROR: Ticket ja foi pago.")
         self.pago = True
-
-
+ 
+ 
     
-
+ 
 @dataclass(frozen=True)
 class Reserva:
     id_reserva: int
     data_reserva: datetime
     hoje: datetime
     placa_veiculo_reserva: str
-
+ 
     # INVARIANTE: protege contra valor negativo.
     # Data de reserva do veículo não pode ser anterior à data hoje
     def __post_init__(self):
-        if self.id_reserva < 0:
-            raise ValueError("Valor não pode ser negativo.")
-
-        if self.data_reserva < self.hoje:
-            raise DataInvalida("Essa data está indisponível para reserva.")
+        _validar_id_nao_negativo(self.id_reserva)
+        _validar_nao_anterior(
+            self.data_reserva, self.hoje, "Essa data está indisponível para reserva."
+        )
         
-
+ 
     
             
-
+ 
 # Fim do Agregado Reserva
 
 

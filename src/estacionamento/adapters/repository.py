@@ -75,38 +75,44 @@ class FakePagamentoRepository(AbstractPagamentoRepository):
 
 #Agregado Reserva Início
 
+ 
 #Reserva
 class AbstractReservaRepository(abc.ABC):
     @abc.abstractmethod
     def add(self, reserva: model.Reserva) -> None:
         "adiciona uma reserva no repositório"
         raise NotImplementedError
-
+ 
     @abc.abstractmethod
     def get(self, id_reserva:int) -> Optional[model.Reserva]:
         "retorna uma reserva por meio de seu id"
         raise NotImplementedError
 
+    @abc.abstractmethod
+    def list(self) -> "list[model.Reserva]":
+        "retorna todas as reservas do repositório"
+        raise NotImplementedError
+ 
 class SqlAlchemyReservaRepository(AbstractReservaRepository):
     def __init__(self, session: Session):
         self.session = session
-
+ 
     def add(self, reserva: model.Reserva) -> None:
         self.session.add(reserva)
-
+ 
     def get(self, id_reserva: int) -> Optional[model.Reserva]:
         return self.session.query(model.Reserva).filter_by(id_reserva=id_reserva).first()
-
+ 
     def list(self):
         return self.session.query(model.Reserva).all()
-
+ 
 class FakeReservaRepository(AbstractReservaRepository):
     def __init__(self, reservas: list[model.Reserva] = None):
         self._reservas = list(reservas) if reservas else []
-
+ 
     def add(self, reserva: model.Reserva) -> None:
         self._reservas.append(reserva)
-
+ 
     def get(self, id_reserva: int) -> Optional[model.Reserva]:
         try:
             return next(r for r in self._reservas if r.id_reserva == id_reserva)
@@ -115,34 +121,39 @@ class FakeReservaRepository(AbstractReservaRepository):
         
     def list(self):
         return list(self._reservas)
-
+ 
 #Ticket
 class AbstractTicketRepository(abc.ABC):
     @abc.abstractmethod
     def add(self, ticket: model.Ticket) -> None:
         "adiciona um ticket no repositório"
         raise NotImplementedError
-
+ 
     @abc.abstractmethod
     def get(self, idTicket:int) -> Optional[model.Ticket]:
         "retorna um ticket por meio de seu id"
         raise NotImplementedError
-
-
+ 
+    @abc.abstractmethod
+    def list(self) -> "list[model.Ticket]":
+        "retorna todos os tickets do repositório"
+        raise NotImplementedError
+ 
+ 
 class SqlAlchemyTicketRepository(AbstractTicketRepository):
     def __init__(self, session: Session):
             self.session = session
-
+ 
     def add(self, ticket: model.Ticket) -> None:
         self.session.add(ticket)
-
+ 
     def get(self, idTicket: int) -> Optional[model.Ticket]:
         return( self.session.query(model.Ticket).filter_by(idTicket=idTicket).first()  )
-
+ 
     def list(self):
         return self.session.query(model.Ticket).all()
-
-
+ 
+ 
 class FakeTicketRepository(AbstractTicketRepository):
     def __init__(self, tickets: list[model.Ticket] = None):
         self._tickets = list(tickets) if tickets else []

@@ -65,3 +65,137 @@ A suíte completa de testes unitários, de repositório e E2E da API REST foi ex
  Coesão (SRP): Torna impossível existir um objeto Placa em estado sintaticamente inválido na memória da aplicação.
 
  Extensibilidade (OCP): Permite aceitar novos formatos de placa (Mercosul e Tradicional) de forma transparente sem que nenhuma linha de código da camada de serviço ou da entidade Cliente precise ser editada ou retestada.
+
+
+# Integrante: Miguel Enne
+
+Módulo / Agregado: Agregado Reserva (Reserva, Ticket, AbstractReservaRepository, AbstractTicketRepository e a tabela tickets no ORM)
+
+Hash do Commit: 
+
+### 1. Princípios Violados e Trecho de Código ("Antes")
+Princípios Violados:
+Princípio da Responsabilidade Única, Princípio da Inversão de Dependência e o Princípio da Substituição de Liskov no contrato dos repositórios
+
+Trecho do Código antes das mudanças:
+
+[cada entidade carrega a sua própria cópia das regras]
+src/estacionamento/domain/model.py 
+
+python
+@dataclass
+class Ticket:
+    ...
+    def __post_init__(self):
+        if self.idTicket < 0:
+            raise ValueError("Valor não pode ser negativo.")
+
+    def updateSaida(self, horarioSaida: datetime) -> None:
+        if horarioSaida < self.horarioEntrada:
+            raise DataInvalida("Essa data está indisponível para a saída.")
+        self.horarioSaida = horarioSaida
+
+@dataclass(frozen=True)
+class Reserva:
+    ...
+    def __post_init__(self):
+        if self.id_reserva < 0:
+            raise ValueError("Valor não pode ser negativo.")
+
+        if self.data_reserva < self.hoje:
+            raise DataInvalida("Essa data está indisponível para reserva.")
+
+[o contrato abstrato só declara add e get, mas as implementações concretas têm list]
+src/estacionamento/adapters/repository.py 
+
+python
+class AbstractReservaRepository(abc.ABC):
+    @abc.abstractmethod
+    def add(self, reserva: model.Reserva) -> None: ...
+    @abc.abstractmethod
+    def get(self, id_reserva: int) -> Optional[model.Reserva]: ...
+
+class SqlAlchemyReservaRepository(AbstractReservaRepository):
+    ...
+    def list(self):          # fora do contrato
+        return self.session.query(model.Reserva).all()
+
+src/estacionamento/adapters/orm.py:
+
+python
+Column("horarioSaida", DateTime, nullable=False),
+
+### 2. Problema Concreto
+
+2.1 Violação do SRP: Ticket e Reserva repetiam as mesmas regras dentro de si: "o id não pode ser negativo" (com a mesma mensagem) e "uma data não pode ser anterior a uma referência" (Ticket.updateSaida e Reserva). Cada regra tinha duas casas, então alterar uma delas (mensagem, tipo de exceção, etc) exigia editar as duas entidades e lembrar de manter as duas iguais.
+
+2.2 Violação do DIP (e do contrato do LSP): AbstractReservaRepository e AbstractTicketRepository não declaravam list, embora as quatro implementações concretas (Sql e Fake, de cada um) a tivessem. Quem recebe a abstração não pode listar; para usar list teria de depender de SqlAlchemyReservaRepository ou do Fake, e a troca de uma implementação por outra deixava de ser segura.
+
+2.3 Inconsistência de persistência (correção de bug, não é violação de princípio): o domínio aceita Ticket sem saída (horarioSaida=None, veículo ainda estacionado), mas a coluna horarioSaida era NOT NULL. Salvar um ticket de entrada falharia no banco real. Foi corrigido aqui por estar no mesmo agregado.
+
+### 3. Refatoração e Código 
+
+src/estacionamento/domain/model.py — cada regra tem uma única casa e as entidades só delegam:
+
+python
+def _validar_id_nao_negativo(valor: int) -> None:
+    if valor < 0:
+        raise ValueError("Valor não pode ser negativo.")
+
+
+def _validar_nao_anterior(data: datetime, referencia: datetime, mensagem: str) -> None:
+    if data < referencia:
+        raise DataInvalida(mensagem)
+
+
+@dataclass
+class Ticket:
+    ...
+    def __post_init__(self):
+        _validar_id_nao_negativo(self.idTicket)
+
+    def updateSaida(self, horarioSaida: datetime) -> None:
+        _validar_nao_anterior(
+            horarioSaida, self.horarioEntrada, "Essa data está indisponível para a saída."
+        )
+        self.horarioSaida = horarioSaida
+
+
+@dataclass(frozen=True)
+class Reserva:
+    ...
+    def __post_init__(self):
+        _validar_id_nao_negativo(self.id_reserva)
+        _validar_nao_anterior(
+            self.data_reserva, self.hoje, "Essa data está indisponível para reserva."
+        )
+
+src/estacionamento/adapters/repository.py — list passa a fazer parte do contrato (o mesmo vale para AbstractTicketRepository):
+
+python
+class AbstractReservaRepository(abc.ABC):
+    ...
+    @abc.abstractmethod
+    def list(self) -> "list[model.Reserva]":
+        "retorna todas as reservas do repositório"
+        raise NotImplementedError
+
+src/estacionamento/adapters/orm.py:
+
+python
+[ O domínio aceita Ticket sem saída (veículo ainda estacionado): a coluna precisa aceitar NULL.]
+Column("horarioSaida", DateTime, nullable=True),
+
+### 4. Garantia por Testes Automatizados
+Comando Executado: python -m pytest -o pythonpath=src tests/unit/test_model.py tests/unit/test_repository.py
+Resultado: 33 passed antes da refatoração; 44 passed depois (11 testes novos).
+O que os testes novos garantem: 2 deles (test_list_faz_parte_do_contrato_abstrato_de_reserva e ..._de_ticket) falham contra o repository.py anterior e passam agora. Os outros 9 são testes de caracterização das bordas (id zero, saída igual à entrada, saída inválida que não altera o horário anterior, reserva para o próprio dia, list nos Fakes, cópia da lista devolvida, implementações concretas honrando o contrato). Eles passam antes e depois, e provam que extrair as regras não mudou o comportamento.
+Limites desta verificação: a execução foi feita sem o SQLAlchemy instalado, com um stub mínimo de sqlalchemy.orm.Session só para importar o repository.py. Os testes de integração, os E2E e test_services.py não foram executados, e a mudança no orm.py foi verificada apenas por compilação do arquivo. [pendente: rodar python -m pytest -o pythonpath=src completo e colar aqui o resultado]
+
+### 5. Análise do Custo da Refatoração(Trade-offs)Custo:
+
+Duas funções privadas a mais em model.py (uma indireção a mais para ler uma validação) e uma quebra de compatibilidade: qualquer subclasse de AbstractReservaRepository ou AbstractTicketRepository que não implemente list deixa de poder ser instanciada.
+
+Coesão (SRP): cada regra de validação do agregado tem um único lugar para mudar, e Ticket e Reserva não podem divergir sem querer.
+
+Substituibilidade (DIP/LSP): código escrito contra a abstração pode listar, e Sql e Fake passam a ser trocáveis por contrato, o que sustenta a testabilidade com FakeRepository descrita em arquitetura.md.

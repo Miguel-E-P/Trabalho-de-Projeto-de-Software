@@ -70,7 +70,7 @@ def test_fake_reserva_salva_e_recupera_reserva():
     reserva_salva = repo.get(12)
     assert reserva_salva == reserva
     assert reserva_salva.placa_veiculo_reserva == "AAA-321"
-
+ 
 def test_fake_ticket_salva_e_recupera_ticket():
     repo = FakeTicketRepository()
     ticket = model.Ticket(
@@ -83,6 +83,52 @@ def test_fake_ticket_salva_e_recupera_ticket():
     ticket_salvo = repo.get(43)
     assert ticket_salvo == ticket
     assert ticket_salvo.horarioEntrada == datetime(2026, 9, 27, 10, 30)
+ 
+def test_fake_reserva_lista_todas_as_reservas():
+    r1 = model.Reserva(1, datetime(2026, 12, 1), datetime(2026, 9, 1), "ABC1D23")
+    r2 = model.Reserva(2, datetime(2026, 12, 2), datetime(2026, 9, 1), "XYZ9A88")
+    repo = FakeReservaRepository([r1, r2])
+ 
+    assert repo.list() == [r1, r2]
+ 
+ 
+def test_fake_ticket_lista_todos_os_tickets():
+    t1 = model.Ticket(1, datetime(2026, 9, 27, 10, 0), None)
+    t2 = model.Ticket(2, datetime(2026, 9, 27, 11, 0), None)
+    repo = FakeTicketRepository([t1, t2])
+ 
+    assert repo.list() == [t1, t2]
+ 
+ 
+def test_list_devolve_copia_e_nao_expoe_estado_interno():
+    repo = FakeReservaRepository()
+    repo.list().append("lixo")
+ 
+    assert repo.list() == []
+ 
+ 
+def test_list_faz_parte_do_contrato_abstrato_de_reserva():
+    class RepoIncompleto(repository.AbstractReservaRepository):
+        def add(self, reserva): ...
+        def get(self, id_reserva): ...
+ 
+    assert RepoIncompleto.__abstractmethods__ == frozenset({"list"})
+ 
+ 
+def test_list_faz_parte_do_contrato_abstrato_de_ticket():
+    class RepoIncompleto(repository.AbstractTicketRepository):
+        def add(self, ticket): ...
+        def get(self, idTicket): ...
+ 
+    assert RepoIncompleto.__abstractmethods__ == frozenset({"list"})
+ 
+ 
+def test_implementacoes_concretas_honram_o_contrato_abstrato():
+    assert isinstance(repository.SqlAlchemyReservaRepository(session=None), repository.AbstractReservaRepository)
+    assert isinstance(repository.SqlAlchemyTicketRepository(session=None), repository.AbstractTicketRepository)
+    assert isinstance(FakeReservaRepository(), repository.AbstractReservaRepository)
+    assert isinstance(FakeTicketRepository(), repository.AbstractTicketRepository)
+ 
 
 # Agregado Estacionamento
 def test_get_estacionamento_cadastrado():

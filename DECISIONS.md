@@ -318,3 +318,19 @@ Arquivos modificados: decisions.md
 2f117545ce0ba164a64ba3b2969ccea128c84d6c
 Arquivos modificados: decisions.md, 0003-titulo.md, 0003-reserva.md
 
+***27/10/2026
+
+Apliquei os princípios SOLID no agregado Reserva (Reserva, Ticket e seus repositórios) 
+
+
+Reserva e Ticket: extrair as regras de validação duplicadas (SRP). O id não negativo e "data não anterior a uma referência" estavam copiados dentro das duas entidades. Passaram a ser duas funções privadas em model.py, usadas por Ticket e Reserva. 
+Repositórios de Reserva e Ticket: list() entra no contrato abstrato (DIP/LSP). Antes só as implementações concretas tinham list. Consequência: toda subclasse das duas abstrações precisa implementá-lo.
+ORM: tickets.horarioSaida passa a aceitar NULL. É correção de bug (o domínio aceita ticket sem saída), não de princípio.
+Pagamento: a imutabilidade vale só para os campos do próprio modelo (SRP/DIP). O __setattr__ deixou de citar o prefixo _sa_ do SQLAlchemy, então o domínio não conhece mais nenhum nome interno do ORM. Mantive o __setattr__ customizado e não voltei para frozen=True, porque não consegui validar o mapeamento contra o SQLAlchemy real.
+Pagamento: Fake e SqlAlchemy recusam o segundo pagamento do mesmo ticket (LSP). O Fake aceitava, o banco real não, e o teste com Fake podia passar mesmo com o comportamento errado.
+
+Uso de IA: o Claude (Anthropic) foi usado para identificar as violações de SOLID em Reserva, Ticket e Pagamento, e ajudar na refatoração de model.py, repository.py, orm.py, test_model.py e test_repository.py
+
+
+Hash dos commits: [preencher] Arquivos modificados: model.py, repository.py, orm.py, test_model.py, test_repository.py, solid.md, DECISIONS.md
+

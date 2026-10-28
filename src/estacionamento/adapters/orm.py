@@ -92,6 +92,8 @@ pagamentos_table = Table(
     Column("tipo_pagamento", SQLEnum(model.TipoPagamento), nullable=False),
     Column("data_hora_pagamento", DateTime, nullable=False),
 )
+
+#Reserva Ini
 table_reserva = Table(
     "reservas",
     metadata,
@@ -100,15 +102,16 @@ table_reserva = Table(
     Column("hoje", DateTime, nullable=False),
     Column("placa_veiculo_reserva", PlacaType(), ForeignKey("veiculos.placa"), nullable=False,),
 )
-
+ 
 table_tickets = Table(
     "tickets",
     metadata,
     Column("idTicket", Integer, primary_key = True),
     Column("horarioEntrada", DateTime, nullable=False),
-    Column("horarioSaida", DateTime, nullable=False),
+    
+    Column("horarioSaida", DateTime, nullable=True),
     Column("pago", Boolean, nullable=False),
-
+ 
 )
 
 # Agregado Estacionamento
