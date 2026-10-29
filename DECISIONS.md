@@ -282,6 +282,11 @@ Cruzando as informações dos requisitos com as classes do agregado pelo qual so
 
 Quero descrever com mais detalhes nos próximos dias, mas a melhoria está ligada a adição de novos Tipos de Vaga, decorrentes da necessidade de gerir (ocupar) vagas acessíveis pra gestantes, idosos, etc., função que tem tudo a ver com o escopo do nosso sistema.
 
+**29-10-26**:
+Detalhei melhor o problema, mas preferi ainda não mexer no código. Percebi que a solução que pretendo apresentar no `solid.md` vai me auxiliar no próximo checkpoint, por se tratar também de um padrão de projeto GoF, então quero caprichar pra evitar retrabalho: é importante trabalhar na documentação primeiro, não sair alterando as coisas.
+
+Vou continuar desenvolvendo a ideia nos próximos commits, agora que tenho mais clareza do que quero fazer.
+
 
 ### Matheus
 
