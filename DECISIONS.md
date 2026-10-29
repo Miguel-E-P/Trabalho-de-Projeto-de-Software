@@ -277,6 +277,12 @@ Preferi não usar IA nesse checkpoint pra correção ou análise do código; ain
 Assim que todos os integrantes do grupo finalizarem sua atuação nesse checkpoint, pretendo submeter o tag-commit. 
 
 
+**28-10-26**:
+Cruzando as informações dos requisitos com as classes do agregado pelo qual sou responsável, encontrei algumas chances de melhoria que não estavam intimamente ligadas a violações dos princípios SOLID. Seguindo a orientação dos professores, separei alguns trechos de código que acredito comunicarem melhor com um dos princípios (OCP).
+
+Quero descrever com mais detalhes nos próximos dias, mas a melhoria está ligada a adição de novos Tipos de Vaga, decorrentes da necessidade de gerir (ocupar) vagas acessíveis pra gestantes, idosos, etc., função que tem tudo a ver com o escopo do nosso sistema.
+
+
 ### Matheus
 
 **18-09-26**: 
