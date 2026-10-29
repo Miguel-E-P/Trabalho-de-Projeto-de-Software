@@ -304,14 +304,39 @@ class Vaga:
         self.status = StatusVaga.OCUPADA
 ```
 
+```python
+@dataclass
+class Estacionamento:
+    id_estacionamento: int
+    vagas: list[Vaga]
+
+    def buscar_vaga(self, id_vaga: int) -> Vaga:
+        for vaga in self.vagas:
+            if vaga.id_vaga == id_vaga:
+                return vaga
+
+        raise VagaNaoEncontrada(f"Vaga {id_vaga} não encontrada.")
+
+    def ocupar_vaga(self, id_vaga: int) -> None:
+        vaga = self.buscar_vaga(id_vaga)
+        vaga.ocupar()
+```
+
 (faa6fd6) **feat: Trabalhando nas classes de domínio Vaga e Estacionamento**
 (1537c2f) **feat: Implementando mecanismos de ocupar Vaga em Estacionamento**
 (2f8bc1e) **refact: Explicitando exceções de domínio (VagaIndisponivel e VagaNaoEncontrada)**
 
 ### 2. Problema Concreto
+Hoje, a regra de negócio definida para a ocupação de vagas é bem simples: uma vaga só pode ser ocupada se estiver livre. Isso acontece porque não adicionamos restrições de acordo com o tipo de vaga. Uma modificação plausível no escopo do nosso projeto é que o cliente precise de algum tipo de autorização pra ocupar a vaga. 
+
+Por exemplo, vamos supor que carros a combustível não possam ocupar vagas para carro elétrico. Teríamos que adicionar uma condicional ao método responsável pela ocupação. A princípio, parece uma alteração inocente, mas e se, de repente, passassemos a tratar também políticas de inclusão? Agora teríamos um novo tipo de vaga, que vou chamar de "acessíveis", reservadas pra gestantes, idosos, etc. 
+
+Nesse cenário, nosso método poderia crescer descontroladamente, mais e mais condicionais aninhadas ou duplicadas, um bad smell fortíssimo.
 
 ### 3. Refatoração do Código
+Pra resolver de uma vez o problema do OCP, que é a necessidade de alterar o método sempre que uma nova regra de negócio surgisse, o ideal é implementar um padrão de projeto que vimos com o professor Paulo, no início do período: o Strategy Pattern.
 
 ### 4. Garantia por Testes Automatizados
 
 ### 5. Análise do Custo da Refatoração
+Implementando o Strategy Pattern, os custos de refatoração ficam consideravelmente baixos. As responsabilidades estão bem mais divididas e adicionar uma nova política de ocupação de vaga é simples, não afeta o restante do código.
