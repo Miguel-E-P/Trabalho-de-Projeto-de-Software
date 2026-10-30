@@ -352,5 +352,10 @@ Pagamento: Fake e SqlAlchemy recusam o segundo pagamento do mesmo ticket (LSP). 
 Uso de IA: o Claude (Anthropic) foi usado para identificar as violações de SOLID em Reserva, Ticket e Pagamento, e ajudar na refatoração de model.py, repository.py, orm.py, test_model.py e test_repository.py
 
 
-Hash dos commits: [preencher] Arquivos modificados: model.py, repository.py, orm.py, test_model.py, test_repository.py, solid.md, DECISIONS.md
+Hash dos commits: 
+    94e7e587c1ca7596fc9be2182d0a2f4854bd6678
+    1d69dab8c8e5f1fd7f15c039e14676974b6ed7e1
+    ffb61f276972815722aab7c3bfbe4112360b160a
+
+ Arquivos modificados: model.py, repository.py, orm.py, test_model.py, test_repository.py, solid.md, DECISIONS.md
 
