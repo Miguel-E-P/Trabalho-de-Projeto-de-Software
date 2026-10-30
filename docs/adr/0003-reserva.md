@@ -1,6 +1,7 @@
 # 0003. Refatoração de Fronteiras do Ticket e Imutabilidade da Reserva
 
 Status: aceito (Fase 1)
+Status: Substituído pelo [ADR-0007] (reserva sem violação solid)
 
 ## Contexto
 
