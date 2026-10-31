@@ -1,9 +1,9 @@
-from datetime import datetime
+from datetime import datetime, timedelta
 from uuid import uuid4
 import pytest
 
 from src.estacionamento.domain.model import TipoVaga, StatusVaga, Vaga, Reserva, Ticket, Pagamento, TipoPagamento
-from src.estacionamento.service_layer.services import CalculadoraTarifa, VerificarDisponibilidadeVaga, AutorizadorSaidaVeiculo
+from src.estacionamento.service_layer.services import CalculadoraTarifa, EstrategiaTarifa, VerificarDisponibilidadeVaga, AutorizadorSaidaVeiculo
 
 
 # Teste do Domain Service CalculadoraTarifa
@@ -12,6 +12,32 @@ def test_calculadora_tolerancia():
     saida = datetime(2026, 9, 20, 10, 15, 0)
     valor = CalculadoraTarifa.calcular(TipoVaga.CARRO, entrada, saida)
     assert valor == 0.0
+
+def test_calculo_tarifa_carro_tolerancia():
+    calc = CalculadoraTarifa()
+    agora = datetime.now()
+    entrada = agora
+    saida = agora + timedelta(minutes=10)
+    assert CalculadoraTarifa.calcular(entrada, saida, "CARRO") == 0.0
+
+
+def test_calculo_tarifa_moto_duas_horas():
+    calc = CalculadoraTarifa()
+    agora = datetime.now()
+    entrada = agora
+    saida = agora + timedelta(hours=2)
+    assert CalculadoraTarifa.calcular(entrada, saida, "MOTO") == 10.0
+
+
+def test_novo_tipo_veiculo():
+    class TarifaEletrico(EstrategiaTarifa):
+        def calcular(self, horas: float) -> float:
+            return 8.0 * horas
+
+    CalculadoraTarifa.registrar_estrategia("ELETRICO", TarifaEletrico)
+    calc = CalculadoraTarifa()
+    agora = datetime.now()
+    assert CalculadoraTarifa.calcular(agora, agora + timedelta(hours=2), "ELETRICO") == 16.0
 
 #Fim do teste do Domain Service CalculadoraTarifa
 
@@ -75,3 +101,5 @@ def test_autorizar_saida_com_multa_pernoite_paga():
     assert AutorizadorSaidaVeiculo.autorizar(vaga, ticket, pagamento) is True
 
 # Fim dos testes do Domain Service AutorizadorSaidaVeiculo
+
+
