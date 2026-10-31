@@ -329,14 +329,87 @@ class Estacionamento:
 ### 2. Problema Concreto
 Hoje, a regra de negócio definida para a ocupação de vagas é bem simples: uma vaga só pode ser ocupada se estiver livre. Isso acontece porque não adicionamos restrições de acordo com o tipo de vaga. Uma modificação plausível no escopo do nosso projeto é que o cliente precise de algum tipo de autorização pra ocupar a vaga. 
 
-Por exemplo, vamos supor que carros a combustível não possam ocupar vagas para carro elétrico. Teríamos que adicionar uma condicional ao método responsável pela ocupação. A princípio, parece uma alteração inocente, mas e se, de repente, passassemos a tratar também políticas de inclusão? Agora teríamos um novo tipo de vaga, que vou chamar de "acessíveis", reservadas pra gestantes, idosos, etc. 
+Por exemplo, vamos supor que carros a combustível não possam ocupar vagas para carro elétrico. Teríamos que adicionar uma condicional ao método responsável pela ocupação. A princípio, parece uma alteração inocente, mas surge uma nova regra: carros não podem ocupar vagas de moto. E se passassemos a tratar políticas de inclusão, agora teríamos um novo tipo de vaga, reservadas pra gestantes, idosos, etc...
 
-Nesse cenário, nosso método poderia crescer descontroladamente, mais e mais condicionais aninhadas ou duplicadas, um bad smell fortíssimo.
+```python
+@dataclass
+class Vaga:
+    id_vaga: int
+    tipo: TipoVaga
+    status: StatusVaga = StatusVaga.LIVRE
+
+    def ocupar(self, veiculo) -> None:
+        if self.status != StatusVaga.LIVRE:
+            raise VagaIndisponivel(
+                f"Vaga {self.id_vaga} indisponível."
+            )
+
+        if self.tipo == TipoVaga.CARRO_ELETRICO:
+            if veiculo.tipo != "carro elétrico":
+                raise VagaIndisponivel(
+                    "Esta vaga é exclusiva para carros elétricos."
+                )
+
+        if self.tipo == TipoVaga.MOTO:
+            if veiculo.tipo != "moto":
+                raise VagaIndisponivel(
+                    "Esta vaga é exclusiva para motos."
+                )
+
+        # ...
+```
+
+Nesse cenário, o método nosso método poderia crescer descontroladamente, mais e mais condicionais aninhadas ou duplicadas, um bad smell fortíssimo.
 
 ### 3. Refatoração do Código
-Pra resolver de uma vez o problema do OCP, que é a necessidade de alterar o método sempre que uma nova regra de negócio surgisse, o ideal é implementar um padrão de projeto que vimos com o professor Paulo, no início do período: o Strategy Pattern.
+Pra resolver o problema do OCP, isto é, a necessidade de alterar o método sempre que uma regra de negócio for introduzida, pensei em implementar um padrão de projeto que vimos com o professor Paulo no início do período: o Strategy Pattern.
+
+A ideia foi retirar as regras específicas de autorização de dentro da classe Vaga e encapsulá-las em estratégias independentes, que chamei de políticas:
+
+```python
+class PoliticaOcupacao(ABC):
+    @abstractmethod
+    def validar(self, vaga, veiculo) -> bool:
+        pass
+
+class PoliticaCarroEletrico(PoliticaOcupacao):
+    def validar(self, vaga, veiculo) -> bool:
+        return veiculo.tipo == "carro elétrico"
+
+
+class PoliticaVagaMoto(PoliticaOcupacao):
+    def validar(self, vaga, veiculo) -> bool:
+        return veiculo.tipo == "moto"
+```
+
+E passar essas políticas, junto com o veículo, na chamada dos métodos de ocupação:
+
+```python
+# Em Vaga
+def ocupar(self, veiculo: Veiculo=None, politica: PoliticaOcupacao=None) -> None:
+    if self.status != StatusVaga.LIVRE:
+        raise VagaIndisponivel(f"Vaga {self.id_vaga} indisponível.")
+
+    if veiculo and not politica.validar(self, veiculo):
+        raise VagaIndisponivel(f"Veículo não autorizado para a vaga {self.id_vaga}.")
+
+    self.status = StatusVaga.OCUPADA
+
+# Em Estacionamento
+def ocupar_vaga(self, id_vaga: int, veiculo: Veiculo=None, politica: PoliticaOcupacao=None) -> None:
+    vaga = self.buscar_vaga(id_vaga)
+    vaga.ocupar(veiculo, politica)
+```
+
+(b1d317b) **refact: Alterações SOLID em Estacionamento**
+(ac1a7b1) **refact: Simplificando política de carros elétricos**
 
 ### 4. Garantia por Testes Automatizados
+Para garantir que o comportamento anterior foi preservado, precisei levar em consideração um fator importante. Como agora `Vaga.ocupar` e `Estacionamento.ocupar_vaga` conhecem veiculo e política, as chamadas a esses métodos quebraria, caso não permitíssimos que `veiculo` e `politica` fossem opcionais.
+
+Isso foi resolvido atribuindo o valor `None` como padrão para ambos os parâmetros. Feito isso, todos os testes da aplicação, inclusive dos demais agregados, continuam passando.  
 
 ### 5. Análise do Custo da Refatoração
 Implementando o Strategy Pattern, os custos de refatoração ficam consideravelmente baixos. As responsabilidades estão bem mais divididas e adicionar uma nova política de ocupação de vaga é simples, não afeta o restante do código.
+
+É evidente que, como a implementação de qualquer outro padrão de projeto, a solução cria uma complexidade a mais na base de código. Mas outras alternativas mais simples, como criar uma classe responsável por concentrar as regras de ocupação, apenas mascara o problema, porque ela próprio passaria a violar o OCP.

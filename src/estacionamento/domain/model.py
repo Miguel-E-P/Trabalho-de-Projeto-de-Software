@@ -83,6 +83,7 @@ class VagaIndisponivel(Exception):
 class VagaNaoEncontrada(Exception):
     pass
 
+
 class PoliticaOcupacao(ABC):
     @abstractmethod
     def validar(self, vaga, veiculo) -> bool:
