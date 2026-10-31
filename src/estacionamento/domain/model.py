@@ -7,6 +7,7 @@ from enum import Enum
 import re
 from uuid import UUID
 from typing import List
+from abc import ABC, abstractmethod
 
 # Agregado Cliente / Veículo
 # Abordagem: da class mais simples até chegar na class raiz
@@ -82,6 +83,22 @@ class VagaIndisponivel(Exception):
 class VagaNaoEncontrada(Exception):
     pass
 
+class PoliticaOcupacao(ABC):
+    @abstractmethod
+    def validar(self, vaga, veiculo) -> bool:
+        pass
+
+class PoliticaCarroEletrico(PoliticaOcupacao):
+    def validar(self, vaga, veiculo) -> bool:
+        return (
+            vaga.status == StatusVaga.LIVRE
+            and veiculo.tipo == "carro elétrico"
+        )
+
+class PoliticaVagaMoto(PoliticaOcupacao):
+    def validar(self, vaga, veiculo) -> bool:
+        return veiculo.tipo == "moto"
+
 
 @dataclass
 class Vaga:
@@ -89,9 +106,12 @@ class Vaga:
     tipo: TipoVaga
     status: StatusVaga = StatusVaga.LIVRE
 
-    def ocupar(self) -> None:
+    def ocupar(self, veiculo: Veiculo=None, politica: PoliticaOcupacao=None) -> None:
         if self.status != StatusVaga.LIVRE:
             raise VagaIndisponivel(f"Vaga {self.id_vaga} indisponível.")
+
+        if veiculo and not politica.validar(self, veiculo):
+            raise VagaIndisponivel(f"Veículo não autorizado para a vaga {self.id_vaga}.")
 
         self.status = StatusVaga.OCUPADA
 
@@ -108,9 +128,9 @@ class Estacionamento:
 
         raise VagaNaoEncontrada(f"Vaga {id_vaga} não encontrada.")
 
-    def ocupar_vaga(self, id_vaga: int) -> None:
+    def ocupar_vaga(self, id_vaga: int, veiculo: Veiculo=None, politica: PoliticaOcupacao=None) -> None:
         vaga = self.buscar_vaga(id_vaga)
-        vaga.ocupar()
+        vaga.ocupar(veiculo, politica)
 
 
 #Agregado Reserva
