@@ -90,10 +90,8 @@ class PoliticaOcupacao(ABC):
 
 class PoliticaCarroEletrico(PoliticaOcupacao):
     def validar(self, vaga, veiculo) -> bool:
-        return (
-            vaga.status == StatusVaga.LIVRE
-            and veiculo.tipo == "carro elétrico"
-        )
+        return veiculo.tipo == "carro elétrico"
+
 
 class PoliticaVagaMoto(PoliticaOcupacao):
     def validar(self, vaga, veiculo) -> bool:
