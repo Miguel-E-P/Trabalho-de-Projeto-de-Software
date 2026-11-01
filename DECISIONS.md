@@ -319,6 +319,7 @@ Atualizei a documentação do projeto preenchendo minha seção no docs/solid.md
 #### Decisão de Projeto
 Decidi aplicar o padrão Strategy com registro dinâmico na CalculadoraTarifa e centralizar a lógica de tolerância na classe base. Fiz isso para fechar a classe principal para alteração (respeitando o OCP) e permitir que novos tipos de veículos ou tarifas sejam adicionados sem mexer na base. Além disso, a flexibilização do método manteve total compatibilidade com os testes que já existiam sem precisar reescrever.
 
+Uso de IA: Apoio para formatação de textos e debater a viabilidade das minhas escolhas técnicas.
 Hash dos commits: 
     672cbf485c3f783ff1a3568038d3df9239c2c69c 
     37a24b0691241781a058f1c7b83d0dd936c1e3c1
