@@ -308,6 +308,17 @@ Fiz isso para seguir o Princípio de Responsabilidade Única e conseguir rodar o
 
 Uso de IA: Utilizada para ajudar na estruturação, formatar as seções e validar os critérios.
 
+**31-10-26**: Refatorei a classe CalculadoraTarifa em src/estacionamento/service_layer/services.py para resolver as violações de OCP e SRP. Apliquei o padrão Strategy criando a classe base EstrategiaTarifa e classes concretas para cada perfil de tarifa.
+
+Subi as regras de fracionamento de hora e a tolerância de 15 minutos para a classe base, evitando duplicar código e deixando as subclasses responsáveis só pelo valor das suas taxas. Pra não quebrar os testes legados nem outros pontos do sistema que chamavam o método com ordens de parâmetros diferentes, ajustei o @classmethod CalculadoraTarifa.calcular para aceitar *args, tratar a conversão de Enums e inspecionar a assinatura dos métodos com inspect.
+
+Rodei a suíte em tests/unit/test_services.py e mantive sucesso. Também criei um teste novo pra garantir que o registro dinâmico de novas estratégias em tempo de execução via registrar_estrategia funcione perfeitamente.
+
+Atualizei a documentação do projeto preenchendo minha seção no docs/solid.md com os trechos antes/depois.
+
+#### Decisão de Projeto
+Decidi aplicar o padrão Strategy com registro dinâmico na CalculadoraTarifa e centralizar a lógica de tolerância na classe base. Fiz isso para fechar a classe principal para alteração (respeitando o OCP) e permitir que novos tipos de veículos ou tarifas sejam adicionados sem mexer na base. Além disso, a flexibilização do método manteve total compatibilidade com os testes que já existiam sem precisar reescrever.
+
 ### Miguel
 **16/09/26**:
 Comecei fazendo o esqueleto básico das classes ticket e reserva, que serão atualizados e talvez sofram alguma correção no futuro
