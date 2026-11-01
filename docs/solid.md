@@ -413,3 +413,58 @@ Isso foi resolvido atribuindo o valor `None` como padrão para ambos os parâmet
 Implementando o Strategy Pattern, os custos de refatoração ficam consideravelmente baixos. As responsabilidades estão bem mais divididas e adicionar uma nova política de ocupação de vaga é simples, não afeta o restante do código.
 
 É evidente que, como a implementação de qualquer outro padrão de projeto, a solução cria uma complexidade a mais na base de código. Mas outras alternativas mais simples, como criar uma classe responsável por concentrar as regras de ocupação, apenas mascara o problema, porque ela próprio passaria a violar o OCP.
+
+#### Integrante: Matheus H. Reis
+**Módulo / Agregado:** Serviço de Domínio da Calculadora de Tarifas (`CalculadoraTarifa`)
+
+##### 1. Princípios Violados e Trecho de Código ("Antes")
+* **Princípios Violados:** Open/Closed Principle (OCP) e Single Responsibility Principle (SRP).
+* **Hash do Commit "Antes":** `d60c66e`
+* **Trecho de Código Original ("Antes"):**
+```python
+class CalculadoraTarifa:
+    """Domain Service que calcula o valor da permanência para cada veículo (RN-02)"""
+
+    TARIFA_CARRO = 10.0
+    TARIFA_MOTO = 5.0
+    TARIFA_CAMINHONETE = 15.0
+    TAXA_RECARGA = 8.0
+
+    @staticmethod
+    def calcular(tipo_veiculo: TipoVaga, entrada: datetime, saida: datetime, recarga: bool = False) -> float:
+        segundos = (saida - entrada).total_seconds()
+        # Tolerância de 15 minutos
+        if segundos <= 900:
+            return 0.0
+        horas = segundos / 3600
+        horas_cobranca = math.ceil(horas)
+
+        categoria = (tipo_veiculo.value if hasattr(tipo_veiculo, "value") else str(tipo_veiculo))
+        if categoria == TipoVaga.MOTO.value:
+            taxa = CalculadoraTarifa.TARIFA_MOTO
+        elif categoria in ["caminhonete", "SUV"]:
+            taxa = CalculadoraTarifa.TARIFA_CAMINHONETE
+        else:
+            taxa = CalculadoraTarifa.TARIFA_CARRO
+
+        total = float(horas_cobranca * taxa)
+        if tipo_veiculo == TipoVaga.CARRO_ELETRICO and recarga:
+            total += CalculadoraTarifa.TAXA_RECARGA
+        return total
+```
+
+##### 2. Problema Concreto
+A CalculadoraTarifa estava concentrando todas as regras de preços e exceções num bloco de if/elif/else. Toda vez que entrasse um tipo novo de veículo ou uma regra extra (como a taxa de recarga do CARRO_ELETRICO), a gente precisava abrir essa mesma classe e mexer no código de novo. Isso violava o OCP (já que a classe nunca estava fechada pra alteração) e o SRP, pois estava acumulando responsabilidades sobre regras de preço individuais.
+
+##### 3. Refatoração realizada ("Depois")
+Hash do Commit "Depois": 672cbf4
+
+Solução: Apliquei o padrão Strategy. Criei a classe abstrata EstrategiaTarifa e uma classe concreta pra cada categoria de tarifa. Agora a CalculadoraTarifa só consulta um dicionário/registro de estratégias. Se o cliente decidir implementar uma tarifa para caminhão, por exemplo, basta criar uma classe nova e registrar, sem modificar o código base do serviço.
+
+##### 4. Como os testes garantiram a não regressão
+Rodei a suíte de testes (pytest tests/unit/test_services.py) e tudo se manteve com 100% de sucesso. Criei mais um teste unitário focado em extensibilidade, para provar que dá pra registrar uma estratégia nova em tempo de execução e calcular sem quebrar.
+
+##### 5. Custo da Refatoração e Justificativa
+Custo: Introdução de pequenas classes desacopladas para cada perfil tarifário e manutenção de compatibilidade para assinaturas flexíveis de parâmetros.
+
+Por que compensa: Elimina o risco de regressões em tarifas existentes durante a manutenção. O código ganha muito em coesão, os testes ficam isolados pra cada regra e a inclusão de novas modalidades de cobrança vira apenas uma extensão.
