@@ -365,9 +365,9 @@ Reserva e Ticket: extrair as regras de validação duplicadas (SRP). O id não n
 Repositórios de Reserva e Ticket: list() entra no contrato abstrato (DIP/LSP). Antes só as implementações concretas tinham list. Consequência: toda subclasse das duas abstrações precisa implementá-lo.
 ORM: tickets.horarioSaida passa a aceitar NULL. É correção de bug (o domínio aceita ticket sem saída), não de princípio.
 Pagamento: a imutabilidade vale só para os campos do próprio modelo (SRP/DIP). O __setattr__ deixou de citar o prefixo _sa_ do SQLAlchemy, então o domínio não conhece mais nenhum nome interno do ORM. Mantive o __setattr__ customizado e não voltei para frozen=True, porque não consegui validar o mapeamento contra o SQLAlchemy real.
-Pagamento: Fake e SqlAlchemy recusam o segundo pagamento do mesmo ticket (LSP). O Fake aceitava, o banco real não, e o teste com Fake podia passar mesmo com o comportamento errado.
 
-Uso de IA: o Claude (Anthropic) foi usado para identificar as violações de SOLID em Reserva, Ticket e Pagamento, e ajudar na refatoração de model.py, repository.py, orm.py, test_model.py e test_repository.py
+
+Uso de IA: o Claude (Anthropic) foi usado para identificar as violações de SOLID em Reserva, Ticket, e ajudar na refatoração de model.py, repository.py, orm.py, test_model.py e test_repository.py
 
 
 Hash dos commits: 
