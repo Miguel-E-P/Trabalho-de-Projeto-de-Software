@@ -288,6 +288,39 @@ Detalhei melhor o problema, mas preferi ainda não mexer no código. Percebi que
 Vou continuar desenvolvendo a ideia nos próximos commits, agora que tenho mais clareza do que quero fazer.
 
 
+**02-11-26**:
+Sexta-feira, dia 30/10, terminei de documentar/codificar minha parte na refatoração do SOLID. Assim, passei o fim de semana conversando com meus pares, tirando dúvidas e preparando o projeto pra que fizéssemos o commit com a tag que fecha o checkpoint. Achei interessante essa parte dos princípios e já comecei a aplicar nos meus projetos pessoais, mas percebo que é preciso sempre avaliar os trade-offs. Ser muito purista, às vezes, adiciona complexidade desnecessária pro software.
+
+Abaixo, seguem os hashs e arquivos que alterei durante essa fase (do mais recente pro mais antigo), sem contar com esse, do autorrelato:
+```md
+d7f19cc - **docs: Documentando refatoração SOLID no Estacionamento**
++ docs/solid.md
++ src/estacionamento/domain/model.py
+
+ac1a7b1 - **refact: Simplificando política de carros elétricos**
++ src/estacionamento/domain/model.py
+
+b1d317b - **refact: Alterações SOLID em Estacionamento**
++ src/estacionamento/domain/model.py
+
+380d2a0 - **docs: Adicionando entrada no decisions (wip)**
++ DECISIONS.md
+
+bd3cfe3 - **docs: Explicando sobre o problema concreto e minha ideia pra resolver (wip)**
++ docs/solid.md
+
+88f4aba - **docs: Documentando minhas decisões (wip)**
++ DECISIONS.md
+
+06c096f - **docs: Documentando violação do SOLID no agregado de Estacionamento (wip)**
++ docs/solid.md
+```
+
+Sobre o uso de IA, não achei muito confiável as informações que o ChatGPT me deu sobre os princípios SOLID; algumas, não batiam com os exemplos vistos em aula e eu tive que corrigir ele várias vezes (talvez sejam falhas da versão gratuita do modelo, não sei). Entre a palavra da máquina e do professor, prefiro sempre seguir o que aprendi em aula.
+
+Ademais, assim que meus colegas terminarem suas alterações, pretendo fechar mais esse checkpoint.
+
+
 ### Matheus
 
 **18-09-26**: 
