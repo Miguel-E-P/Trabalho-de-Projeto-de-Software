@@ -374,6 +374,7 @@ Hash dos commits:
     94e7e587c1ca7596fc9be2182d0a2f4854bd6678
     1d69dab8c8e5f1fd7f15c039e14676974b6ed7e1
     ffb61f276972815722aab7c3bfbe4112360b160a
+    4fc6a8a5d5110465e5c1dc30fae562b587f2d951
 
  Arquivos modificados: model.py, repository.py, orm.py, test_model.py, test_repository.py, solid.md, DECISIONS.md
 
