@@ -223,8 +223,18 @@ Decisão de projeto: garantir a unicidade pela PK do banco, e não por uma consu
 
 Uso de IA: Claude foi utilizado para identificar a violação do LSP, propor e revisar a correção, rodar os testes unitários fora do ambiente do projeto (sem o SQLAlchemy real) e redigir esta entrada e a seção do solid.md. A primeira proposta, com uma consulta no add(), foi descartada depois que apontei o custo e a condição de corrida.
 
-Hash do Commits: [hash] 
+Hash do Commits:
+c06d98b8d85e58207aaccf16145f7468df44d9ad
 Arquivos modificados: repository.py, test_repository.py, DECISIONS.md
+
+8fccb7b951d3c9c20caed793ecbaf7f67e2b1e59
+Arquivos modificados: test_repository.py
+
+42b3dd9d660135cbd9e95173ecd7e2e4e5e9962e
+Arquivos modificados: test_repository.py
+
+1d8ef40338969ed47a4935d86828a61e315d0001
+Arquivos modificados: test_repository.py
 
 **03-11-26**
 Documentei no `solid.md` a mudança de LSP nos repositórios de Pagamento, junto com a de DIP já registrada: princípios violados, código antes e depois, problema concreto, testes e custos.
@@ -232,7 +242,7 @@ Documentei no `solid.md` a mudança de LSP nos repositórios de Pagamento, junto
 Uso de IA: Claude foi utilizado para revisar a seção do `solid.md` (estrutura e argumento do LSP) e redigir esta entrada.
 
 Hash do Commits:
-[hash]
+921b134ce608dad887eece711e2833f74fdb45c3
 Arquivos modificados: solid.md, DECISIONS.md
 
 ### Gustavo

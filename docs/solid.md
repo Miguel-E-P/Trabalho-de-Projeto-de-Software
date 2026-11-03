@@ -76,8 +76,8 @@ A suíte completa de testes unitários, de repositório e E2E da API REST foi ex
   - **DIP** — *Dependency Inversion Principle* (Princípio da Inversão de Dependência)
   - **LSP** — *Liskov Substitution Principle* (Princípio da Substituição de Liskov)
 
-* **Hash do Commit "Antes":** aa55b3ca5cb4bc0ca8aa6da7e53098cda9cd75e5
-* **Hash do Commit "Antes" (LSP):** [hash]
+* **Hash do Commit "Antes" (DIP):** aa55b3ca5cb4bc0ca8aa6da7e53098cda9cd75e5
+* **Hash do Commit "Antes" (LSP):** 5052f9c19c7045fc232fac0c5c2538a7f2234398
 
 ### Trecho do Código "Antes" — DIP (`src/estacionamento/domain/model.py`):
 
@@ -164,7 +164,7 @@ Se ambas as condições forem verdadeiras, a alteração é rejeitada com `Froze
 
 Dessa maneira, os campos de domínio continuam imutáveis, enquanto atributos externos utilizados pela infraestrutura podem ser adicionados ou modificados sem que a entidade precise conhecer convenções específicas do SQLAlchemy.
 
-Hash do Commit "Depois" (LSP): [hash]
+Hash do Commit "Depois" (LSP): c06d98b8d85e58207aaccf16145f7468df44d9ad
 
 Trecho do Código Refatorado — LSP (`src/estacionamento/adapters/repository.py`):
 
