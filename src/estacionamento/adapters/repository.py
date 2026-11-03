@@ -51,24 +51,57 @@ class SqlAlchemyPagamentoRepository(AbstractPagamentoRepository):
         self.session = session
 
     def add(self, pagamento: model.Pagamento) -> None:
+        """
+        Agenda o pagamento para persistencia.
+
+        A unicidade de id_ticket e garantida pela chave primaria
+        no banco de dados. O INSERT sera executado no flush/commit.
+        """
         self.session.add(pagamento)
 
     def get(self, id_ticket: int) -> Optional[model.Pagamento]:
-        return self.session.query(model.Pagamento).filter_by(id_ticket=id_ticket).first()
+        """
+        Busca um pagamento pelo ID da chave primaria.
+
+        Session.get() utiliza a identidade da entidade mapeada,
+        evitando uma consulta desnecessaria quando o objeto ja
+        estiver presente na identidade da sessao.
+        """
+        return self.session.get(model.Pagamento, id_ticket)
 
 
 class FakePagamentoRepository(AbstractPagamentoRepository):
-    def __init__(self, pagamentos: list[model.Pagamento] = None):
-        self._pagamentos = list(pagamentos) if pagamentos else []
+    def __init__(
+        self,
+        pagamentos: Optional[list[model.Pagamento]] = None
+    ):
+        self._pagamentos: list[model.Pagamento] = []
+
+        # Utiliza add() para garantir que os mesmos contratos
+        # sejam respeitados inclusive durante a inicializacao.
+        for pagamento in pagamentos or []:
+            self.add(pagamento)
 
     def add(self, pagamento: model.Pagamento) -> None:
+        """
+        Adiciona um pagamento ao repositorio Fake.
+
+        Rejeita pagamentos cujo ticket ja possua um pagamento,
+        reproduzindo a restricao de chave primaria do banco.
+        """
+        if self.get(pagamento.id_ticket) is not None:
+            raise model.PagamentoJaRealizadoError(
+                f"ERROR: Ticket {pagamento.id_ticket} ja possui pagamento."
+            )
+
         self._pagamentos.append(pagamento)
 
     def get(self, id_ticket: int) -> Optional[model.Pagamento]:
-        try:
-            return next(p for p in self._pagamentos if p.id_ticket == id_ticket)
-        except StopIteration:
-            return None
+        """Busca um pagamento pelo ID do ticket."""
+        return next(
+            (p for p in self._pagamentos if p.id_ticket == id_ticket),
+            None
+        )
 
 #PAGAMENTO FIM
 

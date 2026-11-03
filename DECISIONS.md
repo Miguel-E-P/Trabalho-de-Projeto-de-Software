@@ -216,6 +216,16 @@ Hash do Commits:
 35bf78340a62e12fdeea281c816562c2b39627d3
 Arquivos modificados: 0004-pagamento.md, 0006-pagamento-sem-violacao-dip.md, solid.md, model.py, test_model.py
 
+**02-11-26**
+Apliquei o LSP nos repositórios de Pagamento. O id_ticket é a PK da tabela pagamentos, então o banco aceita um único pagamento por ticket, mas o FakePagamentoRepository aceitava quantos fossem adicionados. Logo, havia uma inconsistência comportamental entre as implementações, violando o Princípio da Substituição de Liskov (LSP). Corrigi o FakePagamentoRepository para rejeitar pagamentos duplicados, garantindo que ambas as implementações respeitem o mesmo contrato e que os testes realizados com o repositório falso reflitam corretamente o comportamento esperado. 
+
+Decisão de projeto: garantir a unicidade pela PK do banco, e não por uma consulta no add() do repositório SQLAlchemy. A consulta custaria um SELECT a mais por inserção e não eliminaria a condição de corrida (duas transações passam pela checagem e inserem); só a PK é atômica. Consequência: o banco levanta IntegrityError no flush/commit e o Fake levanta PagamentoJaRealizadoError no add; traduzir o erro do banco fica para a camada que faz o commit.
+
+Uso de IA: Claude foi utilizado para identificar a violação do LSP, propor e revisar a correção, rodar os testes unitários fora do ambiente do projeto (sem o SQLAlchemy real) e redigir esta entrada e a seção do solid.md. A primeira proposta, com uma consulta no add(), foi descartada depois que apontei o custo e a condição de corrida.
+
+Hash do Commits: [hash] 
+Arquivos modificados: repository.py, test_repository.py, solid.md, DECISIONS.md
+
 ### Gustavo
 **16-09-26**:
 Primeiro, estou organizando nosso repositório; devo fazer esse tipo de varredura mais vezes e, a não ser que eu esqueça, subir o commit com uma flag de "_refact_". A título de curiosidade, o linter/code formatter que uso chama-se [ruff](https://docs.astral.sh/ruff/).

@@ -57,6 +57,67 @@ def test_fake_repository_salva_e_recupera_pagamento():
     assert pagamento_salvo == pagamento
     assert pagamento_salvo.valor == 50.50
 
+def test_fake_pagamento_recusa_segundo_pagamento_do_mesmo_ticket():
+    repo = FakePagamentoRepository()
+
+    primeiro = model.Pagamento(
+        101, 50.0, model.TipoPagamento.PIX,
+        datetime(2026, 10, 27, 14, 30)
+    )
+
+    segundo = model.Pagamento(
+        101, 99.0, model.TipoPagamento.DEBITO,
+        datetime(2026, 10, 27, 15, 0)
+    )
+
+    repo.add(primeiro)
+
+    with pytest.raises(
+        model.PagamentoJaRealizadoError,
+        match="Ticket 101 ja possui pagamento."
+    ):
+        repo.add(segundo)
+
+    assert repo.get(101) is primeiro
+
+
+def test_fake_pagamento_aceita_pagamentos_de_tickets_diferentes():
+    repo = FakePagamentoRepository()
+
+    p1 = model.Pagamento(
+        101, 50.0, model.TipoPagamento.PIX,
+        datetime(2026, 10, 27, 14, 30)
+    )
+
+    p2 = model.Pagamento(
+        102, 20.0, model.TipoPagamento.CREDITO,
+        datetime(2026, 10, 27, 15, 0)
+    )
+
+    repo.add(p1)
+    repo.add(p2)
+
+    assert repo.get(101) is p1
+    assert repo.get(102) is p2
+
+
+def test_fake_repository_pagamento_rejeita_duplicatas_na_inicializacao():
+    primeiro = model.Pagamento(
+        101, 50.0, model.TipoPagamento.PIX,
+        datetime(2026, 10, 27, 14, 30)
+    )
+
+    segundo = model.Pagamento(
+        101, 99.0, model.TipoPagamento.DEBITO,
+        datetime(2026, 10, 27, 15, 0)
+    )
+
+    with pytest.raises(
+        model.PagamentoJaRealizadoError,
+        match="Ticket 101 ja possui pagamento."
+    ):
+        FakePagamentoRepository([primeiro, segundo])
+
 #Reserva
 def test_fake_reserva_salva_e_recupera_reserva():
     repo = FakeReservaRepository()
