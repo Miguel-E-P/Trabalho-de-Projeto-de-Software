@@ -4,12 +4,19 @@ from datetime import datetime
 
 import pytest
 
-from src.estacionamento.domain import model
+from estacionamento.domain import model
 from estacionamento.adapters import repository
 from estacionamento.adapters.repository import AbstractRepository, FakePagamentoRepository, FakeReservaRepository, FakeTicketRepository
 from estacionamento.domain.model import Cliente
 
+from estacionamento.adapters import repository
 
+def test_excecoes_sao_a_mesma_classe():
+    assert model is repository.model
+    assert (
+        model.PagamentoJaRealizadoError
+        is repository.model.PagamentoJaRealizadoError
+    )
 #Implementa o FakeRepository e realiza os testes unitários no agregado Cliente
 
 class FakeRepository(AbstractRepository):
