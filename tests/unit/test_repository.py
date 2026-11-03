@@ -72,11 +72,12 @@ def test_fake_pagamento_recusa_segundo_pagamento_do_mesmo_ticket():
 
     repo.add(primeiro)
 
-    with pytest.raises(
-        model.PagamentoJaRealizadoError,
-        match="Ticket 101 ja possui pagamento."
-    ):
+    try:
         repo.add(segundo)
+    except model.PagamentoJaRealizadoError as erro:
+        assert str(erro) == "Ticket 101 ja possui pagamento."
+    else:
+        raise AssertionError("O repositório deveria rejeitar pagamentos duplicados.")
 
     assert repo.get(101) is primeiro
 
@@ -112,11 +113,12 @@ def test_fake_repository_pagamento_rejeita_duplicatas_na_inicializacao():
         datetime(2026, 10, 27, 15, 0)
     )
 
-    with pytest.raises(
-        model.PagamentoJaRealizadoError,
-        match="Ticket 101 ja possui pagamento."
-    ):
+    try:
         FakePagamentoRepository([primeiro, segundo])
+    except model.PagamentoJaRealizadoError as erro:
+        assert str(erro) == "Ticket 101 ja possui pagamento."
+    else:
+        raise AssertionError("A inicialização deveria rejeitar pagamentos duplicados.")
 
 #Reserva
 def test_fake_reserva_salva_e_recupera_reserva():
