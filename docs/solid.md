@@ -66,20 +66,24 @@ A suíte completa de testes unitários, de repositório e E2E da API REST foi ex
 
  Extensibilidade (OCP): Permite aceitar novos formatos de placa (Mercosul e Tradicional) de forma transparente sem que nenhuma linha de código da camada de serviço ou da entidade Cliente precise ser editada ou retestada.
 
-## Integrante: Pedro Quintaes
+# Integrante: Pedro Quintaes
 **Módulo / Agregado:** Agregado Pagamento (`Pagamento`)
 
 ---
 
-### 1. Princípios Violados e Trecho de Código ("Antes")
+## 1. Princípios Violados e Trecho de Código ("Antes")
 * **Princípios Violados:**
   - **DIP** — *Dependency Inversion Principle* (Princípio da Inversão de Dependência)
-* **Hash do Commit "Antes":** aa55b3ca5cb4bc0ca8aa6da7e53098cda9cd75e5
+  - **LSP** — *Liskov Substitution Principle* (Princípio da Substituição de Liskov)
 
-* **Trecho do Código "Antes" (`src/estacionamento/domain/model.py`):**
+* **Hash do Commit "Antes":** aa55b3ca5cb4bc0ca8aa6da7e53098cda9cd75e5
+* **Hash do Commit "Antes" (LSP):** [hash]
+
+### Trecho do Código "Antes" — DIP (`src/estacionamento/domain/model.py`):
 
 ```python
-# Trecho do commit aa55b3ca5cb4bc0ca8aa6da7e53098cda9cd75e5 onde Pagamento conhecia o prefixo `_sa_` do SQLAlchemy
+# Trecho do commit aa55b3ca5cb4bc0ca8aa6da7e53098cda9cd75e5
+# Pagamento conhecia o prefixo `_sa_` do SQLAlchemy
 @dataclass
 class Pagamento:
     id_ticket: int
@@ -101,14 +105,39 @@ class Pagamento:
             raise FrozenInstanceError("ERROR: Nao pode alterar pagamento")
 ```
 
-### 2. Problema Concreto
-2.1 Violação do DIP: `Pagamento`, uma entidade de domínio (módulo de alto nível), dependia de um detalhe de baixo nível: o prefixo `_sa_`, usado internamente pelo SQLAlchemy. A exceção `name.startswith("_sa_")` em `__setattr__` fazia o domínio conhecer o funcionamento interno do ORM, mesmo sem importá-lo, o que contraria a independência do domínio. Se o SQLAlchemy mudasse esse detalhe, seria necessário alterar uma entidade de domínio.
+### Trecho do Código "Antes" — LSP (`src/estacionamento/adapters/orm.py` e `repository.py`):
 
-### 3. Refatoração e Código ("Depois")
+```python
+# orm.py: id_ticket era a chave primária de pagamentos.
+# Portanto, o banco impedia mais de um pagamento por ticket.
+    Column("id_ticket", Integer, primary_key=True),
 
-Hash do Commit "Depois": 35bf78340a62e12fdeea281c816562c2b39627d3
+# repository.py: o Fake aceitava vários pagamentos associados ao mesmo ticket.
+class FakePagamentoRepository(AbstractPagamentoRepository):
+    def __init__(self, pagamentos: list[model.Pagamento] = None):
+        self._pagamentos = list(pagamentos) if pagamentos else []
 
-Trecho do Código Refatorado (`src/estacionamento/domain/model.py`):
+    def add(self, pagamento: model.Pagamento) -> None:
+        self._pagamentos.append(pagamento)
+
+    def get(self, id_ticket: int) -> Optional[model.Pagamento]:
+        try:
+            return next(p for p in self._pagamentos if p.id_ticket == id_ticket)
+        except StopIteration:
+            return None
+```
+
+## 2. Problema Concreto
+2.1 Violação do DIP: `Pagamento`, uma entidade de domínio (módulo de alto nível), dependia de um detalhe de baixo nível: o prefixo `_sa_`, usado internamente pelo SQLAlchemy. A exceção `name.startswith("_sa_")` em `__setattr__` fazia o domínio conhecer o funcionamento interno do ORM, mesmo sem importá-lo, o que contraria a independência do domínio. Se o SQLAlchemy mudasse esse detalhe, seria necessário alterar uma entidade de domínio. A lógica de imutabilidade deveria depender exclusivamente das propriedades e regras da própria entidade, sem precisar conhecer detalhes de implementação do mecanismo de persistência.
+
+2.2 Violação do LSP: O `id_ticket` é a chave primária de `pagamentos` (`orm.py`), então o banco aceita no máximo um pagamento por ticket. O `FakePagamentoRepository`, porém, aceitava quantos pagamentos fossem adicionados para o mesmo ticket. Isso criava uma inconsistência comportamental entre as implementações de `AbstractPagamentoRepository`: um teste utilizando o Fake poderia ser aprovado mesmo quando a operação correspondente seria rejeitada pelo banco de dados. O problema estava na ausência de uma regra de unicidade reproduzida pelo Fake, fazendo com que ele não representasse adequadamente a implementação real do repositório.
+
+
+## 3. Refatoração e Código ("Depois")
+
+Hash do Commit "Depois" (DIP): 35bf78340a62e12fdeea281c816562c2b39627d3
+
+Trecho do Código Refatorado (DIP) (`src/estacionamento/domain/model.py`):
 
 ```python
 @dataclass
@@ -129,19 +158,109 @@ class Pagamento:
         super().__setattr__(name, value)
 ```
 
-### 4. Garantia por Testes Automatizados
+A nova implementação verifica se o atributo pertence aos campos declarados do dataclass e se já recebeu um valor.
+
+Se ambas as condições forem verdadeiras, a alteração é rejeitada com `FrozenInstanceError`. Caso contrário, a atribuição é permitida.
+
+Dessa maneira, os campos de domínio continuam imutáveis, enquanto atributos externos utilizados pela infraestrutura podem ser adicionados ou modificados sem que a entidade precise conhecer convenções específicas do SQLAlchemy.
+
+Hash do Commit "Depois" (LSP): [hash]
+
+Trecho do Código Refatorado — LSP (`src/estacionamento/adapters/repository.py`):
+
+```python
+class AbstractPagamentoRepository(abc.ABC):
+    @abc.abstractmethod
+    def add(self, pagamento: model.Pagamento) -> None:
+        """
+        Adiciona um pagamento ao repositorio.
+
+        Contrato (LSP): cada ticket pode possuir no maximo um pagamento.
+        A implementacao SQLAlchemy garante isso pela PK id_ticket,
+        enquanto o Fake reproduz essa mesma regra.
+        """
+        raise NotImplementedError
+    ...
+
+
+class FakePagamentoRepository(AbstractPagamentoRepository):
+    def __init__(
+        self,
+        pagamentos: Optional[list[model.Pagamento]] = None
+    ):
+        self._pagamentos: list[model.Pagamento] = []
+
+        # Utiliza add() para garantir que os mesmos contratos
+        # sejam respeitados inclusive durante a inicializacao.
+        for pagamento in pagamentos or []:
+            self.add(pagamento)
+
+    def add(self, pagamento: model.Pagamento) -> None:
+        """
+        Adiciona um pagamento ao repositorio Fake.
+
+        Rejeita pagamentos cujo ticket ja possua um pagamento,
+        reproduzindo a restricao de chave primaria do banco.
+        """
+        if self.get(pagamento.id_ticket) is not None:
+            raise model.PagamentoJaRealizadoError(
+                f"ERROR: Ticket {pagamento.id_ticket} ja possui pagamento."
+            )
+
+        self._pagamentos.append(pagamento)
+
+    def get(self, id_ticket: int) -> Optional[model.Pagamento]:
+        """Busca um pagamento pelo ID do ticket."""
+        return next(
+            (p for p in self._pagamentos if p.id_ticket == id_ticket),
+            None
+        )
+```
+
+O `FakePagamentoRepository` passou a rejeitar pagamentos duplicados, reproduzindo a regra de unicidade imposta pela chave primária do banco de dados.
+
+A utilização de `add()` durante a inicialização garante que a mesma regra seja aplicada tanto a pagamentos adicionados individualmente quanto a pagamentos recebidos pelo construtor.
+
+O `SqlAlchemyPagamentoRepository.add()` não foi alterado: ele continua delegando a persistência ao SQLAlchemy, deixando a garantia atômica de unicidade sob responsabilidade da chave primária do banco.
+
+A operação `get()` passou a utilizar `Session.get()`, que permite recuperar uma entidade pela sua chave primária, aproveitando também a identidade da entidade já presente na sessão.
+
+**Observação sobre a substituibilidade:** as duas implementações agora respeitam o mesmo invariante de unicidade. Entretanto, ainda existe uma diferença na propagação dos erros: o Fake lança `PagamentoJaRealizadoError` diretamente em `add()`, enquanto a implementação SQLAlchemy pode lançar `IntegrityError` durante `flush()` ou `commit()`. Portanto, houve alinhamento da regra de negócio, mas o momento e o tipo da exceção ainda não são idênticos.
+
+## 4. Garantia por Testes Automatizados
 
 A suíte completa de testes unitários, de repositório e E2E da API REST foi executada após a refatoração. Nenhum erro foi detectado.
 
-### 5. Análise do Custo da Refatoração (Trade-offs)
+Para o LSP, foram adicionados 3 testes no `FakePagamentoRepository`: recusa do segundo pagamento do mesmo ticket, aceitação de tickets diferentes e recusa de duplicata na inicialização. Os dois testes de recusa falham contra o `repository.py` anterior e passam agora.
+
+## 5. Análise do Custo da Refatoração (Trade-offs)
+
+### 5.1 DIP
 
 **Custo:** A imutabilidade passa a valer apenas para os campos declarados do dataclass (atributos que não são campos podem ser reatribuídos), e a regra depende de `__dataclass_fields__`, o que exige que `Pagamento` continue sendo um `@dataclass`.
 
 **Por que compensa:**
 
 - **Desacoplamento (DIP):** o domínio deixa de conhecer o prefixo `_sa_` e qualquer outro detalhe do SQLAlchemy; a regra de imutabilidade depende só dos campos da própria entidade, e a dependência passa a apontar apenas do ORM para o domínio.
+- **Preservação do contrato dos campos de domínio:** a primeira atribuição de cada campo continua permitida, enquanto tentativas posteriores de alteração continuam lançando `FrozenInstanceError`.
 
-- **Retrocompatibilidade:** o comportamento dos campos não muda (a primeira atribuição funciona e a reatribuição lança `FrozenInstanceError`).
+### 5.2. LSP
+
+**Custos:**
+
+- O `add()` do Fake realiza uma busca linear na lista para verificar a existência de um pagamento. Esse custo é irrelevante para o volume esperado de dados de um repositório Fake.
+- As implementações ainda diferem quanto ao tipo e ao momento de propagação da exceção: o Fake lança `PagamentoJaRealizadoError` durante `add()`, enquanto o banco pode lançar `IntegrityError` durante `flush()` ou `commit()`.
+- A tradução do erro de infraestrutura para uma exceção de domínio deve ser realizada na fronteira responsável pela persistência/transação, caso se deseje uniformizar a resposta apresentada às camadas superiores.
+
+Uma consulta prévia no `SqlAlchemyPagamentoRepository.add()` foi descartada: ela adicionaria um `SELECT` a cada inserção, aumentaria o custo de persistência e não eliminaria a condição de corrida entre a consulta e a inserção. A chave primária continua sendo a garantia atômica de unicidade.
+
+**Por que compensa:**
+
+- **Substituibilidade (LSP):** o Fake e o SQLAlchemy passam a respeitar a mesma regra de negócio: um ticket não pode possuir mais de um pagamento. Assim, os testes deixam de aceitar um estado que o banco de dados rejeitaria.
+- **Banco como fonte da verdade:** o `add()` do SQLAlchemy não precisa realizar uma consulta adicional para verificar duplicatas. A unicidade permanece garantida de maneira atômica pela chave primária do banco.
+- **Fidelidade dos testes:** a implementação Fake reproduz uma restrição importante da implementação real, reduzindo a possibilidade de testes aprovados em situações que falhariam durante a persistência.
+
+**Conclusão:** a refatoração eliminou o acoplamento do domínio à convenção interna do SQLAlchemy e alinhou o comportamento dos repositórios quanto à unicidade dos pagamentos. A diferença na propagação de exceções permanece como um trade-off identificado, não devendo ser confundida com a completa uniformidade comportamental das implementações.
 
 # Integrante: Miguel Enne
 
