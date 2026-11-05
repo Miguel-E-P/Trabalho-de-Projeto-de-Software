@@ -166,8 +166,18 @@ Fui o responsável pela identificação e correção das violações de princíp
 Como consequência direta da refatoração, foi formalizada a criação da RN-"xx" — Validação Sintática Unificada de Placas: padrão antigo e padrão Mercosul.
 
 
+**05-11-26**:
 
+Declaração do Uso de IA
+Declara-se a utilização de Inteligência Artificial como ferramenta de suporte no desenvolvimento da suíte de testes unitários isolados para o Value Object Placa, auxiliando no mapeamento de cenários de borda (formatos válidos e inválidos) para garantir a cobertura completa da regra de negócio.
 
+**Autorrelato**
+
+Fui o responsável pela criação e execução dos testes unitários da classe Placa no arquivo tests/unit/test_model.py. Implementei testes parametrizados para validar o comportamento do Value Object class Placa refatorado no commit 841bc73, garantindo a correta aceitação de placas nos padrões antigo e Mercosul (com e sem traço, maiúsculas e minúsculas) e confirmando o disparo de exceções (ValueError) para entradas nulas ou sintaticamente inválidas.
+
+**Motivação**: 
+
+Resguardar o sistema em casos reais de uso referentes à legislação criminal e prevenção a fraudes (como clonagem de veículos ou inserção de dados forjados) que possam envolver o número da placa, garantindo rigor e integridade na entrada de dados no modelo de domínio.
 
 
 

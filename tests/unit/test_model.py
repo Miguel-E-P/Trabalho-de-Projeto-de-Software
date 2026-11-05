@@ -1,3 +1,4 @@
+from typing import Literal
 from uuid import uuid4
 from dataclasses import FrozenInstanceError
 from datetime import datetime
@@ -174,6 +175,50 @@ def test_alterar_tipo_de_veiculo():
     assert veiculo.tipo == "SUV"
 
 
+#teste após refactor no numero de placa padrão antigo e mercosul
+#RN-06: Validação Sintática Unificada de Placas: padrão antigo e padrão Mercosul
+
+@pytest.mark.parametrize("placa_valida", [
+    # Padrão Antigo (ABC-1234 / ABC1234)
+    "ABC-1234",  # Maiúsculo com traço
+    "ABC1234",   # Maiúsculo sem traço
+    "abc-1234",  # Minúsculo com traço
+    "abc1234",   # Minúsculo sem traço
+    # Padrão Mercosul (ABC1D23)
+    "ABC1D23",   # Maiúsculo
+    "abc1d23",   # Minúsculo
+])
+def test_deve_aceitar_placas_validas_nos_padroes_antigo_e_mercosul(placa_valida: Literal['ABC-1234'] | Literal['ABC1234'] | Literal['abc-1234'] | Literal['abc1234'] | Literal['ABC1D23'] | Literal['abc1d23']):
+    """Garante que placas nos formatos antigo e Mercosul sejam aceitas com sucesso."""
+    placa = Placa(placa_valida)
+    assert placa.numero == placa_valida
+
+
+@pytest.mark.parametrize("placa_invalida", [
+    "",           # String vazia
+    "   ",        # Espaços em branco
+    "ABC",        # Tamanho insuficiente
+    "1234567",    # Apenas números
+    "ABCDE12",    # Muitas letras
+    "ABC-123",    # Faltando dígito
+    "ABC12345",   # Caracteres em excesso
+    "AB123CD",    # Formato incorreto
+    "@@@-1234",   # Caracteres especiais
+])
+def test_deve_lancar_excecao_para_placas_sintaticamente_invalidas(placa_invalida: Literal[''] | Literal['   '] | Literal['ABC'] | Literal['1234567'] | Literal['ABCDE12'] | Literal['ABC-123'] | Literal['ABC12345'] | Literal['AB123CD'] | Literal['@@@-1234']):
+    """Garante que qualquer formato fora dos padrões aceitos lance ValueError (RN-01)."""
+    with pytest.raises(ValueError, match="Placa inválida"):
+        Placa(placa_invalida)
+
+
+def test_deve_lancar_excecao_para_valor_nulo():
+    """Garante que a tentativa de criar uma Placa com None seja bloqueada."""
+    with pytest.raises(ValueError, match="Placa inválida"):
+        Placa(None)  # type: ignore
+
+#Fim teste unitário numero da placa padrão antigo e mercosul
+
+
 
 #INI AGREGADO PAGAMENTO
 def test_pagamento_dinheiro_invariante_negativa():
@@ -212,7 +257,7 @@ def test_pagamento_imutabilidade():
         ("data_hora_pagamento", datetime(2030, 1, 1)),
     ],
 )
-def test_pagamento_todos_os_campos_sao_imutaveis(campo, novo_valor):
+def test_pagamento_todos_os_campos_sao_imutaveis(campo: Literal['valor'] | Literal['tipo_pagamento'] | Literal['data_hora_pagamento'], novo_valor: float | datetime | model.TipoPagamento):
     pagamento = model.Pagamento(100, 50.0, model.TipoPagamento.PIX, datetime(2026, 9, 18, 10, 30))
 
     with pytest.raises(FrozenInstanceError):
