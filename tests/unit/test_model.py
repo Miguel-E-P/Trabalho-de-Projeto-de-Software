@@ -6,7 +6,7 @@ from datetime import datetime
 import pytest
 
 from estacionamento.domain import model
-from estacionamento.domain.model import Cliente, Veiculo, Placa
+from estacionamento.domain.model import Cliente, Veiculo, Placa, SemDesconto, DescontoMensalista, DescontoVIP
 
 
 #Testes unitários para o agregado cliente
@@ -218,6 +218,48 @@ def test_deve_lancar_excecao_para_valor_nulo():
 
 #Fim teste unitário numero da placa padrão antigo e mercosul
 
+
+#Teste Unitário Exclusivo para o Padrão GoF Strategy
+
+def test_deve_aplicar_desconto_padrao_sem_desconto():
+    cliente = Cliente(
+        id_cliente=uuid4(),
+        nome="João Silva",
+        cpf="12345678900",
+        telefone="21999998888",
+        email="joao@email.com"
+    )
+    assert cliente.calcular_valor_com_desconto(100.0) == 100.0
+
+def test_deve_aplicar_desconto_mensalista():
+    cliente = Cliente(
+        id_cliente=uuid4(),
+        nome="Maria Souza",
+        cpf="98765432100",
+        telefone="21988887777",
+        email="maria@email.com",
+        estrategia_desconto=DescontoMensalista()
+    )
+    # R$ 100,00 com 20% de desconto = R$ 80,00
+    assert cliente.calcular_valor_com_desconto(100.0) == 80.0
+
+def test_deve_permitir_troca_dinamica_de_estrategia():
+    cliente = Cliente(
+        id_cliente=uuid4(),
+        nome="Carlos Santos",
+        cpf="55544433322",
+        telefone="21977776666",
+        email="carlos@email.com"
+    )
+    # Inicialmente avulso
+    assert cliente.calcular_valor_com_desconto(100.0) == 100.0
+
+    # Virou VIP em tempo de execução
+    cliente.alterar_estrategia_desconto(DescontoVIP())
+    # R$ 100,00 com 35% de desconto = R$ 65,00
+    assert cliente.calcular_valor_com_desconto(100.0) == 65.0
+
+#Fim Teste Unitário Exclusivo para o Padrão GoF Strategy
 
 
 #INI AGREGADO PAGAMENTO

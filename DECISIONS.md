@@ -168,7 +168,8 @@ Como consequência direta da refatoração, foi formalizada a criação da RN-"x
 
 **05-11-26**:
 
-Declaração do Uso de IA
+**Declaração do Uso de IA**
+
 Declara-se a utilização de Inteligência Artificial como ferramenta de suporte no desenvolvimento da suíte de testes unitários isolados para o Value Object Placa, auxiliando no mapeamento de cenários de borda (formatos válidos e inválidos) para garantir a cobertura completa da regra de negócio.
 
 **Autorrelato**
@@ -179,6 +180,33 @@ Fui o responsável pela criação e execução dos testes unitários da classe P
 
 Resguardar o sistema em casos reais de uso referentes à legislação criminal e prevenção a fraudes (como clonagem de veículos ou inserção de dados forjados) que possam envolver o número da placa, garantindo rigor e integridade na entrada de dados no modelo de domínio.
 
+
+**07-11-26**:
+
+**Declaração do Uso de IA**
+
+Declara-se a utilização de Inteligência Artificial como ferramenta de suporte no design, refatoração e implementação do padrão GoF Strategy no Agregado Cliente, auxiliando no mapeamento dos participantes do padrão, estruturação das estratégias concretas de desconto e criação da suíte de testes unitários isolados para garantir o cumprimento dos critérios de aceitação da disciplina.
+
+**Autorrelato**
+
+Fui o responsável pela aplicação do padrão de projeto GoF Strategy (Padrão Comportamental de Objeto) na classe raiz Cliente do Agregado Cliente (Cliente, Veiculo, Placa). Implementei a abstração EstrategiaDesconto e suas variantes concretas (SemDesconto, DescontoMensalista, DescontoVIP), permitindo que a regra de cálculo de tarifa/desconto seja trocada em tempo de execução sem alterar a estrutura interna da entidade. Além disso, elaborei e executei os testes unitários dedicados em tests/unit/test_model.py (test_deve_aplicar_desconto_padrao_sem_desconto, test_deve_aplicar_desconto_mensalista, test_deve_permitir_troca_dinamica_de_estrategia), validando a execução completa com 100% de aprovação na suíte de testes.
+
+**Hash do Commit antes**: `1564c18` em 29-09-26 (anterior a 06/10).
+
+**Hash do Commit depois**:   (!revisar amanhã!)
+
+**Arquivos Envolvidos**: src/estacionamento/domain/model.py, tests/unit/test_model.py
+
+**Motivação**: 
+
+Tratar o cálculo de descontos e tarifas de forma extensível no Agregado Cliente, evitando estruturas condicionais engessadas (if/elif/else) e respeitando o Princípio Aberto/Fechado (OCP) e o Princípio da Responsabilidade Única (SRP) para suportar novas categorias de clientes no sistema de estacionamento.
+
+**Testes Unitários de Regressão**:
+
+Adição de testes em test_model.py garantindo que o cálculo base, a aplicação dos descontos e a transição dinâmica de estratégia funcionam isoladamente sem regressões.
+
+**To Do:** 
+Amanhã revisar/ editar esta feature inteira e atualizar o hash do commit após refatoração GoF Strategy aqui mesmo no arquivo decision. 
 
 
 

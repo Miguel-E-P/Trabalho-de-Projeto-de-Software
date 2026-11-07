@@ -9,6 +9,38 @@ from uuid import UUID
 from typing import List
 from abc import ABC, abstractmethod
 
+
+# =====================================================================
+# PADRÃO GOF: STRATEGY (Políticas de Desconto / Categoria de Cliente)
+# =====================================================================
+
+class EstrategiaDesconto(ABC):
+    """Interface abstrata do Strategy GoF para cálculo de descontos."""
+    
+    @abstractmethod
+    def calcular_desconto(self, valor_base: float) -> float:
+        pass
+
+
+class SemDesconto(EstrategiaDesconto):
+    """Estratégia padrão: Cliente avulso / sem convênio."""
+    def calcular_desconto(self, valor_base: float) -> float:
+        return 0.0
+
+
+class DescontoMensalista(EstrategiaDesconto):
+    """Estratégia para Clientes Mensalistas (20% de desconto no uso extra)."""
+    def calcular_desconto(self, valor_base: float) -> float:
+        return valor_base * 0.20
+
+
+class DescontoVIP(EstrategiaDesconto):
+    """Estratégia para Clientes VIP / Corporativos (35% de desconto)."""
+    def calcular_desconto(self, valor_base: float) -> float:
+        return valor_base * 0.35
+
+#Fim política de desconto por categoria de cliente (PADRÃO GOF: STRATEGY)
+
 # Agregado Cliente / Veículo
 # Abordagem: da class mais simples até chegar na class raiz
 
@@ -48,6 +80,20 @@ class Cliente:
     email: str
     """atributo veiculos depende de um veiculo da class de cima (Veiculo)"""
     veiculos: List[Veiculo] = field(default_factory=list)
+
+    # Atributo Strategy integrado ao Cliente (Padrão GoF)
+    estrategia_desconto: EstrategiaDesconto = field(default_factory=SemDesconto)
+
+    def alterar_estrategia_desconto(self, nova_estrategia: EstrategiaDesconto) -> None:
+        """Permite alterar a política de cobrança do cliente em tempo de execução (Strategy)."""
+        if nova_estrategia is None:
+            raise ValueError("A estratégia de desconto não pode ser nula.")
+        self.estrategia_desconto = nova_estrategia
+
+    def calcular_valor_com_desconto(self, valor_base: float) -> float:
+        """Delega o cálculo de tarifa/desconto para a estratégia associada ao cliente."""
+        desconto = self.estrategia_desconto.calcular_desconto(valor_base)
+        return max(0.0, valor_base - desconto)
 
     # método que vai cadastrar veiculo para um cliente
     def cadastrar_veiculo(self, veiculo: Veiculo) -> None:
