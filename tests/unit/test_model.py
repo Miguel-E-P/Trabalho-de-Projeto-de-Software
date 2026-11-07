@@ -6,7 +6,7 @@ from datetime import datetime
 import pytest
 
 from estacionamento.domain import model
-from estacionamento.domain.model import Cliente, Veiculo, Placa, SemDesconto, DescontoMensalista, DescontoVIP
+from estacionamento.domain.model import Cliente, Veiculo, Placa, SemDesconto, DescontoMensalista, DescontoVIP, CriadorCarro, CriadorMoto
 
 
 #Testes unitários para o agregado cliente
@@ -260,6 +260,27 @@ def test_deve_permitir_troca_dinamica_de_estrategia():
     assert cliente.calcular_valor_com_desconto(100.0) == 65.0
 
 #Fim Teste Unitário Exclusivo para o Padrão GoF Strategy
+
+#Teste Unitário para GoF Factory Method
+
+def test_deve_criar_veiculo_tipo_carro_via_factory():
+    criador = CriadorCarro()
+    placa = Placa("ABC1D23")
+    carro = criador.criar_veiculo(placa)
+    
+    assert carro.tipo == "CARRO"
+    assert carro.placa == placa
+
+def test_deve_criar_veiculo_tipo_moto_via_factory():
+    criador = CriadorMoto()
+    placa = Placa("XYZ9876")
+    moto = criador.criar_veiculo(placa)
+    
+    assert moto.tipo == "MOTO"
+    assert moto.placa == placa
+
+#Fim Teste Unitário para GoF Factory Method
+
 
 
 #INI AGREGADO PAGAMENTO

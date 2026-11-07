@@ -5,7 +5,7 @@ from datetime import datetime
 from dataclasses import dataclass, field, FrozenInstanceError
 from enum import Enum
 import re
-from uuid import UUID
+from uuid import UUID, uuid4
 from typing import List
 from abc import ABC, abstractmethod
 
@@ -69,6 +69,27 @@ class Veiculo:
     """atributo placa depende do uso de uma placa da class de cima (Placa)"""
     placa: Placa
     tipo: str
+
+# --- FACTORY METHOD (PADRÃO GOF CRIACIONAL) ---
+class CriadorVeiculo(ABC):
+    """Classe Abstrata que declara o Factory Method."""
+    
+    @abstractmethod
+    def criar_veiculo(self, placa: Placa) -> Veiculo:
+        pass
+
+
+class CriadorCarro(CriadorVeiculo):
+    def criar_veiculo(self, placa: Placa) -> Veiculo:
+        return Veiculo(id_veiculo=uuid4(), placa=placa, tipo="CARRO")
+
+
+class CriadorMoto(CriadorVeiculo):
+    def criar_veiculo(self, placa: Placa) -> Veiculo:
+        return Veiculo(id_veiculo=uuid4(), placa=placa, tipo="MOTO")
+
+# --- FIM FACTORY METHOD (PADRÃO GOF CRIACIONAL) ---
+
 
 # class entidade raiz do agregado
 @dataclass

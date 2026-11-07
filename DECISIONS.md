@@ -206,7 +206,32 @@ Tratar o cálculo de descontos e tarifas de forma extensível no Agregado Client
 Adição de testes em test_model.py garantindo que o cálculo base, a aplicação dos descontos e a transição dinâmica de estratégia funcionam isoladamente sem regressões.
 
 **To Do:** 
-Amanhã revisar/ editar esta feature inteira e atualizar o hash do commit após refatoração GoF Strategy aqui mesmo no arquivo decision. 
+Amanhã revisar/ editar esta feature inteira e atualizar o hash do commit após refatoração GoF Strategy aqui mesmo no arquivo decision.
+
+***Padrão GoF Factory Method**
+
+**Declaração do Uso de IA**
+
+Declara-se a utilização de Inteligência Artificial como ferramenta de suporte no design, refatoração e implementação do padrão GoF Factory Method para a criação de instâncias da entidade Veiculo no Agregado Cliente, auxiliando na estruturação das classes criadoras concretas e no desenvolvimento da suíte de testes unitários dedicada.
+
+**Autorrelato**
+
+Fui o responsável pela aplicação do padrão de projeto GoF Factory Method (Padrão Criacional de Classe) para o gerenciamento de criação da entidade Veiculo (Veiculo, Placa). Implementei a classe abstrata CriadorVeiculo com o método abstrato criar_veiculo() e suas concretizações (CriadorCarro e CriadorMoto), encapsulando a atribuição do tipo de veículo e garantindo que o objeto seja gerado com identificadores únicos válidos e invariantes de placa preservadas. Adicionalmente, construí os testes unitários isolados em tests/unit/test_model.py (test_deve_criar_veiculo_tipo_carro_via_factory e test_deve_criar_veiculo_tipo_moto_via_factory), assegurando 100% de cobertura e aprovação da suíte de testes do projeto.
+
+**Hash do Commit antes**: `1564c18` em 29-09-26 (anterior a 06/10).
+
+**Hash do Commit depois**:   (!revisar amanhã!)
+
+**Arquivos Envolvidos**: src/estacionamento/domain/model.py, tests/unit/test_model.py
+
+**Motivação**: 
+
+Padronizar e desacoplar o processo de criação dos diferentes tipos de veículos no sistema de estacionamento, evitando a instanciação direta com strings literais soltas para o atributo tipo, prevenindo erros de digitação e facilitando a inclusão de novas categorias de veículos no futuro sem modificar o código do cliente ou da entidade (Princípio Aberto/Fechado - OCP).
+
+**To Do:** 
+Amanhã revisar/ editar esta feature inteira e atualizar o hash do commit após refatoração GoF Factory Method aqui mesmo no arquivo decision.
+
+
 
 
 
