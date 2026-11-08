@@ -138,10 +138,29 @@ class TipoVaga(Enum):
     CARRO_ELETRICO = "carro elétrico"
 
 
-class StatusVaga(Enum):
-    LIVRE = "livre"
-    OCUPADA = "ocupada"
-    RESERVADA = "reservada"
+class StatusVaga(ABC):
+    @abstractmethod
+    def ocupar(self, vaga):
+        pass
+
+
+class VagaLivre(StatusVaga):
+    def ocupar(self, vaga, veiculo=None, politica=None):
+        if veiculo and not politica.validar(self, veiculo):
+            raise VagaIndisponivel(f"Veículo não autorizado para a vaga {self.id_vaga}.")
+
+        self.status = StatusVaga.OCUPADA
+
+
+class VagaOcupada(StatusVaga):
+    def ocupar(self, vaga, veiculo=None, politica=None):
+        raise VagaIndisponivel(f"Vaga {vaga.id_vaga} já está ocupada.")
+
+
+class VagaReservada(StatusVaga):
+    def ocupar(self, vaga):
+        raise VagaIndisponivel(f"Vaga{ vaga.id_vaga} já foi reservada.")
+
 
 class VagaIndisponivel(Exception):
     pass
