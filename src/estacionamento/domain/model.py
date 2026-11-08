@@ -189,16 +189,10 @@ class PoliticaVagaMoto(PoliticaOcupacao):
 class Vaga:
     id_vaga: int
     tipo: TipoVaga
-    status: StatusVaga = StatusVaga.LIVRE
+    status: StatusVaga = field(default_factory=VagaLivre)
 
     def ocupar(self, veiculo: Veiculo=None, politica: PoliticaOcupacao=None) -> None:
-        if self.status != StatusVaga.LIVRE:
-            raise VagaIndisponivel(f"Vaga {self.id_vaga} indisponível.")
-
-        if veiculo and not politica.validar(self, veiculo):
-            raise VagaIndisponivel(f"Veículo não autorizado para a vaga {self.id_vaga}.")
-
-        self.status = StatusVaga.OCUPADA
+        self.estado.ocupar(self, veiculo, politica)
 
 
 @dataclass
