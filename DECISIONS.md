@@ -434,6 +434,12 @@ Como dito anteriormente, já havia implementado o Strategy Pattern, tendo em men
 Nos próximos commits, pretendo implementar o State Pattern, refatorando as Vagas.
 
 
+**08-11-26**:
+Fiquei satisfeito com a refatoração, consigo ver muitas vantagens nessa implementação do State Pattern; essa nova abordagem me oferece uma forma mais limpa, inclusive, de implementar outros métodos além da ocupação das vagas, como liberar ou reservar. Mas, ainda, vejo que a escolha de remover o Enum de StatusVaga tem consequências pro restante da base de código: dos services aos testes, chegando até o nosso ORM. 
+
+Ao meu ver, tem duas formas muito boas de resolver esse problema; vou avaliar qual das duas é a melhor pra nossa aplicação e corrigir nos próximos commits.
+
+
 ### Matheus
 
 **18-09-26**: 
