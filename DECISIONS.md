@@ -413,6 +413,12 @@ Sobre o uso de IA, não achei muito confiável as informações que o ChatGPT me
 Ademais, assim que meus colegas terminarem suas alterações, pretendo fechar mais esse checkpoint.
 
 
+**07-11-26**:
+Como dito anteriormente, já havia implementado o Strategy Pattern, tendo em mente o checkpoint atual; no entanto, houve um desalinhamento na equipe e outro integrante resolveu implementar após isso, sem comunicar. No documento que explica a fase 2, conferimos um trecho que recomenda que implementemos padrões diferentes entre si. Por isso, combinamos de cada um implementar mais um padrão.
+
+Nos próximos commits, pretendo implementar o State Pattern, refatorando as Vagas.
+
+
 ### Matheus
 
 **18-09-26**: 
