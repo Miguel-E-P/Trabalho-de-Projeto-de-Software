@@ -27,14 +27,18 @@ Descartada por ter um foco maior em ciclos de vida e transições de estado comp
 Ligeiro aumento na quantidade de arquivos/classes no projeto, contrabalançado pela total flexibilidade de estender novos planos de desconto sem alterar o código existente do Agregado Cliente (OCP).
 
 
-**Diagrama de classes em Mermaid ou PlantUML, destacando os participantes:**
+**Diagrama de Classes, destacando os participantes:**
+
 
 
 ![alt text](image.png)
 
 ======================================================================
 
-** Nome e Categoria: Factory Method (Padrão Criacional de Classe)**. 
+
+Class Veiculo (Agregado Cliente):
+
+**Nome e Categoria: Factory Method (Padrão Criacional de Classe)**. 
 
 **Autor: Kennedy Soares**
 
@@ -44,17 +48,34 @@ A necessidade de instanciar objetos Veiculo garantindo a definição padronizada
 
 **Alternativas Consideradas**:
 
-Instanciação Direta (Veiculo(id, placa, "CARRO")): Descartada por espalhar strings mágicas (Magic Numbers/Strings) pelo código e não validar padronização de tipo.   Abstract Factory: Descartada por ser excessivamente complexa para criar apenas uma classe de produto (Veiculo), sem a necessidade de famílias de objetos relacionados.  
+Instanciação Direta (Veiculo(id, placa, "CARRO")): Descartada por espalhar strings mágicas (Magic Numbers/Strings) pelo código e não validar padronização de tipo.   
+
+Abstract Factory: Descartada por ser excessivamente complexa para criar apenas uma classe de produto (Veiculo), sem a necessidade de famílias de objetos relacionados.
+
 
 **Mapeamento dos Participantes**:
 
-Produto (Product): VeiculoCriador Abstrato (Creator): CriadorVeiculoCriadores Concretos (Concrete Creators): CriadorCarro, CriadorMoto
+Produto (Product): VeiculoCriador
+
+Abstrato (Creator): CriadorVeiculo
+
+Criadores Concretos (Concrete Creators): CriadorCarro, CriadorMoto
+
+Produtos Concretos (Concrete Product):
+
+- Produto Concreto Veiculo com o tipo "CARRO";
+
+- Produto Concreto Veiculo com o tipo "MOTO".
+
+
 
 **Custo da Aplicação (Trade-off)**:
 
 Pequeno aumento na quantidade de classes criadoras, compensado pela centralização da lógica de instanciação e facilidade de extensão para novas categorias (ex.: CriadorCaminhonete)
 
-**Diagrama de Classes em Mermaid**
+**Diagrama de Classes**
+
+
 
 ![alt text](image-1.png)
 

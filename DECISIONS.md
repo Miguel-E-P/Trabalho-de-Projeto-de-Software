@@ -191,11 +191,18 @@ Declara-se a utilização de Inteligência Artificial como ferramenta de suporte
 
 Fui o responsável pela aplicação do padrão de projeto GoF Strategy (Padrão Comportamental de Objeto) na classe raiz Cliente do Agregado Cliente (Cliente, Veiculo, Placa). Implementei a abstração EstrategiaDesconto e suas variantes concretas (SemDesconto, DescontoMensalista, DescontoVIP), permitindo que a regra de cálculo de tarifa/desconto seja trocada em tempo de execução sem alterar a estrutura interna da entidade. Além disso, elaborei e executei os testes unitários dedicados em tests/unit/test_model.py (test_deve_aplicar_desconto_padrao_sem_desconto, test_deve_aplicar_desconto_mensalista, test_deve_permitir_troca_dinamica_de_estrategia), validando a execução completa com 100% de aprovação na suíte de testes.
 
-**Hash do Commit antes**: `1564c18` em 29-09-26 (anterior a 06/10).
+**Hash do Commit antes**:
 
-**Hash do Commit depois**:   (!revisar amanhã!)
+`1564c18` em 29-09-26 (anterior a 06/10).
 
-**Arquivos Envolvidos**: src/estacionamento/domain/model.py, tests/unit/test_model.py
+**Hash do Commit depois**:
+
+Commit 01a6702 feature/cliente-padrão GoF - Strategy em 07/11/2026. 
+
+
+**Arquivos Envolvidos**: 
+
+src/estacionamento/domain/model.py, tests/unit/test_model.py
 
 **Motivação**: 
 
@@ -205,10 +212,9 @@ Tratar o cálculo de descontos e tarifas de forma extensível no Agregado Client
 
 Adição de testes em test_model.py garantindo que o cálculo base, a aplicação dos descontos e a transição dinâmica de estratégia funcionam isoladamente sem regressões.
 
-**To Do:** 
-Amanhã revisar/ editar esta feature inteira e atualizar o hash do commit após refatoração GoF Strategy aqui mesmo no arquivo decision.
 
-***Padrão GoF Factory Method**
+
+**Padrão GoF Factory Method**
 
 **Declaração do Uso de IA**
 
@@ -218,18 +224,27 @@ Declara-se a utilização de Inteligência Artificial como ferramenta de suporte
 
 Fui o responsável pela aplicação do padrão de projeto GoF Factory Method (Padrão Criacional de Classe) para o gerenciamento de criação da entidade Veiculo (Veiculo, Placa). Implementei a classe abstrata CriadorVeiculo com o método abstrato criar_veiculo() e suas concretizações (CriadorCarro e CriadorMoto), encapsulando a atribuição do tipo de veículo e garantindo que o objeto seja gerado com identificadores únicos válidos e invariantes de placa preservadas. Adicionalmente, construí os testes unitários isolados em tests/unit/test_model.py (test_deve_criar_veiculo_tipo_carro_via_factory e test_deve_criar_veiculo_tipo_moto_via_factory), assegurando 100% de cobertura e aprovação da suíte de testes do projeto.
 
-**Hash do Commit antes**: `1564c18` em 29-09-26 (anterior a 06/10).
+**Hash do Commit antes**:
 
-**Hash do Commit depois**:   (!revisar amanhã!)
+`1564c18` em 29-09-26 (anterior a 06/10).
 
-**Arquivos Envolvidos**: src/estacionamento/domain/model.py, tests/unit/test_model.py
+**Hash do Commit depois**:
+
+Commit 1ccfc64 feature/Veiculo-GoF-FactoryMethod em 07/11/2026.
+
+**Arquivos Envolvidos**: 
+
+src/estacionamento/domain/model.py, tests/unit/test_model.py
 
 **Motivação**: 
 
 Padronizar e desacoplar o processo de criação dos diferentes tipos de veículos no sistema de estacionamento, evitando a instanciação direta com strings literais soltas para o atributo tipo, prevenindo erros de digitação e facilitando a inclusão de novas categorias de veículos no futuro sem modificar o código do cliente ou da entidade (Princípio Aberto/Fechado - OCP).
 
-**To Do:** 
-Amanhã revisar/ editar esta feature inteira e atualizar o hash do commit após refatoração GoF Factory Method aqui mesmo no arquivo decision.
+**Testes Unitários**:
+
+Adição de testes automatizados com pytest confirmando a correta atribuição do tipo (carro ou moto), a vinculação da Placa e a geração do id_veiculo.
+
+
 
 
 
