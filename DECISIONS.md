@@ -354,7 +354,7 @@ Hash do Commits:
 024fe6ef61bda23f6af64142140a19a352de377d
 Arquivos modificados: test_pagamento.py, gof.md
 
--hash-add-here
+c84a64e5028cc7b3771230b3a996499f073ee40f
 Arquivos modificados: DECISIONS.md
 
 ### Gustavo
