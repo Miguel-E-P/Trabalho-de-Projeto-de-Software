@@ -140,26 +140,26 @@ class TipoVaga(Enum):
 
 class StatusVaga(ABC):
     @abstractmethod
-    def ocupar(self, vaga):
+    def ocupar(self, vaga, veiculo, politica):
         pass
 
 
 class VagaLivre(StatusVaga):
     def ocupar(self, vaga, veiculo=None, politica=None):
-        if veiculo and not politica.validar(self, veiculo):
-            raise VagaIndisponivel(f"Veículo não autorizado para a vaga {self.id_vaga}.")
+        if veiculo and not politica.validar(vaga, veiculo):
+            raise VagaIndisponivel(f"Veículo não autorizado para a vaga {vaga.id_vaga}.")
 
-        self.status = StatusVaga.OCUPADA
+        vaga.status = VagaOcupada()
 
 
 class VagaOcupada(StatusVaga):
     def ocupar(self, vaga, veiculo=None, politica=None):
-        raise VagaIndisponivel(f"Vaga {vaga.id_vaga} já está ocupada.")
+        raise VagaIndisponivel(f"Vaga {vaga.id_vaga} indisponível.")
 
 
 class VagaReservada(StatusVaga):
-    def ocupar(self, vaga):
-        raise VagaIndisponivel(f"Vaga{ vaga.id_vaga} já foi reservada.")
+    def ocupar(self, vaga, veiculo=None, politica=None):
+        raise VagaIndisponivel(f"Vaga{ vaga.id_vaga} indisponível.")
 
 
 class VagaIndisponivel(Exception):
@@ -192,7 +192,7 @@ class Vaga:
     status: StatusVaga = field(default_factory=VagaLivre)
 
     def ocupar(self, veiculo: Veiculo=None, politica: PoliticaOcupacao=None) -> None:
-        self.estado.ocupar(self, veiculo, politica)
+        self.status.ocupar(self, veiculo, politica)
 
 
 @dataclass
