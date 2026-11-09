@@ -345,29 +345,29 @@ def test_pagamento_valor_zero_e_valido():
 
 # Testes Agregado Estacionamento
 def test_ocupar_vaga_livre():
-    vaga = model.Vaga(1, model.TipoVaga.CARRO, model.StatusVaga.LIVRE)
+    vaga = model.Vaga(1, model.TipoVaga.CARRO, model.VagaLivre())
     vaga.ocupar()
 
-    assert vaga.status == model.StatusVaga.OCUPADA
+    assert isinstance(vaga.status, model.VagaOcupada)
 
 
 def test_ocupar_vaga_indisponivel():
-    vaga = model.Vaga(1, model.TipoVaga.CARRO, model.StatusVaga.OCUPADA)
+    vaga = model.Vaga(1, model.TipoVaga.CARRO, model.VagaOcupada())
 
     with pytest.raises(model.VagaIndisponivel, match=f"Vaga {vaga.id_vaga} indisponível."):
         vaga.ocupar()
 
 
 def test_buscar_vaga_cadastrada():
-    vaga = model.Vaga(1, model.TipoVaga.CARRO, model.StatusVaga.LIVRE)
+    vaga = model.Vaga(1, model.TipoVaga.CARRO)
     estacionamento = model.Estacionamento(1, [vaga])
 
     assert estacionamento.buscar_vaga(vaga.id_vaga) == vaga
 
 
 def test_buscar_vaga_nao_cadastrada():
-    vaga_cadastrada = model.Vaga(1, model.TipoVaga.CARRO, model.StatusVaga.LIVRE)
-    vaga_nao_cadastrada = model.Vaga(2, model.TipoVaga.CARRO, model.StatusVaga.LIVRE)
+    vaga_cadastrada = model.Vaga(1, model.TipoVaga.CARRO)
+    vaga_nao_cadastrada = model.Vaga(2, model.TipoVaga.CARRO)
 
     estacionamento = model.Estacionamento(1, [vaga_cadastrada])
 
@@ -375,12 +375,12 @@ def test_buscar_vaga_nao_cadastrada():
         estacionamento.buscar_vaga(vaga_nao_cadastrada.id_vaga)
 
 def test_ocupar_vaga_estacionamento():
-    vaga = model.Vaga(1, model.TipoVaga.CARRO, model.StatusVaga.LIVRE)
+    vaga = model.Vaga(1, model.TipoVaga.CARRO, model.VagaLivre())
     estacionamento = model.Estacionamento(1, [vaga])
 
     estacionamento.ocupar_vaga(vaga.id_vaga)
 
-    assert vaga.status == model.StatusVaga.OCUPADA
+    assert isinstance(vaga.status, model.VagaOcupada)
 
 
 #Testes unitários para o agregado Reserva
