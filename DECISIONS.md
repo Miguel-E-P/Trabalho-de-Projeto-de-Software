@@ -323,6 +323,40 @@ Hash do Commits:
 921b134ce608dad887eece711e2833f74fdb45c3
 Arquivos modificados: solid.md, DECISIONS.md
 
+**08-11-26**
+Implementei o padrão GoF Observer (comportamental) na camada de serviço do Agregado Pagamento, criando o arquivo `src/estacionamento/service_layer/pagamento_observer.py`. A mudança separa o registro do pagamento das ações que devem ocorrer como consequência dele: atualizar o Ticket correspondente e registrar uma linha de auditoria.
+
+A classe `PublicadorDePagamentos` mantém a lista de observadores e oferece operações para adicioná-los, removê-los e notificá-los. `RegistradorDePagamentos`, como ConcreteSubject, recebe um `AbstractPagamentoRepository`; ao registrar um pagamento, primeiro chama `repo.add(pagamento)` e, se essa operação não falhar, notifica os observadores. O objeto `Pagamento` é passado diretamente como argumento da notificação (modelo *push*).
+
+Foram implementados dois observadores concretos: `MarcarTicketComoPago`, que busca o Ticket pelo `id_ticket` usando `AbstractTicketRepository` e chama `ticket.registrar_pagamento()`; e `AuditoriaDePagamentos`, que escreve uma mensagem com o identificador do ticket, o valor e o tipo de pagamento. Caso o Ticket não seja encontrado, o primeiro observador levanta `TicketNaoEncontrado`. A auditoria usa `logging` no nível INFO por padrão, mas permite receber uma função de escrita no construtor.
+
+**Decisão de Projeto**:
+Optei pelo padrão Observer porque o registro de um `Pagamento` — que é um recibo imutável e se relaciona ao Ticket por `id_ticket` — produz efeitos em outras partes do sistema. Sem essa separação, o código responsável por registrar o pagamento teria de conhecer e chamar diretamente cada reação. Isso aumentaria o acoplamento e exigiria modificar o fluxo de registro sempre que uma nova reação fosse acrescentada.
+
+Uso de IA: Utilizei o Claude como apoio para implementar o observer.
+
+Hash do Commits:
+81f2ba2b48b62cdbbd93e57a72fd127153ccb2ae
+Arquivos modificados: pagamento_observer.py
+
+**09-11-26**
+Implementei os testes unitários do padrão GoF Observer no contexto do Agregado Pagamento. Os testes verificam o registro do pagamento, a notificação dos observadores na ordem de inscrição, a remoção de observadores, a atualização do Ticket para pago e o registro de auditoria. Também foram verificados cenários de falha, como a rejeição de um pagamento pelo repositório e a interrupção das notificações quando um observador lança uma exceção
+
+Documentei no arquivo `gof.md` a aplicação do padrão Observer, detalhando o contexto e o problema, as alternativas consideradas, o mapeamento dos participantes para as classes implementadas, o diagrama de classes e os custos (*trade-offs*) da decisão arquitetural.
+
+Ademais, documentei o meu raciocinio no Decisions.md.
+
+O objetivo foi validar o comportamento do padrão Observer por meio de testes unitários isolados, garantindo que o registro de pagamentos possa acionar diferentes reações sem acoplar o registrador às implementações concretas dos observadores. A documentação formaliza a justificativa arquitetural da escolha e registra suas vantagens e limitações.
+
+Uso de IA: O Claude foi utilizado para gerar os testes. Em especifico, ele recebeu um arquivo teste_observer e foi comandado a melhorar os testes dentro do mesmo e implementar mais testes para verificar as funcionalidades do codigo. O ChatGPT foi utilizado para corrigir os erros de gramatica no decisions.
+
+Hash do Commits:
+024fe6ef61bda23f6af64142140a19a352de377d
+Arquivos modificados: test_pagamento.py, gof.md
+
+-hash-add-here
+Arquivos modificados: DECISIONS.md
+
 ### Gustavo
 **16-09-26**:
 Primeiro, estou organizando nosso repositório; devo fazer esse tipo de varredura mais vezes e, a não ser que eu esqueça, subir o commit com uma flag de "_refact_". A título de curiosidade, o linter/code formatter que uso chama-se [ruff](https://docs.astral.sh/ruff/).
