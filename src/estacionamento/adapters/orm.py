@@ -115,6 +115,25 @@ table_tickets = Table(
 )
 
 # Agregado Estacionamento
+class VagaStateType(TypeDecorator):
+    impl = SQLEnum(model.StatusVaga)
+    cache_ok = True
+
+    status = {
+        model.VagaLivre: model.StatusVaga.LIVRE,
+        model.VagaOcupada: model.StatusVaga.OCUPADA,
+        model.VagaReservada: model.StatusVaga.RESERVADA,
+    }
+
+    status_inverted = {v: k for k, v in status.items()}
+
+    def process_bind_param(self, value, dialect):
+        return self.status[type(value)]
+
+    def process_result_value(self, value, dialect):
+        return self.status_inverted[value]()
+
+
 estacionamentos_table = Table(
     "estacionamentos",
     metadata,
@@ -126,7 +145,7 @@ vagas_table = Table(
     metadata,
     Column("id_vaga", Integer, primary_key=True),
     Column("tipo", SQLEnum(model.TipoVaga), nullable=False),
-    Column("status", SQLEnum(model.StatusVaga), nullable=False),
+    Column("status", VagaStateType, nullable=False),
     Column(
         "id_estacionamento",
         Integer,
