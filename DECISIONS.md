@@ -474,6 +474,16 @@ Fiquei satisfeito com a refatoração, consigo ver muitas vantagens nessa implem
 Ao meu ver, tem duas formas muito boas de resolver esse problema; vou avaliar qual das duas é a melhor pra nossa aplicação e corrigir nos próximos commits.
 
 
+**09-11-26**:
+O problema que citei ontem e vim estudando desde então é o problema da persistência. No banco de dados, não podemos guardar os objetos diretamente, precisávamos, de alguma maneira, saber manipular os objetos que encapsulavam o status e encontrar uma forma de armazenar/recuperar valores que equivalescem no banco. Tive muitas ideias sobre, algumas mais trabalhosas, outras menos.
+
+Enfim, enquanto analisava as alternativas que pensei pra resolver esse problema, lembrei de um dos conceitos que a professora Rebeca havia ensinado em aula: um antipattern chamado "_Not Invented Here_", que, em geral, entendi se referir a preferir um grande esforço a utilizar uma solução pronta, tentar "reinventar a roda".
+
+Assim, fui investigar soluções que já existiam e percebi que nosso framework implementava um outro padrão de projeto chamado _TypeDecorator_, que era a ferramenta que eu precisava. Com ele, as responsabilidades ficam muito melhor divididas: a aplicação conhece `VagaState`, que encapsula a lógica de cada status da vaga, e o ORM conhece `VagaStateType`, que converte os diferentes states pra strings através do StatusVaga(Enum).
+
+Agora, percebo melhor o custo dessa refatoração e devo escrever sobre isso amanhã.
+
+
 ### Matheus
 
 **18-09-26**: 
