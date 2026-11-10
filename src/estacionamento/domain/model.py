@@ -151,7 +151,7 @@ class VagaState(ABC):
 
 
 class VagaLivre(VagaState):
-    def ocupar(self, vaga, veiculo=None, politica=None):
+    def ocupar(self, vaga, veiculo, politica):
         if veiculo and not politica.validar(vaga, veiculo):
             raise VagaIndisponivel(f"Veículo não autorizado para a vaga {vaga.id_vaga}.")
 
@@ -159,12 +159,12 @@ class VagaLivre(VagaState):
 
 
 class VagaOcupada(VagaState):
-    def ocupar(self, vaga, veiculo=None, politica=None):
+    def ocupar(self, vaga, veiculo, politica):
         raise VagaIndisponivel(f"Vaga {vaga.id_vaga} indisponível.")
 
 
 class VagaReservada(VagaState):
-    def ocupar(self, vaga, veiculo=None, politica=None):
+    def ocupar(self, vaga, veiculo, politica):
         raise VagaIndisponivel(f"Vaga{ vaga.id_vaga} indisponível.")
 
 
