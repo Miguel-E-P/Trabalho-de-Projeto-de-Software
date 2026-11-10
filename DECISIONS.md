@@ -484,6 +484,49 @@ Assim, fui investigar soluções que já existiam e percebi que nosso framework 
 Agora, percebo melhor o custo dessa refatoração e devo escrever sobre isso amanhã.
 
 
+**10-11-26**:
+Escrevi meu relatório no `docs/gof.md`, como pede o documento que orienta a Fase 2, seguindo as orientações dos professores. Revisei também o código, pra ver se dava pra melhorar algo. Agora, vou ajudar meus colegas com as tarefas deles.
+
+Abaixo, seguem os hashs e arquivos que alterei durante essa fase (do mais recente pro mais antigo), sem contar com esse, do autorrelato:
+```md
+4681f24 - **docs: Adicionando relatório da implementação do GoF**
++ docs/gof.md
+
+7ca9463 - **refact: Limpando métodos das classes State**
++ src/estacionamento/domain/model.py
+
+7f4f959 - docs: Relato das decisões de hoje
++ DECISIONS.md
+
+52136da - refact: Testes unitários que envolvem o status da vaga
++ tests/unit/test_model.py
+
+1eea9c1 - **fix: Tratando a persistência do status com TypeDecorator**
++ src/estacionamento/adapters/orm.py
++ src/estacionamento/domain/model.py
+
+cbd5c6b - **fix: Consertando chamada dos métodos ocupar em StatusVaga**
++ src/estacionamento/domain/model.py
+
+1e3b4a3 - **docs: Adicionando notas sobre as decisões de hoje**
++ DECISIONS.md
+
+40716fe - **refact: Alterando método ocupar no model de Vaga**
++ src/estacionamento/domain/model.py
+
+b62bcc8 - **feat: Implementando State Pattern nas Vagas**
++ src/estacionamento/domain/model.py
+
+05404d7 - **docs: Planos pra esse checkpoint**
++ DECISIONS.md
+
+```
+
+Sobre o uso de IA, pedi ao ChatGPT que gerasse o diagrama de classes em mermaid, pois não conheço essa sintaxe. Ainda assim, tive que fazer algumas correções no diagrama, espero que não tenha quebrado.
+
+Ademais, assim que meus colegas terminarem suas alterações, pretendo fechar mais esse checkpoint.
+
+
 ### Matheus
 
 **18-09-26**: 
