@@ -464,3 +464,61 @@ Arquivo `tests/unit/test_reserva_facade.py` (22 testes, só com `FakeReservaRepo
 - **Pagamento fora da fachada:** `registrar_saida` devolve o valor devido, mas não registra o pagamento, que é do agregado Pagamento (`RegistradorDePagamentos`, padrão Observer). Quem chama ainda precisa encadear os dois.
 - **Transação:** a fachada faz `commit` por operação (como o `services.py` do Cliente). Um fluxo que precise de várias operações atômicas ainda precisaria de Unit of Work, que não faz parte do projeto.
 - **Import tardio:** `services.py` importa o modelo pela raiz `src.estacionamento...`, e o resto do código pela raiz `estacionamento...`. Por isso a fachada só importa `CalculadoraTarifa` quando nenhuma calculadora é injetada.
+
+
+
+## Integrante: Matheus H Reis
+
+### Domain Service: Calculadora de Tarifas
+
+**Nome e Categoria:** Strategy (Padrão Comportamental de Objeto)
+
+#### Contexto e Problema
+A `CalculadoraTarifa` (no Domain Service) precisava calcular o valor cobrado dependendo do tempo de permanência e do tipo de veículo. Fazer isso usando vários `if/elif` dentro da mesma função deixava o código engessado e feria o Princípio Aberto/Fechado (OCP). A ideia de usar o Strategy foi isolar cada regra de precificação em sua própria classe para poder adicionar novas tarifas no futuro sem mexer no código que já funciona.
+
+#### Alternativas Consideradas
+* **Template Method:** Cheguei a considerar herança com método abstrato para a calculadora, mas isso prenderia a estrutura a uma hierarquia rígida, enquanto o Strategy dá liberdade de trocar e injetar a regra de precificação de forma bem mais flexível.
+* **Factory Method:** Serviria bem para instanciar o cálculo, mas o objetivo principal aqui era variar e delegar o algoritmo tarifário em si durante o processo de cobrança.
+
+#### Mapeamento dos Participantes
+* **Contexto (Context):** `CalculadoraTarifa` (serviço de domínio que recebe os dados de permanência e chama a tarifa correta).
+* **Estratégia Abstrata (Strategy):** `EstrategiaTarifa` (interface/ABC que define a assinatura do cálculo).
+* **Estratégias Concretas (Concrete Strategies):** `TarifaCarro`, `TarifaMoto`, `TarifaSUV` e `TarifaCarroEletrico` (implementações específicas com as taxas de cada tipo de veículo).
+
+
+#### Diagrama de Classes
+```mermaid
+classDiagram
+    class CalculadoraTarifa {
+        -_estrategias: Dict~str, EstrategiaTarifa~
+        +registrar_estrategia(tipo: str, estrategia: EstrategiaTarifa)
+        +calcular_valor(tipo_veiculo: str, horas: float) float
+    }
+    class EstrategiaTarifa {
+        <<abstract>>
+        +calcular(horas: float)* float
+    }
+    class TarifaCarro {
+        +calcular(horas: float) float
+    }
+    class TarifaMoto {
+        +calcular(horas: float) float
+    }
+    class TarifaSUV {
+        +calcular(horas: float) float
+    }
+    class TarifaCarroEletrico {
+        +calcular(horas: float) float
+    }
+        CalculadoraTarifa o-- EstrategiaTarifa : usa (contexto)
+    EstrategiaTarifa <|.. TarifaCarro : Implementa
+    EstrategiaTarifa <|.. TarifaMoto : Implementa
+    EstrategiaTarifa <|.. TarifaSUV : Implementa
+    EstrategiaTarifa <|.. TarifaCarroEletrico : Implementa
+```
+
+#### Testes do Padrão
+O padrão é validado nos testes unitários em `tests/unit/test_services.py`. Além de manter 100% de sucesso na suíte de testes legada, criei um teste específico de extensibilidade para comprovar o registro dinâmico de novas estratégias via `registrar_estrategia` em tempo de execução sem alterar o serviço.
+
+#### Custo da Aplicação
+O único lado negativo foi a necessidade de criar um volume maior de classes no projeto. No entanto, o ganho em organização, facilidade de manutenção e a segurança de não quebrar regras antigas criando novas categorias compensam esse custo.
