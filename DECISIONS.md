@@ -617,3 +617,27 @@ Hash dos commits:
 
  Arquivos modificados: model.py, repository.py, orm.py, test_model.py, test_repository.py, solid.md, DECISIONS.md
 
+**09/11/2026**
+
+Implementação do padrão Façade no agregado Reserva (`Reserva` e `Ticket`).
+Arquivos Modificados: `src/estacionamento/service_layer/reserva_facade.py`,
+
+**10/11/2026**
+
+
+  Implementação dos testes em relação ao Façade no agregado Reserva 
+  Arquivos Modificados: `tests/unit/test_reserva_facade.py` e `docs/gof.md`.
+
+- **Decisão de projeto:** a fachada fica na camada de serviço e só orquestra;
+  as regras continuam em `Ticket`, `Reserva`, `Vaga` e `CalculadoraTarifa`,
+  porque o domínio não pode importar repositórios (ADR-0001) e uma fachada com
+  regras viraria God Object.
+
+- **Uso de IA:** a implementação da fachada, os 22 testes e o rascunho da seção do
+  `gof.md` foram gerados com apoio do Claude a partir dos arquivos do repositório e
+  dos slides de GoF. Eu li o código, conferi o diagrama contra as classes reais e
+  rodei a suíte unitária (114 testes passando)
+
+  Hashs dos Commits:
+  c7e70fb3985d0b5725457e40241ad538122e0458
+  f09652440605e25f3daee9ceaa0d646609fe40e8
