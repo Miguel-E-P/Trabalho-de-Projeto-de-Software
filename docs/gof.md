@@ -344,3 +344,123 @@ def test_ocupar_vaga_estacionamento():
 O principal custo dessa implementação é o aumento da quantidade de classes. Também podemos considerar uma maior complexidade inicial, comparando com a solução anterior, que só envolvia alguns ifs.
 
 Apesar disso, acredito que o custo compensou, ainda mais pela facilidade de implementar novos métodos e outros estados, caso a aplicação venha a precisar. O código está bem mais limpo e as responsabilidades melhor separadas.
+
+
+
+## Integrante: Miguel Enne — Façade
+
+**Módulo / Agregado:** Agregado Reserva (`Reserva`, `Ticket`)
+
+---
+
+### 1. Nome e categoria
+**Façade (Fachada)** — padrão **estrutural**, de escopo de objeto.
+
+### 2. Contexto no sistema e problema
+O agregado Reserva não tinha ponto de entrada na camada de serviço: o `services.py` só tem os casos de uso do agregado Cliente. O ADR-0003 já previa o problema ("a camada de serviços [precisa] orquestrar chamadas a repositórios distintos"), e ele aparece em três fluxos:
+
+- **Reservar:** criar a `Reserva` (que valida id e data), checar se o id já existe e guardá-la.
+- **Entrada:** abrir um `Ticket` sem saída e ocupar a `Vaga` do `Estacionamento`, sem deixar um dos dois pela metade se o outro falhar.
+- **Saída:** atualizar o `horarioSaida` do `Ticket` e calcular o valor com a `CalculadoraTarifa`, sem deixar a saída gravada se o cálculo falhar.
+
+Sem o padrão, cada cliente (rota Flask, script, teste) teria de conhecer `Reserva`, `Ticket`, `Estacionamento`, três repositórios abstratos e a `CalculadoraTarifa`, e repetir a ordem correta das chamadas. A fachada dá uma interface única para esse fluxo, e as regras de negócio continuam no modelo.
+
+### 3. Por que esse padrão
+Alternativas consideradas:
+
+- **Funções soltas em `services.py`** (o estilo do agregado Cliente): é a mais simples, mas cada função recebe quatro ou cinco repositórios como argumento e o cliente precisa montá-los a cada chamada. Não há um objeto que represente "o agregado Reserva visto de fora".
+- **Mediator:** abstrai a comunicação entre objetos e é bidirecional. Aqui os objetos do subsistema não conversam entre si; só queremos simplificar a chamada de quem está fora, que é unidirecional.
+- **Adapter:** torna utilizável uma interface que já existe. Aqui não há interface incompatível; falta uma interface de nível mais alto para um subsistema inteiro.
+- **Colocar a orquestração em `Ticket`/`Reserva`:** o domínio não pode importar repositórios (ADR-0001), e `Ticket` ficaria acoplado a `Estacionamento` e à tarifa.
+
+**Onde fica:** na camada de serviço (`src/estacionamento/service_layer/reserva_facade.py`). A fachada usa repositórios, que o domínio não pode importar. As regras (`Ticket.updateSaida`, `Reserva.__post_init__`, `Vaga.ocupar`, tarifa) continuam onde estavam.
+
+### 4. Participantes mapeados para o código
+
+| Participante (GoF) | Classe |
+|---|---|
+| Facade | `FachadaReserva` |
+| Classes do subsistema | `Reserva`, `Ticket`, `Estacionamento` (`domain/model.py`) |
+| Classes do subsistema | `AbstractReservaRepository`, `AbstractTicketRepository`, `AbstractEstacionamentoRepository` (`adapters/repository.py`) |
+| Classes do subsistema | `CalculadoraTarifa` (`service_layer/services.py`), via o contrato `CalculadoraDeTarifa` |
+| Cliente | rota Flask, script ou teste que chama `reservar`, `registrar_entrada` e `registrar_saida` |
+
+Operações da fachada: `reservar`, `registrar_entrada` e `registrar_saida`. A fachada recebe os repositórios, a calculadora, a `session` (opcional, para o `commit`) e um relógio (`agora`) no construtor.
+
+### 5. Diagrama de classes
+Participante do padrão (a fachada) em azul; classes do subsistema em cinza.
+
+```mermaid
+classDiagram
+    direction TB
+
+    class FachadaReserva {
+        <<Facade>>
+        +reservar(id_reserva, data_reserva, placa_veiculo) Reserva
+        +registrar_entrada(id_ticket, id_estacionamento, id_vaga, ...) Ticket
+        +registrar_saida(id_ticket, tipo_veiculo, horario_saida, recarga) float
+    }
+    class Reserva
+    class Ticket {
+        +updateSaida(horarioSaida)
+    }
+    class Estacionamento {
+        +ocupar_vaga(id_vaga, veiculo, politica)
+    }
+    class AbstractReservaRepository {
+        <<abstract>>
+        +add(reserva)
+        +get(id_reserva)
+    }
+    class AbstractTicketRepository {
+        <<abstract>>
+        +add(ticket)
+        +get(idTicket)
+    }
+    class AbstractEstacionamentoRepository {
+        <<abstract>>
+        +get(id_estacionamento)
+    }
+    class CalculadoraDeTarifa {
+        <<Protocol>>
+        +calcular(tipo_veiculo, entrada, saida, recarga) float
+    }
+    class CalculadoraTarifa
+
+    FachadaReserva --> AbstractReservaRepository : reservas
+    FachadaReserva --> AbstractTicketRepository : tickets
+    FachadaReserva --> AbstractEstacionamentoRepository : estacionamentos
+    FachadaReserva --> CalculadoraDeTarifa
+    CalculadoraTarifa ..|> CalculadoraDeTarifa : satisfaz
+    FachadaReserva ..> Reserva : cria
+    FachadaReserva ..> Ticket : cria e atualiza
+    FachadaReserva ..> Estacionamento : ocupar_vaga
+
+    style FachadaReserva fill:#cfe2ff,stroke:#084298,stroke-width:2px
+    style Reserva fill:#e9ecef,stroke:#6c757d
+    style Ticket fill:#e9ecef,stroke:#6c757d
+    style Estacionamento fill:#e9ecef,stroke:#6c757d
+    style AbstractReservaRepository fill:#e9ecef,stroke:#6c757d
+    style AbstractTicketRepository fill:#e9ecef,stroke:#6c757d
+    style AbstractEstacionamentoRepository fill:#e9ecef,stroke:#6c757d
+    style CalculadoraDeTarifa fill:#e9ecef,stroke:#6c757d
+    style CalculadoraTarifa fill:#e9ecef,stroke:#6c757d
+```
+
+### 6. Testes que exercitam o padrão
+Arquivo `tests/unit/test_reserva_facade.py` (22 testes, só com `FakeReservaRepository`, `FakeTicketRepository`, `FakeEstacionamentoRepository` e uma sessão falsa). Os principais:
+
+- `test_entrada_abre_ticket_sem_saida_e_ocupa_a_vaga`: uma chamada abre o ticket, ocupa a vaga e faz o commit.
+- `test_entrada_em_vaga_ocupada_nao_grava_ticket` e `test_entrada_com_id_invalido_nao_ocupa_a_vaga`: a entrada é tudo ou nada.
+- `test_saida_grava_horario_e_devolve_o_valor_da_tarifa_real`: a fachada usa a `CalculadoraTarifa` de verdade (2 h de carro = R$ 20,00).
+- `test_saida_delega_o_calculo_para_a_calculadora_injetada`: a fachada delega o cálculo, e não o refaz.
+- `test_saida_com_tipo_de_veiculo_invalido_desfaz_a_saida` e `test_saida_antes_da_entrada_nao_altera_o_ticket`: uma saída que falha não deixa o ticket alterado nem faz commit.
+- `test_fluxo_completo_reserva_entrada_e_saida`: os três casos de uso em sequência.
+- `test_fachada_nao_impede_o_uso_direto_do_subsistema`: quem precisa de controle fino continua usando o repositório e o modelo.
+
+### 7. Custo da aplicação do padrão
+- **Indireção:** uma classe a mais e uma camada a mais entre o cliente e o modelo.
+- **Risco de God Object:** a fachada só deve orquestrar. Regra de negócio nova (por exemplo, um conflito entre reservas) vai para o modelo ou para um Domain Service, e não para a fachada; senão ela passa a violar o SRP.
+- **Pagamento fora da fachada:** `registrar_saida` devolve o valor devido, mas não registra o pagamento, que é do agregado Pagamento (`RegistradorDePagamentos`, padrão Observer). Quem chama ainda precisa encadear os dois.
+- **Transação:** a fachada faz `commit` por operação (como o `services.py` do Cliente). Um fluxo que precise de várias operações atômicas ainda precisaria de Unit of Work, que não faz parte do projeto.
+- **Import tardio:** `services.py` importa o modelo pela raiz `src.estacionamento...`, e o resto do código pela raiz `estacionamento...`. Por isso a fachada só importa `CalculadoraTarifa` quando nenhuma calculadora é injetada.
