@@ -565,6 +565,18 @@ Hash dos commits:
     
 Arquivos modificados: services.py, test_services.py, solid.md
 
+**10-11-26**: Finalizei a documentação da aplicação do padrão GoF Strategy na `CalculadoraTarifa` no arquivo `docs/gof.md`, registrando o contexto de negócio, alternativas consideradas, o diagrama de classes, os testes e a análise de custos.
+
+
+#### Decisão de projeto 
+Mantive a separação de cada regra de cobrança em classes de estratégia isoladas para que novas tarifas possam ser adicionadas por extensão sem mexer no serviço de domínio que já funciona.
+
+Uso de IA: Utilizei para formatar do diagrama do papel para o Mermaid. A lógica, os testes e as decisões de arquitetura foram feitas por mim.
+Hash dos commits:
+    a027b076357199447545a52a6a6b51476da716fe
+
+Arquivos modificados: docs/gof.md, DECISIONS.md
+
 ### Miguel
 **16/09/26**:
 Comecei fazendo o esqueleto básico das classes ticket e reserva, que serão atualizados e talvez sofram alguma correção no futuro
