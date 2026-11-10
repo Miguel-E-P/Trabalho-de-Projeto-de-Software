@@ -192,3 +192,155 @@ Arquivo `tests/unit/test_pagamento_observer.py` (9 testes). Os principais:
 - **Montagem obrigatória:** a reação só acontece se o observador for adicionado onde a aplicação é montada. Esquecer `MarcarTicketComoPago` deixa o ticket sem pagar e nada acusa o erro.
 - **Banco durante a notificação:** `MarcarTicketComoPago` consulta o repositório de tickets, o que pode disparar o autoflush do INSERT do pagamento dentro da notificação.
 - **Auditoria via `logging`:** por padrão ela escreve no nível INFO, então as linhas só aparecem se o `logging` estiver configurado para esse nível.
+
+
+## Integrante: Gustavo Teixeira 
+**Agregado/Módulo**: Estacionamento 
+**Padrão implementado**: State (Estado)
+**Categoria do padrão**: Comportamental
+
+### Contexto
+Atualmente, temos três estados modelados que uma vaga no estacionamento pode assumir (livre, ocupada ou reservada), cada uma com sua lógica de ocupação. Como nossas regras eram simples, até então, não nos preocupamos com a complexidade dos métodos que realizavam essa operação:
+
+```python
+def ocupar(self, veiculo: Veiculo=None, politica: PoliticaOcupacao=None) -> None:
+    if self.status != StatusVaga.LIVRE:
+        raise VagaIndisponivel(f"Vaga {self.id_vaga} indisponível.")
+
+    if veiculo and not politica.validar(self, veiculo):
+        raise VagaIndisponivel(f"Veículo não autorizado para a vaga {self.id_vaga}.")
+
+    self.status = StatusVaga.OCUPADA
+
+
+```
+
+Mas o uso de condicionais pra tratar diferentes casos dentro do método já indicava algum bad-smell.
+
+### Alternativas
+Implementando o StatePattern, conseguimos isolar o comportamento de cada estado dentro de uma classe, através da nossa abstração `VagaState`. Ainda ganhamos a facilidade de implementar outros métodos, como "desocupar" ou "reservar", mas que fogem do escopo dessa tarefa. Bem melhor do que usar um Enum e vários _if/else_ dentro de cada método em Vaga.
+
+```python
+class VagaState(ABC):
+    @abstractmethod
+    def ocupar(self, vaga, veiculo, politica):
+        pass
+
+
+class VagaLivre(VagaState):
+    def ocupar(self, vaga, veiculo, politica):
+        if veiculo and not politica.validar(vaga, veiculo):
+            raise VagaIndisponivel(f"Veículo não autorizado para a vaga {vaga.id_vaga}.")
+
+        vaga.status = VagaOcupada()
+
+
+class VagaOcupada(VagaState):
+    def ocupar(self, vaga, veiculo, politica):
+        raise VagaIndisponivel(f"Vaga {vaga.id_vaga} indisponível.")
+
+
+class VagaReservada(VagaState):
+    def ocupar(self, vaga, veiculo, politica):
+        raise VagaIndisponivel(f"Vaga{ vaga.id_vaga} indisponível.")
+
+
+@dataclass
+class Vaga:
+    id_vaga: int
+    tipo: TipoVaga
+    status: VagaState = field(default_factory=VagaLivre)
+
+    def ocupar(self, veiculo: Veiculo=None, politica: PoliticaOcupacao=None) -> None:
+        self.status.ocupar(self, veiculo, politica)
+
+
+```
+
+Outra alternativa seria escolher um dos status pra ser a classe pai Vaga e transformar as outras em Vagas especializadas, por exemplo, `VagaOcupada(Vaga)` como subclasse de Vaga. Acho essa ideia confusa, mistura muito a ideia do tipo com o estado e cheira fortemente a gambiarra.
+
+Uma alternativa melhor seria uma State Machine, com as transições de cada estado. Apesar de boa solução, é bem mais complexa e, dependendo da implementação, poderia ferir o Open/Closed Principle. O State Pattern fazia mais sentido pra mim, no contexto da aplicação, combinando até com o Strategy que implementei antes.
+
+### Participantes do padrão no código
+
+| Participante GoF | Classe implementada |
+| --- | --- | --- |
+| State | `VagaState` |
+| ConcreteState | `VagaLivre` |
+| ConcreteState | `VagaOcupada` |
+| ConcreteState | `VagaReservada` |
+| Context | `Vaga` |
+
+
+### Diagrama de classes
+```mermaid
+classDiagram
+    class VagaState {
+        <<abstract>>
+        +ocupar(vaga, veiculo, politica)
+    }
+
+    class VagaLivre {
+        +ocupar(vaga, veiculo, politica)
+    }
+
+    class VagaOcupada {
+        +ocupar(vaga, veiculo, politica)
+    }
+
+    class VagaReservada {
+        +ocupar(vaga, veiculo, politica)
+    }
+
+    class Vaga {
+        +int id_vaga
+        +TipoVaga tipo
+        +VagaState status
+        +ocupar(veiculo, politica)
+    }
+
+    VagaState <|-- VagaLivre
+    VagaState <|-- VagaOcupada
+    VagaState <|-- VagaReservada
+
+    Vaga --> VagaState : mantém estado atual
+```
+
+### Testes
+Alguns testes tiveram que ser alterados, depois que implementei o State, por questão de sintaxe mesmo. A lógica dos testes não mudou e eles continuam passando:
+
+```python
+def test_ocupar_vaga_livre():
+    vaga = model.Vaga(1, model.TipoVaga.CARRO, model.VagaLivre())
+    vaga.ocupar()
+
+    assert isinstance(vaga.status, model.VagaOcupada)
+
+
+def test_ocupar_vaga_indisponivel():
+    vaga = model.Vaga(1, model.TipoVaga.CARRO, model.VagaOcupada())
+
+    with pytest.raises(model.VagaIndisponivel, match=f"Vaga {vaga.id_vaga} indisponível."):
+        vaga.ocupar()
+
+
+```
+
+Também alterei esse teste, que ocupa a vaga através do estacionamento a que ela pertence:
+
+```python
+def test_ocupar_vaga_estacionamento():
+    vaga = model.Vaga(1, model.TipoVaga.CARRO, model.VagaLivre())
+    estacionamento = model.Estacionamento(1, [vaga])
+
+    estacionamento.ocupar_vaga(vaga.id_vaga)
+
+    assert isinstance(vaga.status, model.VagaOcupada)
+
+
+```
+
+### Custo
+O principal custo dessa implementação é o aumento da quantidade de classes. Também podemos considerar uma maior complexidade inicial, comparando com a solução anterior, que só envolvia alguns ifs.
+
+Apesar disso, acredito que o custo compensou, ainda mais pela facilidade de implementar novos métodos e outros estados, caso a aplicação venha a precisar. O código está bem mais limpo e as responsabilidades melhor separadas.
