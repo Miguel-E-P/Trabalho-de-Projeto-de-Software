@@ -6,3 +6,10 @@ O sistema usa três frameworks: **Flask** (API), **SQLAlchemy** (persistência) 
 Papel: Recebe as requisições HTTP, converte entrada e saída (JSON e código de status), cria o repositório e garante o fechamento da sessão do banco. <br>
 Camada: Entrypoints: `entrypoints/flask_app.py`, testado em `tests/e2e/test_api.py`.  <br>
 Por que o domínio não depende dele:  Só o `flask_app.py` o importa. Ele chama a camada de serviço com parâmetros Python simples, e `service_layer/services.py` e `domain/model.py` não conhecem HTTP.  <br>
+
+
+### Pytest
+
+Papel: Descobre e executa todos os testes do sistema (114 unitários, 7 de integração e 2 e2e), entrega aos testes os recursos de que precisam (banco em memória, cliente HTTP) e relata o resultado. Também oferece pytest.raises e parametrize, que usamos para checar as exceções de domínio e repetir um teste com várias entradas. <br> 
+Camada: Fica fora de src/, em tests/, com uma pasta por camada: unit/ testa domain/ e service_layer/ com os repositórios Fake, integration/ testa adapters/ com SQLite em memória e e2e/ testa entrypoints/ pela API. A configuração está em tests/pytest.ini e o banco dos testes, em tests/conftest.py. <br> 
+Por que o domínio não depende dele: A dependência vai só dos testes para o código: tests/ importa domain, adapters e service_layer, e nenhum arquivo de src/ importa o pytest. O comando grep -rnE "sqlalchemy|flask|pytest|django" src/estacionamento/domain/ retorna 0 ocorrências. Como os testes unitários usam Fakes no lugar do banco, a suíte unitária roda em cerca de 0,1 s. <br>
