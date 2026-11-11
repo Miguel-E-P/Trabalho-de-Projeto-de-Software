@@ -619,7 +619,7 @@ Arquivos modificados: decisions.md
 2f117545ce0ba164a64ba3b2969ccea128c84d6c
 Arquivos modificados: decisions.md, 0003-titulo.md, 0003-reserva.md
 
-***27/10/2026
+***27/10/2026**
 
 Apliquei os princípios SOLID no agregado Reserva (Reserva, Ticket e seus repositórios) 
 
@@ -665,3 +665,10 @@ Arquivos Modificados: `src/estacionamento/service_layer/reserva_facade.py`,
   Hashs dos Commits:
   c7e70fb3985d0b5725457e40241ad538122e0458
   f09652440605e25f3daee9ceaa0d646609fe40e8
+
+**11/11/2026**
+
+Seguindo fielmente o que foi requisitado, Foi iniciado o relatório da seção do pytest em docs/frameworks.md, cobrindo inicialmente o papel, camada e por que o domínio não depende dele. O resto será adicionado em commits posterioires. 
+Arquivos modificados: docs/frameworks.md. Commits: [a colocar].
+
+Uso de IA: o rascunho da seção foi escrito com apoio do Claude a partir dos arquivos do repositório. Eu revisei o texto contra o código, e respondo pelo resultado. O item sobre o estado global dos mappers não foi verificado e está marcado assim no documento.
