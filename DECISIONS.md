@@ -366,6 +366,9 @@ Hash do Commit:
 0c28367e962920e6c366e6c757b25d2a16658f46
 Arquivos modificados: frameworks.md, DECISIONS.md
 
+d1c3798ffc3b84322b2ebeac95777b9f5dc8a12e
+Arquivos modificados: DECISIONS.md
+
 ### Gustavo
 **16-09-26**:
 Primeiro, estou organizando nosso repositório; devo fazer esse tipo de varredura mais vezes e, a não ser que eu esqueça, subir o commit com uma flag de "_refact_". A título de curiosidade, o linter/code formatter que uso chama-se [ruff](https://docs.astral.sh/ruff/).
