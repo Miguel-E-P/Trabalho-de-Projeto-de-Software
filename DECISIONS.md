@@ -669,6 +669,10 @@ Arquivos Modificados: `src/estacionamento/service_layer/reserva_facade.py`,
 **11/11/2026**
 
 Seguindo fielmente o que foi requisitado, Foi iniciado o relatório da seção do pytest em docs/frameworks.md, cobrindo inicialmente o papel, camada e por que o domínio não depende dele. O resto será adicionado em commits posterioires. 
-Arquivos modificados: docs/frameworks.md. Commits: [a colocar].
+Arquivos modificados: docs/frameworks.md. 
+
+Commits: 
+25d4ef2c52031996311bea87deeb6b04b6019769
+79653fd3fa5cea6ad2eac268f0e9d2f6a5a02f7e
 
 Uso de IA: o rascunho da seção foi escrito com apoio do Claude a partir dos arquivos do repositório. Eu revisei o texto contra o código, e respondo pelo resultado. O item sobre o estado global dos mappers não foi verificado e está marcado assim no documento.
