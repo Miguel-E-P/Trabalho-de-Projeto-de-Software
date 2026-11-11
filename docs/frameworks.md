@@ -1,6 +1,5 @@
 # Frameworks do sistema
-
-O sistema usa três frameworks: **Flask** (API), **SQLAlchemy** (persistência) e **pytest** (testes). Esta análise mostra o papel de cada um, a camada em que aparece, onde ele chama o código do grupo, quais padrões de projeto ele usa por dentro e o que mudaria com o Django.
+Como fomos orientados pelo professor na Fase 1, usamos três frameworks pra desenvolver nosso sistema: **Flask** (API), **SQLAlchemy** (persistência) e **pytest** (testes). Esta análise mostra o papel de cada um, a camada em que aparece, onde ele chama o código do grupo, quais padrões de projeto ele usa por dentro e o que mudaria com o Django.
 
 ## Flask
 Papel: Recebe as requisições HTTP, converte entrada e saída (JSON e código de status), cria o repositório e garante o fechamento da sessão do banco. <br>
