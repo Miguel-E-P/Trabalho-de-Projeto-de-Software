@@ -6,6 +6,12 @@ Papel: Recebe as requisições HTTP, converte entrada e saída (JSON e código d
 Camada: Entrypoints: `entrypoints/flask_app.py`, testado em `tests/e2e/test_api.py`.  <br>
 Por que o domínio não depende dele:  Só o `flask_app.py` o importa. Ele chama a camada de serviço com parâmetros Python simples, e `service_layer/services.py` e `domain/model.py` não conhecem HTTP.  <br>
 
+## SQLAlchemy
+**Papel**: É responsável pela persistência dos dados, além de gerenciar as sessões e transações com o banco de dados. Ele usa o ORM (Object Relational Mapper) pra mapear objetos Python em tabelas do banco e vice-versa, permitindo realizar operações básicas como consulta, inserção, atualização e exclusão sem precisar escrever todo o SQL manualmente.
+
+**Camada**: aparece na camada de infraestrutura (adapters), nos repositórios concretos responsáveis pela comunicação com o banco de dados. Essa camada implementa os contratos definidos pelo domínio e utiliza o SQLAlchemy para executar as operações de persistência.
+
+**Por que o domínio não depende dele**: O domínio não importa nem conhece o SQLAlchemy, ele só define as regras de negócio e as abstrações dos repositórios, enquanto os adapters implementa essas abstrações utilizando o ORM. Assim, podemos substituir o SQLAlchemy por outra tecnologia de persistência sem precisar modificar as regras de negócio.
 
 ### Pytest
 
