@@ -357,6 +357,15 @@ Arquivos modificados: test_pagamento.py, gof.md
 c84a64e5028cc7b3771230b3a996499f073ee40f
 Arquivos modificados: DECISIONS.md
 
+**11-11-2026**
+Comecei a descrever os frameworks utilizados no nosso sistema. Resolvi focar inicialmente apenas no Flask. Identifiquei o papel do Flask, sua camada, o arquivo em que é utilizado (flask_app.py), seu teste E2E e como o domínio permanece independente do framework.
+
+Uso de IA: O Claude foi utilizado para revisar e melhorar o texto descrevendo o Flask, e o ChatGPT foi utilizado para verificar a qualidade das melhorias, comparando a versao antiga e a nova.
+
+Hash do Commit:
+0c28367e962920e6c366e6c757b25d2a16658f46
+Arquivos modificados: frameworks.md, DECISIONS.md
+
 ### Gustavo
 **16-09-26**:
 Primeiro, estou organizando nosso repositório; devo fazer esse tipo de varredura mais vezes e, a não ser que eu esqueça, subir o commit com uma flag de "_refact_". A título de curiosidade, o linter/code formatter que uso chama-se [ruff](https://docs.astral.sh/ruff/).
