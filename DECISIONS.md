@@ -245,6 +245,18 @@ Padronizar e desacoplar o processo de criação dos diferentes tipos de veículo
 Adição de testes automatizados com pytest confirmando a correta atribuição do tipo (carro ou moto), a vinculação da Placa e a geração do id_veiculo.
 
 
+**12-11-26**
+
+**Declaração do Uso de IA**
+
+Após rascunho manual e preliminar das respostas aos arquivos frameworks e retrospectiva, a IA foi utilizada para agregar informações dispersas em ficheiros de arquivos diferentes, evidências dos testes unitários e de integração, commits e checkpoints anteriores, bem como auxílio na revisão e edição das respostas.
+
+
+**Autorrelato**
+
+Como os arquivos frameworks e retrospectiva tratam-se de respostas com textos únicos do grupo, ainda estamos em versões preliminares. Portanto, continuaremos debatendo novas edições até chegarmos a uma versão razoável para a entrega final.
+
+
 
 
 
