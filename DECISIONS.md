@@ -257,6 +257,18 @@ Após rascunho manual e preliminar das respostas aos arquivos frameworks e retro
 Como os arquivos frameworks e retrospectiva tratam-se de respostas com textos únicos do grupo, ainda estamos em versões preliminares. Portanto, continuaremos debatendo novas edições até chegarmos a uma versão razoável para a entrega final.
 
 
+**13-11-26**
+
+**Declaração do Uso de IA**
+
+Neste commit que trata de 'experimentos' a IA foi utilizada para auxiliar no desenvolvimento do código novo que retrata o caso de uso de 'cadastrar cliente e veículo' que já existia no projeto original, acompanhado de um teste isolado na pasta 'experimentos', porém foi proposto o mesmo caso de uso no formato arquivo único (monolítico).  
+
+
+**Autorrelato**
+
+Apesar do enunciado do trabalho ser "opicional" o desafio dos experimentos. Foi uma opurtunidade de construir um comparativo prático e concreto com evidências técnicas e empíricas. Possibilitou a análise mais robustas de trade-offs, com isso fundamenta mais a decisão relacionada a retrospectiva do projeto.
+
+A escolha de implementar o experimento alternativo caso de uso 'cadastrar cliente e veículo' na forma monolítica foi por ser menos complexa e bastante simples.
 
 
 
