@@ -271,6 +271,16 @@ Apesar do enunciado do trabalho ser "opicional" o desafio dos experimentos. Foi 
 A escolha de implementar o experimento alternativo caso de uso 'cadastrar cliente e veículo' na forma monolítica foi por ser menos complexa e bastante simples.
 
 
+**Reflexão Individual para a Fase 2 — Kennedy Soares**
+
+Na Fase 2,Eu errei muito no uso da ferramenta GitHub, mas aprendi bastante GitHub até o fechamento do projeto, destaco isso, pois não tive uso intenso/ treinamento em GitHub em disciplinas anteriores na minha trajetória. As mudanças no enunciado da Fase 2 possibilitou enorme aprendizado e talvez me deixe treinado para mudanças durante execução de projetos na minha vida profissional no mercado. Meu principal aprendizado foi comprovar na prática como o isolamento do domínio em uma arquitetura em camadas facilita a evolução segura do software. Ao refatorar o Value Object `Placa` para garantir suas invariantes (SRP e OCP) e ao aplicar os padrões GoF *Strategy* (`EstrategiaDesconto`) e *Factory Method* (`CriadorVeiculo`) no Agregado `Cliente`, ficou claro que manter a regra de negócio desacoplada de frameworks evita regressões e acelera os testes — evidenciado pelos 57 testes unitários rodando em 0,61s, contra a lentidão de 8 a 12 vezes por teste observada no experimento monolítico. Se pudesse fazer diferente, teria modelado os Value Objects com validações encapsuladas e adotado padrões criacionais desde a primeira versão do código, evitando o uso inicial de tipos primitivos soltos. Testaria outras formas de atribuição de valores para os atributos "id", em vez de "UUID". Além disso, teria escrito os testes parametrizados no `pytest` antes mesmo da implementação das regras, aplicando TDD de forma mais estrita para guiar o design das interfaces.
+
+
+
+
+
+
+
 
 
 
