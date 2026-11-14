@@ -266,14 +266,35 @@ Neste commit que trata de 'experimentos' a IA foi utilizada para auxiliar no des
 
 **Autorrelato**
 
-Apesar do enunciado do trabalho ser "opicional" o desafio dos experimentos. Foi uma opurtunidade de construir um comparativo prático e concreto com evidências técnicas e empíricas. Possibilitou a análise mais robustas de trade-offs, com isso fundamenta mais a decisão relacionada a retrospectiva do projeto.
+Apesar do enunciado do trabalho ser "opcional" o desafio dos experimentos. Foi uma opurtunidade de construir um comparativo prático e concreto com evidências técnicas e empíricas. Possibilitou a análise mais robustas de trade-offs, com isso fundamenta mais a decisão relacionada a retrospectiva do projeto.
 
 A escolha de implementar o experimento alternativo caso de uso 'cadastrar cliente e veículo' na forma monolítica foi por ser menos complexa e bastante simples.
 
 
 **Reflexão Individual para a Fase 2 — Kennedy Soares**
 
-Na Fase 2,Eu errei muito no uso da ferramenta GitHub, mas aprendi bastante GitHub até o fechamento do projeto, destaco isso, pois não tive uso intenso/ treinamento em GitHub em disciplinas anteriores na minha trajetória. As mudanças no enunciado da Fase 2 possibilitou enorme aprendizado e talvez me deixe treinado para mudanças durante execução de projetos na minha vida profissional no mercado. Meu principal aprendizado foi comprovar na prática como o isolamento do domínio em uma arquitetura em camadas facilita a evolução segura do software. Ao refatorar o Value Object `Placa` para garantir suas invariantes (SRP e OCP) e ao aplicar os padrões GoF *Strategy* (`EstrategiaDesconto`) e *Factory Method* (`CriadorVeiculo`) no Agregado `Cliente`, ficou claro que manter a regra de negócio desacoplada de frameworks evita regressões e acelera os testes — evidenciado pelos 57 testes unitários rodando em 0,61s, contra a lentidão de 8 a 12 vezes por teste observada no experimento monolítico. Se pudesse fazer diferente, teria modelado os Value Objects com validações encapsuladas e adotado padrões criacionais desde a primeira versão do código, evitando o uso inicial de tipos primitivos soltos. Testaria outras formas de atribuição de valores para os atributos "id", em vez de "UUID". Além disso, teria escrito os testes parametrizados no `pytest` antes mesmo da implementação das regras, aplicando TDD de forma mais estrita para guiar o design das interfaces.
+Na Fase 2, Eu errei muito no uso da ferramenta GitHub, mas aprendi bastante GitHub até o fechamento do projeto, destaco isso, pois não tive uso intenso/ treinamento em GitHub em disciplinas anteriores na minha trajetória. As mudanças no enunciado do trabalho/ projeto na Fase 2 possibilitou enorme aprendizado e talvez me deixe treinado para mudanças durante execução de projetos na minha vida profissional no mercado. Meu principal aprendizado foi comprovar na prática como o isolamento do domínio em uma arquitetura em camadas facilita a evolução segura do software. Ao refatorar o Value Object `Placa` para garantir suas invariantes (SRP e OCP) e ao aplicar os padrões GoF *Strategy* (`EstrategiaDesconto`) e *Factory Method* (`CriadorVeiculo`) no Agregado `Cliente`, ficou claro que manter a regra de negócio desacoplada de frameworks evita regressões e acelera os testes — evidenciado pelos 57 testes unitários rodando em 0,61s, contra a lentidão de 8 a 12 vezes por teste observada no experimento monolítico. Se pudesse fazer diferente, teria modelado os Value Objects com validações encapsuladas e adotado padrões criacionais desde a primeira versão do código, evitando o uso inicial de tipos primitivos soltos. Testaria outras formas de atribuição de valores para os atributos "id", em vez de "UUID". Além disso, teria escrito os testes parametrizados no `pytest` antes mesmo da implementação das regras, aplicando TDD de forma mais estrita para guiar o design das interfaces.
+
+
+**14-11-26**
+
+Fiz uma revisão e apresento abaixo os meus principais commits do checkpoint final do projeto.
+
+Commits do autor para o checkpoint final:
+
+
+Hash 439ac03 - feature/framework-retrospectiva:
+
+Foram realizadas versões preliminares respondendo aos arquivos frameworks.md e retrospectiva.md.- 12/Nov
+
+Hash 6be6f98 - feature/experimentos:
+
+Foi implementado um caso de uso 'cadastrar cliente e veículo', "opcional" e alternativo para comparativo concreto com o projeto original. - 13/Nov.
+
+Hash f24395c - reflexao individual fase 2 Kennedy Soares:
+
+Foi realizado uma redação para responder o que eu aprendi na fase 2 e o que eu faria diferente no projeto. - 13/Nov.
+
 
 
 
