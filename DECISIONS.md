@@ -766,6 +766,8 @@ Uso de IA: o rascunho da seção foi escrito com apoio do Claude a partir dos ar
 
 Foi revisada a seção "Padrões de Projeto Internos dos Frameworks". O texto foi conferido contra o código e corrigido para melhor se adequar ao que pede o trabalho e para eliminar erros existentes na versão anterior no relatório
 
+Foi removida a parte ##3 por não se adequar suficientemente ao que o projeto estava pedindo devido aos erros presentes nela
+
 Uso de IA: o Claude foi usado para conferir o texto contra os arquivos do
   repositório, apontar os erros acima, reescrever parte dps trechos e rodar experimentos em um ambiente sem SQLAlchemy para confirmar o comportamento
 
