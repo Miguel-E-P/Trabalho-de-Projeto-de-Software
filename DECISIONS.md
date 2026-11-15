@@ -594,6 +594,18 @@ Sobre o uso de IA, pedi ao ChatGPT que gerasse o diagrama de classes em mermaid,
 Ademais, assim que meus colegas terminarem suas alterações, pretendo fechar mais esse checkpoint.
 
 
+**11-11-26**:
+Inicialmente, dividimos tarefas entre nesse checkpoint, de forma que cada integrante tomasse conta de um parágrafo/tema no arquivo `docs/framework.md`. Fiz algumas melhorias em geral e comecei a escrever sobre o SQLAlchemy.
+
+Usei principalmente o site oficial do [SQLAlchemy](https://www.sqlalchemy.org/) como referência.
+
+
+**15-11-26**:
+Depois de trocarmos ideias em reuniões do grupo, viemos com uma nova abordagem de múltiplas versões do arquivo. 
+
+Junto com meus colegas, começamos a condensar as versões que criamos, melhorando o texto quando achamos necessário.
+
+
 ### Matheus
 
 **18-09-26**: 
