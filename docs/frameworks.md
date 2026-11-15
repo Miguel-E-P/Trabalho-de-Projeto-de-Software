@@ -22,10 +22,6 @@ Por que o domínio não depende dele: A dependência vai só dos testes para o c
 
 
 ## 2. Inversão de Controle (IoC) vs. Biblioteca
-### Diferença Conceitual
-* **Biblioteca:** Um conjunto de classes instanciadas pelo cliente onde **o seu código chama a biblioteca** para executar funções específicas[cite: 18, 19]. O fluxo de controle é gerido pela aplicação[cite: 19].
-* **Framework:** Estrutura abstrata que detém o controle do fluxo principal e executa a **Inversão de Controle (IoC)** — o *Princípio de Hollywood: "Não nos chame, nós chamaremos você"*[cite: 18, 19]. **O framework chama o código do grupo** nos pontos de extensão (*hot spots*) previstos no projeto[cite: 19, 24].
-
 ### Pontos de Inversão de Controle (IoC) no Sistema:
 1. **Registro e Despacho de Rotas HTTP (Flask/FastAPI):**
    * *Funcionamento:* Ao utilizar decoradores (`@app.get("/clientes")`), o grupo registra ganchos de código (*hot spots*)[cite: 24]. O ciclo principal do servidor Web (infraestrutura fixa / *frozen spot*) escuta as requisições e **chama a função do grupo**[cite: 19, 24].
@@ -33,6 +29,11 @@ Por que o domínio não depende dele: A dependência vai só dos testes para o c
    * *Funcionamento:* O executor do pytest inspeciona a assinatura das funções de teste e **injeta/executa automaticamente as fixtures** anotadas com `@pytest.fixture` antes e depois dos testes, gerindo o ciclo de vida da suíte[cite: 19].
 3. **Reconstituição de Entidades pelo ORM (SQLAlchemy):**
    * *Funcionamento:* Durante a execução de consultas SQL, o SQLAlchemy intercepta as tuplas do banco e **chama o construtor da classe `Cliente`** para reconstituir o objeto de domínio na memória.
+
+### Diferença Conceitual
+Como aprendemos com o professor Troy, uma biblioteca nos oferece um conjunto de métodos, que podemos decidir quando e onde chamar. Já o framework, define um fluxo e chama o nosso código, os métodos que nós criamos, nos momentos que ele precisa, decidindo quando executá-los. Na prática podemos usar os dois ao mesmo tempo.
+
+No contexto do projeto, se não usássemos um framework pra desenvolver nosso sistema, teríamos que pensar em todas essas estruturas e fluxos do zero, gastando mais tempo do que o disponível na disciplina e, provavelmente, obtendo um resultado bem inferior, já que o framework é desenvolvido por programadores profissionais com muito mais experiência que a gente.
 
 
 ## 3. Análise de Hot Spots e Frozen Spots (Aula 9 - Frameworks - UFF)
