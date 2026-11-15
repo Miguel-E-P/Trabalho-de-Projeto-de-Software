@@ -425,7 +425,7 @@ d1c3798ffc3b84322b2ebeac95777b9f5dc8a12e
 Arquivos modificados: DECISIONS.md
 
 **15-11-2026**
-Revisei a seção sobre Inversão de Controle (IoC) para tornar as explicações mais precisas e específicas ao funcionamento do nosso sistema. No caso do Flask, detalhei quais endpoints são registrados e como o framework controla sua execução. No caso do SQLAlchemy, corrigi a descrição da reconstituição das entidades, explicando como a instanciação de classes mapeadas em start_mappers() aciona o __setattr__ por meio da criação de _sa_instance_state. A descrição do pytest foi mantida.
+Trabalhando com Miguel e Gustavo, revisamos o arquivo frameworks.md. Dividimos o trabalho de forma a maximizar a eficiência. Eu revisei a seção sobre Inversão de Controle (IoC) para tornar as explicações mais precisas e específicas ao funcionamento do nosso sistema. No caso do Flask, detalhei quais endpoints são registrados e como o framework controla sua execução. No caso do SQLAlchemy, corrigi a descrição da reconstituição das entidades, explicando como a instanciação de classes mapeadas em start_mappers() aciona o __setattr__ por meio da criação de _sa_instance_state. A descrição do pytest foi mantida. Também alterei um pouco a seção sobre o Flask para torná-la visualmente mais atrativa.
 
 Uso de IA: O Claude foi utilizado para verificar a corretude das reformulações. O ChatGPT foi utilizado para corrigir erros gramaticais no texto desta decisão.
 
