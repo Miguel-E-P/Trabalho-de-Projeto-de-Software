@@ -772,3 +772,6 @@ Uso de IA: o Claude foi usado para conferir o texto contra os arquivos do
   repositório, apontar os erros acima, reescrever parte dps trechos e rodar experimentos em um ambiente sem SQLAlchemy para confirmar o comportamento
 
 Commits:
+604d41d4159ed3ed673f98c97ece1580d8fb3654
+17b57e2c10851ba4093219ee0abc17d0ed7026d2
+e5d799f9ba0ff616baa2cda112d935d9afc7ae11
