@@ -424,6 +424,18 @@ Arquivos modificados: frameworks.md, DECISIONS.md
 d1c3798ffc3b84322b2ebeac95777b9f5dc8a12e
 Arquivos modificados: DECISIONS.md
 
+**15-11-2026**
+Revisei a seção sobre Inversão de Controle (IoC) para tornar as explicações mais precisas e específicas ao funcionamento do nosso sistema. No caso do Flask, detalhei quais endpoints são registrados e como o framework controla sua execução. No caso do SQLAlchemy, corrigi a descrição da reconstituição das entidades, explicando como a instanciação de classes mapeadas em start_mappers() aciona o __setattr__ por meio da criação de _sa_instance_state. A descrição do pytest foi mantida.
+
+Uso de IA: O Claude foi utilizado para verificar a corretude das reformulações. O ChatGPT foi utilizado para corrigir erros gramaticais no texto desta decisão.
+
+Hash do Commit
+
+Arquivos modificados: frameworks.md
+
+
+Arquivos modificados: DECISIONS.md
+
 ### Gustavo
 **16-09-26**:
 Primeiro, estou organizando nosso repositório; devo fazer esse tipo de varredura mais vezes e, a não ser que eu esqueça, subir o commit com uma flag de "_refact_". A título de curiosidade, o linter/code formatter que uso chama-se [ruff](https://docs.astral.sh/ruff/).
