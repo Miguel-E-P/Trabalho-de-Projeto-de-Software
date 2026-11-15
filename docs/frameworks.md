@@ -2,9 +2,11 @@
 Como fomos orientados pelo professor na Fase 1, usamos três frameworks pra desenvolver nosso sistema: **Flask** (API), **SQLAlchemy** (persistência) e **pytest** (testes). Esta análise mostra o papel de cada um, a camada em que aparece, onde ele chama o código do grupo, quais padrões de projeto ele usa por dentro e o que mudaria com o Django.
 
 ## Flask
-Papel: Recebe as requisições HTTP, converte entrada e saída (JSON e código de status), cria o repositório e garante o fechamento da sessão do banco. <br>
-Camada: Entrypoints: `entrypoints/flask_app.py`, testado em `tests/e2e/test_api.py`.  <br>
-Por que o domínio não depende dele:  Só o `flask_app.py` o importa. Ele chama a camada de serviço com parâmetros Python simples, e `service_layer/services.py` e `domain/model.py` não conhecem HTTP.  <br>
+**Papel**: Recebe as requisições HTTP, converte entrada e saída (JSON e código de status), cria o repositório e garante o fechamento da sessão do banco.
+
+**Camada**: Entrypoints: `entrypoints/flask_app.py`, testado em `tests/e2e/test_api.py`.
+
+**Por que o domínio não depende dele**:  Só o `flask_app.py` o importa. Ele chama a camada de serviço com parâmetros Python simples, e `service_layer/services.py` e `domain/model.py` não conhecem HTTP. 
 
 ## SQLAlchemy
 **Papel**: É responsável pela persistência dos dados, além de gerenciar as sessões e transações com o banco de dados. Ele usa o ORM (Object Relational Mapper) pra mapear objetos Python em tabelas do banco e vice-versa, permitindo realizar operações básicas como consulta, inserção, atualização e exclusão sem precisar escrever todo o SQL manualmente.
@@ -20,15 +22,13 @@ Camada: Fica fora de src/, em tests/, com uma pasta por camada: unit/ testa doma
 Por que o domínio não depende dele: A dependência vai só dos testes para o código: tests/ importa domain, adapters e service_layer, e nenhum arquivo de src/ importa o pytest. O comando grep -rnE "sqlalchemy|flask|pytest|django" src/estacionamento/domain/ retorna 0 ocorrências. Como os testes unitários usam Fakes no lugar do banco, a suíte unitária roda em cerca de 0,1 s. <br>
 
 
-
-## 2. Inversão de Controle (IoC) vs. Biblioteca
-### Pontos de Inversão de Controle (IoC) no Sistema:
-1. **Registro e Despacho de Rotas HTTP (Flask/FastAPI):**
-   * *Funcionamento:* Ao utilizar decoradores (`@app.get("/clientes")`), o grupo registra ganchos de código (*hot spots*)[cite: 24]. O ciclo principal do servidor Web (infraestrutura fixa / *frozen spot*) escuta as requisições e **chama a função do grupo**[cite: 19, 24].
-2. **Injeção de Fixtures (pytest):**
-   * *Funcionamento:* O executor do pytest inspeciona a assinatura das funções de teste e **injeta/executa automaticamente as fixtures** anotadas com `@pytest.fixture` antes e depois dos testes, gerindo o ciclo de vida da suíte[cite: 19].
-3. **Reconstituição de Entidades pelo ORM (SQLAlchemy):**
-   * *Funcionamento:* Durante a execução de consultas SQL, o SQLAlchemy intercepta as tuplas do banco e **chama o construtor da classe `Cliente`** para reconstituir o objeto de domínio na memória.
+## Inversão de Controle (IoC)
+### **Registro e Despacho de Rotas HTTP (Flask/FastAPI):**
+*Funcionamento:* O Flask chama os endpoints. O decorador @app.route só registra no app as funções endpoint_cadastrar_cliente (POST /clientes), endpoint_cadastrar_veiculo_cliente (POST /clientes/<id_cliente>/veiculos) e endpoint_buscar_cliente (GET /clientes/<id_cliente>), em flask_app.py. O grupo não as chama: o Flask casa a URL e o método de cada requisição, decide quando executar a função, passa o id_cliente extraído da URL como argumento e prepara o contexto que faz o request existir dentro dela.
+### **Injeção de Fixtures (pytest):**
+*Funcionamento:* O executor do pytest inspeciona a assinatura das funções de teste e **injeta/executa automaticamente as fixtures** anotadas com `@pytest.fixture` antes e depois dos testes, gerindo o ciclo de vida da suíte[cite: 19].
+### **Reconstituição de Entidades pelo ORM (SQLAlchemy):**
+*Funcionamento:* O mapeamento do ORM chama o domínio. Ao instanciar as classes mapeadas em start_mappers(), o SQLAlchemy grava _sa_instance_state em cada instância, o que aciona o __setattr__ da classe.
 
 ### Diferença Conceitual
 Como aprendemos com o professor Troy, uma biblioteca nos oferece um conjunto de métodos, que podemos decidir quando e onde chamar. Já o framework, define um fluxo e chama o nosso código, os métodos que nós criamos, nos momentos que ele precisa, decidindo quando executá-los. Na prática podemos usar os dois ao mesmo tempo.
