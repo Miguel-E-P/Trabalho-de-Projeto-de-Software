@@ -36,29 +36,28 @@ Como aprendemos com o professor Troy, uma biblioteca nos oferece um conjunto de 
 No contexto do projeto, se não usássemos um framework pra desenvolver nosso sistema, teríamos que pensar em todas essas estruturas e fluxos do zero, gastando mais tempo do que o disponível na disciplina e, provavelmente, obtendo um resultado bem inferior, já que o framework é desenvolvido por programadores profissionais com muito mais experiência que a gente.
 
 
-## 3. Análise de Hot Spots e Frozen Spots (Aula 9 - Frameworks - UFF)
-A arquitetura de um framework é definida pela combinação de seus *Hot Spots* (partes extensíveis) e *Frozen Spots* (infraestrutura fixa que coordena a execução)[cite: 24]:
-
-* **Flask / FastAPI:**
-  * **Frozen Spot:** O servidor WSGI/ASGI, o loop de recepção de pacotes HTTP e a desserialização inicial de requisições[cite: 24].
-  * **Hot Spot:** As rotas registradas pelo grupo (`@app.get("/clientes")`), que definem a lógica específica dos endpoints[cite: 24].
-* **pytest:**
-  * **Frozen Spot:** O mecanismo automático de descoberta (*test discovery*) e o ciclo fixo de execução da suíte[cite: 24].
-  * **Hot Spot:** As fixtures (`@pytest.fixture`) e os testes customizados do grupo[cite: 24].
-
-
 ## 4. Padrões de Projeto Internos dos Frameworks no Código do Grupo
-Conforme abordado na Aula 9, frameworks são softwares concretos que utilizam diversos padrões de projeto (GoF) em sua estrutura interna[cite: 21]:
 
-1. **Template Method (no `pytest`):**
-   * *Onde aparece:* Na execução da suíte em `tests/unit/test_model.py`.
-   * *Aplicação:* O pytest define o esqueleto fixo do ciclo de testes (*setup* -> *execution* -> *teardown*)[cite: 24], permitindo que o grupo preencha as etapas concretas via fixtures e asserções[cite: 15, 21].
-2. **Data Mapper / Identity Map (no SQLAlchemy):**
-   * *Onde aparece:* Na camada de adaptadores em `src/estacionamento/adapters/repository.py`.
-   * *Aplicação:* O SQLAlchemy separa a tabela relacional da entidade `Cliente`, mantendo um *Identity Map* para evitar leitura duplicada de instâncias na mesma sessão sem poluir o domínio com comandos SQL[cite: 21].
-3. **Decorator (no Flask / FastAPI):**
-   * *Onde aparece:* Nos controladores de rota em `src/estacionamento/entrypoints/api.py`.
-   * *Aplicação:* O framework utiliza decoradores em Python para envolver funções de manipulação de rotas com comportamentos transversais (tratamento de erros, serialização JSON e validações HTTP)[cite: 21].
+1. Template Method (pytest)
+
+  Onde aparece: Na execução da suíte em `tests/unit/test_model.py` e na fixture session do tests/conftest.py, usada pelos testes de integração, e na fixture client do tests/e2e/test_api.py.
+
+  Aplicação: O pytest estabelece a ordem fixa de execução de cada teste (preparação, execução e limpeza), cabendo ao grupo preencher apenas as extremidades. Na fixture session, o trecho anterior ao yield cria a sessão e o posterior invoca clear_mappers(), o que ocorre inclusive quando o teste falha.
+
+
+2. Data Mapper e Identity Map (SQLAlchemy)
+Onde aparece: o Data Mapper em adapters/orm.py; o Identity Map nas consultas realizadas por meio da Session, em adapters/repository.py.
+
+Aplicação: o Data Mapper mantém Cliente, Reserva, Ticket e demais entidades sem dependência do SQLAlchemy em seu código, dissociadas do esquema relacional. O Identity Map assegura a existência de um único objeto por linha dentro da sessão, evitando instâncias duplicadas.
+
+Nota: Esse não é um padrão GoF, foi definido por Martin Fowler no seu livro “Patterns of enterprise application architecture”.
+
+
+3. Decorator (Flask)
+Onde aparece: @app.route, em entrypoints/flask_app.py.
+
+  Aplicação: O decorador registra cada função de rota (endpoint_cadastrar_cliente, endpoint_cadastrar_veiculo_cliente e endpoint_buscar_cliente) na tabela de rotas da aplicação e devolve a própria função, sem alterar o corpo dela. O Flask usa esse registro para decidir qual função chamar quando uma requisição corresponde ao caminho 
+
 
 
 ## 5. Impacto da Adoção de um Framework Full-Stack (ex.: Django)

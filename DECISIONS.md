@@ -724,7 +724,7 @@ Arquivos Modificados: `src/estacionamento/service_layer/reserva_facade.py`,
   porque o domínio não pode importar repositórios (ADR-0001) e uma fachada com
   regras viraria God Object.
 
-- **Uso de IA:** a implementação da fachada, os 22 testes e o rascunho da seção do
+- **Uso de IA:** a implementação da façade, os 22 testes e o rascunho da seção do
   `gof.md` foram gerados com apoio do Claude a partir dos arquivos do repositório e
   dos slides de GoF. Eu li o código, conferi o diagrama contra as classes reais e
   rodei a suíte unitária (114 testes passando)
@@ -743,3 +743,12 @@ Commits:
 79653fd3fa5cea6ad2eac268f0e9d2f6a5a02f7e
 
 Uso de IA: o rascunho da seção foi escrito com apoio do Claude a partir dos arquivos do repositório. Eu revisei o texto contra o código, e respondo pelo resultado. O item sobre o estado global dos mappers não foi verificado e está marcado assim no documento.
+
+**15/11/2026**
+
+Foi revisada a seção "Padrões de Projeto Internos dos Frameworks". O texto foi conferido contra o código e corrigido para melhor se adequar ao que pede o trabalho e para eliminar erros existentes na versão anterior no relatório
+
+Uso de IA: o Claude foi usado para conferir o texto contra os arquivos do
+  repositório, apontar os erros acima, reescrever parte dps trechos e rodar experimentos em um ambiente sem SQLAlchemy para confirmar o comportamento
+
+Commits:
