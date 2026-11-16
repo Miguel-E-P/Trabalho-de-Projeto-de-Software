@@ -1,14 +1,9 @@
-# Relatório de Retrospectiva Arquitetural (Versão 0)
+# Relatório de Retrospectiva
+Mesmo depois de implementar os casos de uso, refatorar os agregados e aplicar princípios SOLID e padrões GoF, decidimos manter a Arquitetura Hexagonal Monolítica, mas usando suas abstrações de forma proporcional à complexidade de cada fluxo. 
 
-## 1. Decisão Arquitetural Final
+A separação entre domínio, serviços e infraestrutura trouxe benefícios concretos, de testabilidade e organização, e também revelou custos de indireção e manutenção que nem todo caso de uso exige. Vimos que fazia sentido com nosso contexto, compreendendo a escolha do professor e dos autores do livro-texto que usamos nessa disciplina. 
 
-**Referência**: Aula 9 - Frameworks (UFF - Prof. Troy Costa Kohwalter)
-
-**Decisão:** **MANTER A ARQUITETURA EM CAMADAS DECOUPLADA (CLEAN ARCHITECTURE / DDD LIGHT).**
-
-Após vivenciar a implementação das regras de negócio, a refatoração de princípios SOLID e a introdução dos padrões GoF no Agregado `Cliente` (`Cliente`, `Veiculo`, `Placa`), a equipe concluiu que a escolha de isolar o modelo de domínio de frameworks[cite: 19] provou ser a decisão mais acertada para a sustentabilidade e qualidade do projeto.
-
----
+Ainda assim, tivemos sorte em ver outras arquiteturas com os professores nessa segunda fase do projeto. É muito melhor tomar uma decisão sabendo das alternativas e consideramos elas ao decorrer do projeto.
 
 ## 2. Revisitação da Análise do Checkpoint 1: Previsões vs. Realidade
 
@@ -45,4 +40,3 @@ A eficácia do isolamento e a ausência de regressões foram comprovadas pela ex
 Conforme analisado na Aula 9 sobre os custos e benefícios de frameworks[cite: 22, 23], o custo inicial de abstração e escrita de código de infraestrutura[cite: 23] é largamente compensado pelo reúso de projeto, manutenibilidade e alta velocidade de suíte de testes[cite: 3, 23]. 
 
 A capacidade de rodar a suíte completa de 123 testes em 1.43s e refatorar invariantes de domínio complexas com zero regressão confirma que **manter a Arquitetura em Camadas com Domínio Isolado é a solução mais robusta e sustentável.**
-# Fim Versão 0
