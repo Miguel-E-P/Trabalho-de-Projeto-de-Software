@@ -15,11 +15,13 @@ Como fomos orientados pelo professor na Fase 1, usamos três frameworks pra dese
 
 **Por que o domínio não depende dele**: O domínio não importa nem conhece o SQLAlchemy, ele só define as regras de negócio e as abstrações dos repositórios, enquanto os adapters implementa essas abstrações utilizando o ORM. Assim, podemos substituir o SQLAlchemy por outra tecnologia de persistência sem precisar modificar as regras de negócio.
 
-### Pytest
+## Pytest
 
-Papel: Descobre e executa todos os testes do sistema (114 unitários, 7 de integração e 2 e2e), entrega aos testes os recursos de que precisam (banco em memória, cliente HTTP) e relata o resultado. Também oferece pytest.raises e parametrize, que usamos para checar as exceções de domínio e repetir um teste com várias entradas. <br> 
-Camada: Fica fora de src/, em tests/, com uma pasta por camada: unit/ testa domain/ e service_layer/ com os repositórios Fake, integration/ testa adapters/ com SQLite em memória e e2e/ testa entrypoints/ pela API. A configuração está em tests/pytest.ini e o banco dos testes, em tests/conftest.py. <br> 
-Por que o domínio não depende dele: A dependência vai só dos testes para o código: tests/ importa domain, adapters e service_layer, e nenhum arquivo de src/ importa o pytest. O comando grep -rnE "sqlalchemy|flask|pytest|django" src/estacionamento/domain/ retorna 0 ocorrências. Como os testes unitários usam Fakes no lugar do banco, a suíte unitária roda em cerca de 0,1 s. <br>
+**Papel**: Descobre e executa todos os testes do sistema (114 unitários, 7 de integração e 2 e2e), entrega aos testes os recursos de que precisam (banco em memória, cliente HTTP) e relata o resultado. Também oferece pytest.raises e parametrize, que usamos para checar as exceções de domínio e repetir um teste com várias entradas.
+
+**Camada**: Fica fora de src/, em tests/, com uma pasta por camada: unit/ testa domain/ e service_layer/ com os repositórios Fake, integration/ testa adapters/ com SQLite em memória e e2e/ testa entrypoints/ pela API. A configuração está em tests/pytest.ini e o banco dos testes, em tests/conftest.py.
+
+**Por que o domínio não depende dele**: A dependência vai só dos testes para o código: tests/ importa domain, adapters e service_layer, e nenhum arquivo de src/ importa o pytest. O comando grep -rnE "sqlalchemy|flask|pytest|django" src/estacionamento/domain/ retorna 0 ocorrências. Como os testes unitários usam Fakes no lugar do banco, a suíte unitária roda em cerca de 0,1 s. <br>
 
 
 ## Inversão de Controle (IoC)
@@ -36,7 +38,7 @@ Como aprendemos com o professor Troy, uma biblioteca nos oferece um conjunto de 
 No contexto do projeto, se não usássemos um framework pra desenvolver nosso sistema, teríamos que pensar em todas essas estruturas e fluxos do zero, gastando mais tempo do que o disponível na disciplina e, provavelmente, obtendo um resultado bem inferior, já que o framework é desenvolvido por programadores profissionais com muito mais experiência que a gente.
 
 
-## 4. Padrões de Projeto Internos dos Frameworks no Código do Grupo
+## Padrões de Projeto Internos dos Frameworks no Código do Grupo
 
 1. Template Method (pytest)
 
@@ -60,7 +62,7 @@ Onde aparece: @app.route, em entrypoints/flask_app.py.
 
 
 
-## 5. Impacto da Adoção de um Framework Full-Stack (ex.: Django)
+## Impacto da Adoção de um Framework Full-Stack (ex.: Django)
 Se o grupo tivesse optado por um framework full-stack como o **Django**:
 
 * **Violação do Isolamento do Domínio (*Active Record*):** As entidades de domínio teriam que herdar de `django.db.models.Model`, acoplando diretamente a lógica de negócio às bibliotecas de banco de dados e ao ORM do framework[cite: 19].

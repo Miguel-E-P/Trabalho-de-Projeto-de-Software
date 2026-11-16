@@ -429,7 +429,7 @@ Trabalhando com Miguel e Gustavo, revisamos o arquivo frameworks.md. Dividimos o
 
 Uso de IA: O Claude foi utilizado para verificar a corretude das reformulações. O ChatGPT foi utilizado para corrigir erros gramaticais no texto desta decisão.
 
-Hash do Commit
+Hash do Commit:
 924e4ffecf34c2e2dcaa47680862de87671814cb
 Arquivos modificados: frameworks.md
 
@@ -441,6 +441,13 @@ Arquivos modificados: DECISIONS.md
 
 257d954f9e49876fe33e1c8d1455356334a2b1ea
 Arquivos modificados: DECISIONS.md
+
+**16-11-2026**
+Modifiquei o frameworks.md para embelezar o texto, deixando tudo no mesmo estilo.
+
+Hash do Commit:
+
+Arquivos modificados: frameworks.md, DECISIONS.md
 
 ### Gustavo
 **16-09-26**:
