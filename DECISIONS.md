@@ -446,7 +446,7 @@ Arquivos modificados: DECISIONS.md
 Modifiquei o frameworks.md para embelezar o texto, deixando tudo no mesmo estilo.
 
 Hash do Commit:
-
+e1a00a77494537f5cf609e9d9529a510a9be871c
 Arquivos modificados: frameworks.md, DECISIONS.md
 
 ### Gustavo
