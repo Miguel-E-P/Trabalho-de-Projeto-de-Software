@@ -461,7 +461,7 @@ A Fase 2 mostrou que desenvolver software em equipe exige não apenas conhecimen
 Uso de IA: Claude e ChatGPT foram utilizados para corrigir erros gramaticais e revisar o texto.
 
 Hash do Commit:
-
+0c3acc3b07c5254e5d528260d07dc4d609366c2f
 Arquivos modificados: DECISIONS.md
 
 ### Gustavo
