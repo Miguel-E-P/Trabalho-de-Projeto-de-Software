@@ -455,10 +455,10 @@ Reformulei a seção 5 de retrospectiva.md, substituindo a justificativa anterio
 Uso de IA: Claude foi utilizado para avaliar a versão anterior da retrospectiva, e sua avaliação motivou a reformulação. ChatGPT foi utilizado para corrigir erros gramaticais e melhorar a redação da nova versão. ChatGPT tambem foi utilizado para corrigir erros gramaticais no texto desta decisão.
 
 Hash do Commit:
-
+a01e5b80e889930ccb6365a35a02b70a9b887f59
 Arquivos modificados: frameworks.md
 
-
+5f1cca3b5f401ae93b9b71d08a26da32f20a08de
 Arquivos modificados: DECISIONS.md
 
 **Reflexões finais sobre a Fase 2**:
