@@ -10,13 +10,16 @@ Ainda assim, tivemos sorte em ver outras arquiteturas com os professores nessa s
 A previsão mais acertada foi a de testabilidade: o domínio permaneceu independente dos frameworks (Flask, SQLAlchemy e pytest), logo, os testes unitários puderam rodar sem iniciar a API ou o banco. O uso de repositórios Fake permitiu validar rapidamente regras e contratos durante as refatorações.
 
 
-## 2. Revisitação da Análise do Checkpoint 1: Previsões vs. Realidade
 
-| Previsão / Hipótese Inicial (CP1) | Confirmação na Prática | Trade-offs que Pesaram na Prática |
-| :--- | :--- | :--- |
-| *O isolamento do domínio facilitaria os testes unitários.* | **Confirmada com Louvor.** | A suíte de 57 testes unitários do modelo roda isoladamente na memória em apenas **0.61s**, sem necessidade de mockar o banco de dados ou subir servidores HTTP[cite: 19]. |
-| *Haveria um custo maior de escrita de código boilerplate.* | **Confirmada.** | A necessidade de escrever repositórios, DTOs e mapeadores imperativos exigiu mais arquivos e linhas de código do que uma abordagem tradicional de Active Record. |
-| *A arquitetura permitiria evoluir o domínio sem quebrar a API.* | **Confirmada.** | A refatoração do Value Object `Placa` (commit `841bc73`) e a introdução dos padrões GoF ocorreram de forma transparente, sem alterar as assinaturas dos endpoints HTTP. |
+## 2. Quais trade-offs pesaram na prática?
+O principal trade-off foi testabilidade e isolamento versus simplicidade. Repositórios abstratos e Fake permitiram testar serviços sem banco, mas aumentaram a quantidade de classes e exigiram manter contratos e implementações coerentes. O mapeamento imperativo preservou o domínio sem herança do ORM, porém transferiu complexidade para adapters/orm.py: foi necessário manter conversores como GUID e PlacaType, e arquitetura.md registra 128 linhas dedicadas ao mapeamento e aos tradutores.
+
+O atrito mais claro entre pureza do domínio e persistência apareceu em Pagamento. O @dataclass(frozen=True) impedia o SQLAlchemy de gravar seu estado interno; a primeira solução passou a reconhecer o prefixo _sa_, fazendo o domínio conhecer um detalhe do ORM. O ADR-0006 corrigiu isso ao definir a imutabilidade com base nos próprios campos do dataclass. A solução, porém, ainda usa lógica especial em __setattr__ e depende de Pagamento continuar sendo um dataclass.
+
+Também aprendemos que Fake não substitui integração real. O Fake de pagamentos aceitava duplicatas que a chave primária do banco rejeitaria. A refatoração alinhou a regra de unicidade, embora o tipo e o momento da exceção ainda sejam diferentes entre Fake e SQLAlchemy. Em Reserva e Ticket, os testes unitários ajudaram a corrigir o contrato de list() e a alinhar horarioSaida com a possibilidade de NULL, mas o ADR-0007 deixa pendente validar essas mudanças com o SQLAlchemy real.
+
+Os padrões GoF trouxeram benefícios localizados, mas aumentaram a indireção. Strategy separou políticas de desconto e tarifas; Factory Method centralizou a criação de veículos; State organizou os estados da vaga; e Facade reuniu os fluxos de reserva, entrada e saída, com 22 testes unitários. O Observer desacoplou o registro do pagamento de suas reações, mas tornou a ordem dos observadores relevante: se um deles falhar, os seguintes não são chamados e o chamador precisa tratar o rollback. Os padrões compensam quando há variação ou responsabilidades a coordenar, não apenas por acrescentarem abstrações.
+
 
 ---
 

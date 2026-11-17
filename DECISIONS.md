@@ -786,3 +786,11 @@ Commits:
 604d41d4159ed3ed673f98c97ece1580d8fb3654
 17b57e2c10851ba4093219ee0abc17d0ed7026d2
 e5d799f9ba0ff616baa2cda112d935d9afc7ae11
+
+**16/11/2026**
+
+Reformei a seção "Quais trade-offs pesaram na prática?" em `retrospectiva.md` de forma que se adeque e atenda melhor o que foi requisitado pelo projeto.
+
+Uso de IA: O Claude foi usado para conferir o texto contra os documentos e o código.
+
+Commits:
