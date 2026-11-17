@@ -449,6 +449,18 @@ Hash do Commit:
 e1a00a77494537f5cf609e9d9529a510a9be871c
 Arquivos modificados: frameworks.md, DECISIONS.md
 
+**17-11-2026**
+Reformulei a seção 5 de retrospectiva.md, substituindo a justificativa anterior por uma conclusão mais crítica sobre a arquitetura escolhida. A versão antiga defendia sua manutenção principalmente com base na velocidade dos testes e na ausência de regressões. Na nova versão, mantive a escolha pelo monólito hexagonal, mas destaquei a importância de aplicar abstrações e padrões seletivamente, reconhecendo também as limitações encontradas durante a Fase 2 e as melhorias que ainda precisam ser feitas.
+
+Uso de IA: Claude foi utilizado para avaliar a versão anterior da retrospectiva, e sua avaliação motivou a reformulação. ChatGPT foi utilizado para corrigir erros gramaticais e melhorar a redação da nova versão. ChatGPT tambem foi utilizado para corrigir erros gramaticais no texto desta decisão.
+
+Hash do Commit:
+
+Arquivos modificados: frameworks.md
+
+
+Arquivos modificados: DECISIONS.md
+
 **Reflexões finais sobre a Fase 2**:
 Ao longo da Fase 2, aprendi a aplicar os princípios SOLID e os padrões de projeto com mais atenção aos problemas concretos, em vez de simplesmente procurar oportunidades para utilizar determinados padrões. No agregado Pagamento, por exemplo, identifiquei que a entidade conhecia um detalhe interno do SQLAlchemy (DIP) e que o repositório Fake aceitava pagamentos duplicados, embora o banco os rejeitasse (LSP). Ao implementar o Observer, comparei alternativas e avaliei onde colocá-lo. Optei pela camada de serviço para separar o registro do pagamento das reações que ele provoca, mantendo o domínio independente dos repositórios.
 
