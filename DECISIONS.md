@@ -631,6 +631,10 @@ Depois de trocarmos ideias em reuniões do grupo, viemos com uma nova abordagem 
 Junto com meus colegas, começamos a condensar as versões que criamos, melhorando o texto quando achamos necessário.
 
 
+**16-11-26**:
+Adicionei algumas considerações no documento de retrospectiva, após me reunir com os demais integrantes do grupo; continuo rascunhando algumas mudanças, que devo aplicar amanhã, depois de conferir se todos concordam.
+
+
 ### Matheus
 
 **18-09-26**: 
