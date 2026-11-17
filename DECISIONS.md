@@ -793,4 +793,6 @@ Reformei a seção "Quais trade-offs pesaram na prática?" em `retrospectiva.md`
 
 Uso de IA: O Claude foi usado para conferir o texto contra os documentos e o código.
 
+Arquivos modificados: retrospectiva.md e decisions
+
 Commits:
