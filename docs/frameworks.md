@@ -23,6 +23,8 @@ Como fomos orientados pelo professor na Fase 1, usamos três frameworks pra dese
 
 **Por que o domínio não depende dele**: A dependência vai só dos testes para o código: tests/ importa domain, adapters e service_layer, e nenhum arquivo de src/ importa o pytest. O comando grep -rnE "sqlalchemy|flask|pytest|django" src/estacionamento/domain/ retorna 0 ocorrências. Como os testes unitários usam Fakes no lugar do banco, a suíte unitária roda em cerca de 0,1 s. <br>
 
+**Isolamento das Regras de Tarifa**: Na refatoração do cálculo de tarifas (`src/estacionamento/service_layer/services.py`, commit `672cbf4`) usando o padrão *Strategy*, o desacoplamento entre núcleo e infraestrutura permitiu validar as regras de cobrança de forma isolada em `tests/unit/test_services.py`. Por meio de `@pytest.fixture`, o framework injeta os repositórios `Fake` na camada de serviço sem que o domínio ou os serviços precisem conhecer o `pytest`, o SQLAlchemy ou o Flask. Como não é necessário subir banco de dados ou servidor web para validar essas regras, toda a suíte de 123 testes executa em 1,43 s, garantindo feedback rápido e segurança contra regressões durante a Fase 2.
+
 
 ## Inversão de Controle (IoC)
 ### **Registro e Despacho de Rotas HTTP (Flask/FastAPI):**
