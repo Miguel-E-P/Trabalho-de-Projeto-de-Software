@@ -9,7 +9,9 @@ Ainda assim, tivemos sorte em ver outras arquiteturas com os professores nessa s
 ## 1. Nossas Previsões
 A previsão mais acertada foi a de testabilidade: o domínio permaneceu independente dos frameworks (Flask, SQLAlchemy e pytest), logo, os testes unitários puderam rodar sem iniciar a API ou o banco. O uso de repositórios Fake permitiu validar rapidamente regras e contratos durante as refatorações.
 
+A modificabilidade foi melhorando a medida que progredimos nos checkpoints, já que conhecer os princípios SOLID, principalmente o SRP e OCP, melhoraram muito nossa forma de desenvolver. Por exemplo, a validação de formato foi transferida para o ValueObject Placa, que passou a proteger sua própria invariante e a aceitar os formatos antigo e Mercosul sem espalhar condicionais pelos serviços. Também usamos padrões de projeto como Strategy e State, que nos ajudaram a garantir mais facilidade de manutenção.
 
+Sobre a segurança, disponibilidade e desempenho, a arquitetura que usamos nos dá flexibilidade pra implementar mecanismos mais avançados e complexos que nos ofereçam essas características, sem afetar em nada nossas regras de negócio, que estão muito bem isoladas.
 
 ## 2. Quais trade-offs pesaram na prática?
 O principal trade-off foi testabilidade e isolamento versus simplicidade. Repositórios abstratos e Fake permitiram testar serviços sem banco, mas aumentaram a quantidade de classes e exigiram manter contratos e implementações coerentes. O mapeamento imperativo preservou o domínio sem herança do ORM, porém transferiu complexidade para adapters/orm.py: foi necessário manter conversores como GUID e PlacaType, e arquitetura.md registra 128 linhas dedicadas ao mapeamento e aos tradutores.
