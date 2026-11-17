@@ -635,6 +635,47 @@ Junto com meus colegas, começamos a condensar as versões que criamos, melhoran
 Adicionei algumas considerações no documento de retrospectiva, após me reunir com os demais integrantes do grupo; continuo rascunhando algumas mudanças, que devo aplicar amanhã, depois de conferir se todos concordam.
 
 
+**17-11-26**:
+Acredito encerrar minha participação nesse checkpoint; adicionei mais alguns detalhes na retrospectiva sobre nossas previsões, revisei o texto dos meus pares e pedi que fizessem algumas alterações.
+
+Enfim, seguem os hashs e arquivos que alterei durante essa fase (do mais recente pro mais antigo), sem contar com esse, do autorrelato:
+```md
+c6f4b8e - **docs: Adicionando detalhes sobre a previsão**
++ docs/retrospectiva.md
+
+
+71579a5 - **docs: Documentando decisões e alterações no retrospectiva.md**
++ DECISIONS.md
++ docs/retrospectiva.md
+
+97ac409 - **docs: Consolidando uma versão final para o retrospectiva.md**
++ docs/retrospectiva.md
+
+204616a - **Adicionando entradas no arquivo de decisions**
++ DECISIONS.md
+
+949841d - **Explicando diferença conceitual entre biblioteca e framework**
++ docs/frameworks.md
+
+702d900 - **Condensando as duas versões de frameworks.md**
++ docs/frameworks.md
+
+7110f08 - **docs: Explicando sobre o SQLAlchemy**
++ docs/frameworks.md
+
+31e3872 - **docs: Melhorando nossa introdução (frameworks.md)**
++ docs/frameworks.md
+
+27992e3 - **fix: Corrigindo a extensão do arquivo de retrospectiva**
+- docs/retrospectiva. md  
++ docs/retrospectiva.md
+
+```
+
+**Reflexões finais sobre a Fase 2**:
+Achei os conhecimentos sobre padrões de projeto muito úteis, é um estudo pra vida toda. Sem dúvidas, foi minha parte preferida da matéria. A parte de princípios SOLID também foi bem interessante, tenho aplicado os princípios nos meus projetos pessoais, sempre que possível, desde que tivemos aula sobre. Além de competências técnicas, acredito que o trabalho foi muito proveitoso pro meu aprimoramento profissional, pois aprendi muito sobre a importância da comunicação. Dentro de uma equipe, ela é tão importante quanto o planejamento, distribuição de tarefas e outras atividades de projeto. Das atividades de engenharia de software, também gostei da parte sobre ADRs, na documentação do projeto. As atividades de arquitetura que fizemos em sala com a professora Vânia também foram muito proveitosas, acredito que estimulou nos meus colegas, tanto quanto em mim, o pensamento crítico. A parte de frameworks que vimos mais recentemente foi interessante, mas ainda estou pesquisando sobre, buscando aprimorar meu conhecimento no assunto. 
+
+
 ### Matheus
 
 **18-09-26**: 
