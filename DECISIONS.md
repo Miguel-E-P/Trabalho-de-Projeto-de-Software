@@ -449,6 +449,21 @@ Hash do Commit:
 e1a00a77494537f5cf609e9d9529a510a9be871c
 Arquivos modificados: frameworks.md, DECISIONS.md
 
+**Reflexões finais sobre a Fase 2**:
+Ao longo da Fase 2, aprendi a aplicar os princípios SOLID e os padrões de projeto com mais atenção aos problemas concretos, em vez de simplesmente procurar oportunidades para utilizar determinados padrões. No agregado Pagamento, por exemplo, identifiquei que a entidade conhecia um detalhe interno do SQLAlchemy (DIP) e que o repositório Fake aceitava pagamentos duplicados, embora o banco os rejeitasse (LSP). Ao implementar o Observer, comparei alternativas e avaliei onde colocá-lo. Optei pela camada de serviço para separar o registro do pagamento das reações que ele provoca, mantendo o domínio independente dos repositórios.
+
+Também aprendi a utilizar Inteligência Artificial com mais eficiência e critério. Passei a fornecer contexto, código e restrições mais específicas, utilizando as respostas para explorar alternativas, revisar decisões e elaborar testes. Entretanto, aprendi que é necessário questionar as sugestões. Um exemplo foi a proposta de verificar pagamentos duplicados com uma consulta no repositório SQLAlchemy. Ao considerar o custo adicional e a possibilidade de condições de corrida, concluí que a chave primária do banco era uma garantia melhor.
+
+Se pudesse recomeçar, mudaria principalmente a organização do trabalho em equipe. Adotaria o Scrum, ou alguma versão simplificada dele, com reuniões semanais para discutir o progresso, comunicar dificuldades, alinhar decisões técnicas e organizar as próximas tarefas. Também definiria melhor o escopo desde o início, estabelecendo quais funcionalidades seriam prioritárias e até onde pretendíamos chegar. Acredito que isso evitaria divergências e tornaria a divisão do trabalho mais eficiente. Por fim, defenderia melhor minhas próprias ideias e soluções, apresentando argumentos e evidências e questionando decisões quando necessário, sem deixar de ouvir os colegas.
+
+A Fase 2 mostrou que desenvolver software em equipe exige não apenas conhecimento técnico, mas também comunicação, planejamento e capacidade de argumentação.
+
+Uso de IA: Claude e ChatGPT foram utilizados para corrigir erros gramaticais e revisar o texto.
+
+Hash do Commit:
+
+Arquivos modificados: DECISIONS.md
+
 ### Gustavo
 **16-09-26**:
 Primeiro, estou organizando nosso repositório; devo fazer esse tipo de varredura mais vezes e, a não ser que eu esqueça, subir o commit com uma flag de "_refact_". A título de curiosidade, o linter/code formatter que uso chama-se [ruff](https://docs.astral.sh/ruff/).
