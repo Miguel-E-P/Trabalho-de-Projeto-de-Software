@@ -23,7 +23,20 @@ Os padrões GoF trouxeram benefícios localizados, mas aumentaram a indireção.
 
 ---
 
-## 3. Evidências da Fase 2: Facilitadores vs. Obstáculos nas Refatorações e Padrões
+## 3. Evidências Empíricas do Módulo `CalculadoraTarifa` e Trade-offs na Prática
+
+A decisão de manter a Arquitetura Hexagonal é sustentada pelas evidências observadas durante a refatoração e evolução do serviço `CalculadoraTarifa`:
+
+1. **Isolamento das regras de precificação (`service_layer/services.py`):**
+   Quando refatoramos o cálculo de tarifas usando o padrão Strategy (commit 672cbf4), trocamos condicionais rígidas por estratégias independentes (TarifaCarro, TarifaMoto, TarifaSUV e TarifaCarroEletrico) com registro dinâmico (registrar_estrategia). Tudo isso ficou contido na camada de serviço. Para suportar novas categorias de veículos, não precisamos mexer em nenhuma rota HTTP nem no banco de dados, que prova na prática a separação entre a regra de negócio e a infraestrutura.
+2. **Testes isolados e sem regressão (tests/unit/test_services.py):**
+   Com as responsabilidades bem divididas, conseguimos rodar os testes antigos e validar o cadastro dinâmico de novas tarifas direto pelo pytest (pytest tests/unit/test_services.py), sem depender de banco de dados rodando.
+3. **Mais classes e indireção no código:**
+   O lado negativo dessa arquitetura junto do padrão Strategy foi o aumento na quantidade de classes e níveis de indireção, já que criamos a interface EstrategiaTarifa e suas respectivas implementações. Ainda assim, o custo valeu a pena pela segurança de conseguir adicionar novas regras na CalculadoraTarifa sem precisar alterar código que já estava testado e funcionando.
+
+---
+
+## 4. Evidências da Fase 2: Facilitadores vs. Obstáculos nas Refatorações e Padrões
 
 As camadas isoladas atuaram como facilitadores diretos nas alterações realizadas na Fase 2 no Agregado Cliente:
 
@@ -43,7 +56,7 @@ A eficácia do isolamento e a ausência de regressões foram comprovadas pela ex
 
 ---
 
-## 4. Justificativa da Decisão Arquitetural
+## 5. Justificativa da Decisão Arquitetural
 
 Conforme analisado na Aula 9 sobre os custos e benefícios de frameworks[cite: 22, 23], o custo inicial de abstração e escrita de código de infraestrutura[cite: 23] é largamente compensado pelo reúso de projeto, manutenibilidade e alta velocidade de suíte de testes[cite: 3, 23]. 
 
