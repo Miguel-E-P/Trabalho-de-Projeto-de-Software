@@ -840,3 +840,7 @@ Commits:
 d0850f34f28a526c9c47ba940837f337cb46f221
 1c17d7df558875f96656b2636bb2783989237d67
 5df9a95f3e0aa10a257c10b267d6ca8699b224ad
+
+**Considerações pessoais sobre a Fase 2**
+
+Durante essa fase 2, percebi a utilidade prática de isolar as regras de domínio e saber lidar com códigos de estruturas mais complexas. A introdução e o aprendizado sobre os padrões gof, especialmente ao façade, que foi o meu foco nessa fase, foram pra mim o ponto alto dela, especialmente devido à aplicação prática que tivemos de fazer deles, o que consolidou ainda mais a real importância e utilidade desses padrões durante a confecção de softwares. As partes sobre Solid e Framewors, apesar de não ter me gerado uma impressão pessoal tão impactante quanto os padrões gof, também foram muito esclaceredoras e serviram muito para dar um certo guia em relação à projeção e desenvolvimento de software. Senti que todos esses são conhecimentos de altíssimo valor e que farão um impacto positivo real no meu crescimento nessa área. Essa fase também foi importante na experiência que tive de trabalho em equipe.
