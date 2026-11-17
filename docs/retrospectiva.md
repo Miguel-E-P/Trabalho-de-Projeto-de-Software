@@ -58,8 +58,8 @@ A eficácia do isolamento e a ausência de regressões foram comprovadas pela ex
 
 ---
 
-## 5. Justificativa da Decisão Arquitetural
+## 5. Conclusão - manter, com aplicação seletiva
 
-Conforme analisado na Aula 9 sobre os custos e benefícios de frameworks[cite: 22, 23], o custo inicial de abstração e escrita de código de infraestrutura[cite: 23] é largamente compensado pelo reúso de projeto, manutenibilidade e alta velocidade de suíte de testes[cite: 3, 23]. 
+Nossa decisão é manter o monólito hexagonal, em vez de migrar para microsserviços. Para uma equipe de quatro pessoas, no prazo de um semestre e com o escopo atual, microsserviços acrescentariam infraestrutura e problemas de comunicação e consistência sem benefício demonstrado. A arquitetura atual já permitiu testar o domínio isoladamente e evoluir regras sem misturá-las à API ou ao ORM.
 
-A capacidade de rodar a suíte completa de 123 testes em 1.43s e refatorar invariantes de domínio complexas com zero regressão confirma que **manter a Arquitetura em Camadas com Domínio Isolado é a solução mais robusta e sustentável.**
+Manter não significa preservar toda abstração automaticamente. Continuaríamos com as fronteiras entre domínio, serviços e adaptadores, os contratos de repositório e os testes em diferentes níveis. Aplicaríamos padrões GoF quando houvesse necessidade concreta; para fluxos simples, preferiríamos a solução direta. Como próximos cuidados, priorizaríamos testes de integração com SQLAlchemy real para Reserva e Ticket, a uniformização dos erros entre Fake e banco e a validação dos requisitos ainda não demonstrados de segurança, disponibilidade e desempenho. A arquitetura se mostrou adequada para organizar e testar o projeto, mas precisa ser acompanhada da implementação e verificação explícitas dos requisitos operacionais.
