@@ -5,6 +5,11 @@ A separação entre domínio, serviços e infraestrutura trouxe benefícios conc
 
 Ainda assim, tivemos sorte em ver outras arquiteturas com os professores nessa segunda fase do projeto. É muito melhor tomar uma decisão sabendo das alternativas e consideramos elas ao decorrer do projeto.
 
+
+## 1. Nossas Previsões
+A previsão mais acertada foi a de testabilidade: o domínio permaneceu independente dos frameworks (Flask, SQLAlchemy e pytest), logo, os testes unitários puderam rodar sem iniciar a API ou o banco. O uso de repositórios Fake permitiu validar rapidamente regras e contratos durante as refatorações.
+
+
 ## 2. Revisitação da Análise do Checkpoint 1: Previsões vs. Realidade
 
 | Previsão / Hipótese Inicial (CP1) | Confirmação na Prática | Trade-offs que Pesaram na Prática |
