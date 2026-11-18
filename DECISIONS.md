@@ -705,8 +705,7 @@ Achei os conhecimentos sobre padrões de projeto muito úteis, é um estudo pra 
 
 ### Matheus
 
-**18-09-26**: 
-Criei o arquivo services.py com a regra de calcular o preço do estacionamento.
+**18-09-26**: Criei o arquivo services.py com a regra de calcular o preço do estacionamento. 
 Como calcular o preço depende do tipo do veículo e de quanto tempo ele ficou guardado, ou seja, uma conta que envolve coisas diferentes do sistema, achei melhor colocar essa lógica em uma ferramenta separada, em vez de embolar tudo dentro de uma classe só.  
 Usei o @staticmethod, porque a calculadora só precisa receber as horas e o tipo do veículo para fazer a conta e devolver o preço. Assim evita guardar dados na memória toda vez que for cobrar alguém. 
 
@@ -724,11 +723,8 @@ Fiz isso para seguir o Princípio de Responsabilidade Única e conseguir rodar o
 Uso de IA: Utilizada para ajudar na estruturação, formatar as seções e validar os critérios.
 
 **31-10-26**: Refatorei a classe CalculadoraTarifa em src/estacionamento/service_layer/services.py para resolver as violações de OCP e SRP. Apliquei o padrão Strategy criando a classe base EstrategiaTarifa e classes concretas para cada perfil de tarifa.
-
 Subi as regras de fracionamento de hora e a tolerância de 15 minutos para a classe base, evitando duplicar código e deixando as subclasses responsáveis só pelo valor das suas taxas. Pra não quebrar os testes legados nem outros pontos do sistema que chamavam o método com ordens de parâmetros diferentes, ajustei o @classmethod CalculadoraTarifa.calcular para aceitar *args, tratar a conversão de Enums e inspecionar a assinatura dos métodos com inspect.
-
 Rodei a suíte em tests/unit/test_services.py e mantive sucesso. Também criei um teste novo pra garantir que o registro dinâmico de novas estratégias em tempo de execução via registrar_estrategia funcione perfeitamente.
-
 Atualizei a documentação do projeto preenchendo minha seção no docs/solid.md com os trechos antes/depois.
 
 #### Decisão de Projeto
@@ -743,7 +739,6 @@ Arquivos modificados: services.py, test_services.py, solid.md
 
 **10-11-26**: Finalizei a documentação da aplicação do padrão GoF Strategy na `CalculadoraTarifa` no arquivo `docs/gof.md`, registrando o contexto de negócio, alternativas consideradas, o diagrama de classes, os testes e a análise de custos.
 
-
 #### Decisão de projeto 
 Mantive a separação de cada regra de cobrança em classes de estratégia isoladas para que novas tarifas possam ser adicionadas por extensão sem mexer no serviço de domínio que já funciona.
 
@@ -752,6 +747,24 @@ Hash dos commits:
     a027b076357199447545a52a6a6b51476da716fe
 
 Arquivos modificados: docs/gof.md, DECISIONS.md
+
+**17-11-2026**: Coloquei minhas contribuições individuais (o isolamento das regras de negócio e os testes da CalculadoraTarifa) nos documentos coletivos da entrega final e fechei este autorrelato.
+
+Hash dos commits:
+    4992c79b884361f6390c20dceb56d17daf01f525
+    68a976f713e8eed6f7a4350398ab7a77524d3703
+
+Arquivos modificados: docs/retrospectiva.md, docs/frameworks.md
+
+**Decisão de Projeto:**
+Optei por refatorar a CalculadoraTarifa aplicando o padrão Strategy e deixando-a 100% independente de frameworks como Flask e SQLAlchemy. Fiz isso para preservar as regras de domínio puras, garantindo que a validação de cobrança rodasse em frações de segundo com o pytest, sem precisar de banco de dados.
+
+**Declaração de Uso de IA:**
+Utilizei para auxiliar em uma última revisão gramatical, contagem de palavras e na formatação desta seção do `DECISIONS.md`.
+
+**Considerações pessoais sobre a Fase 2:**
+Nessa etapa, o que mais me deu uma virada de chave foi entender na prática o por quê de separar a regra de negócio da infraestrutura. Quando apliquei o Strategy na CalculadoraTarifa, deu para ver o Princípio do Aberto/Fechado (OCP) do SOLID acontecendo. Pensei que agora a gente consegue adicionar novas categorias de veículos sem precisar mexer nem quebrar o que já estava pronto e testado. Juntar essa ideia da Arquitetura Hexagonal com os testes isolados no pytest me deu mais segurança, porque provou que manter o domínio puro faz os testes rodarem super rápido e evita problemas com regressão.
+Se eu pudesse fazer algo diferente, com certeza teria feito um rascunho das classes e interfaces (como a EstrategiaTarifa) no papel ou num diagrama antes de partir direto para o código. No começo, a quantidade de classes novas e camadas de indireção que os padrões exigem me deu uma confundida, algo que um planejamento visual simples teria resolvido facilmente.
 
 ### Miguel
 **16/09/26**:
